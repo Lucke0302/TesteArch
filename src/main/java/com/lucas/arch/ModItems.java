@@ -1,30 +1,40 @@
 package com.lucas.arch;
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+
+import java.util.function.Function;
 
 public class ModItems {
     public static final String MOD_ID = "archeologyunnoficial";
 
-    public static final Item UNKNOWN_FOSSIL = registerItem("unknown_fossil", new Item(new Item.Properties()));
+    public static final Item UNKNOWN_PLANT_FOSSIL = registerItem("unknown_plant_fossil", Item::new);
+    public static final Item UNKNOWN_REPTILE_FOSSIL = registerItem("unknown_reptile_fossil", Item::new);
+    public static final Item UNKNOWN_FISH_FOSSIL = registerItem("unknown_fish_fossil", Item::new);
+    public static final Item UNKNOWN_MAMMAL_FOSSIL = registerItem("unknown_mammal_fossil", Item::new);
 
-    private static Item registerItem(String name, Item item) {
+    private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(
             BuiltInRegistries.ITEM, 
-            ResourceLocation.fromNamespaceAndPath(MOD_ID, name), 
-            item
+            Identifier.fromNamespaceAndPath(MOD_ID, name),
+            function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MOD_ID, name))))
         );
     }
 
     public static void registerModItems() {
-        System.out.println("[" + MOD_ID + "] Registrando itens do mod...");
+        System.out.println("[" + MOD_ID + "] Registrando fósseis customizados...");
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
-            entries.accept(UNKNOWN_FOSSIL);
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS).register(output -> {
+            output.accept(UNKNOWN_PLANT_FOSSIL);
+            output.accept(UNKNOWN_REPTILE_FOSSIL);
+            output.accept(UNKNOWN_FISH_FOSSIL);
+            output.accept(UNKNOWN_MAMMAL_FOSSIL);
         });
     }
 }
