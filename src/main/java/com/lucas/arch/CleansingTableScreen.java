@@ -11,7 +11,6 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
     
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_table.png");
     
-    // Identificadores nativos para puxarmos a água e a lava direto dos arquivos do jogo
     private static final Identifier WATER_TEXTURE = Identifier.fromNamespaceAndPath("minecraft", "block/water_still");
     private static final Identifier LAVA_TEXTURE = Identifier.fromNamespaceAndPath("minecraft", "block/lava_still");
 
@@ -31,7 +30,6 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
         
-        // 1. Renderiza o fundo cinza da sua interface
         graphics.blit(
             TEXTURE, 
             x, y, 
@@ -43,7 +41,6 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
         int tanqueLargura = 16; 
         int tanqueAlturaMax = 50;
 
-        // 2. Renderização da Água
         int waterLevel = this.menu.getWaterLevel();
         if (waterLevel > 0) {
             int alturaAtual = (waterLevel * tanqueAlturaMax) / 10;
@@ -53,7 +50,6 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, WATER_TEXTURE, aguaX, aguaY, tanqueLargura, alturaAtual);
         }
 
-        // 3. Renderização do Fogo/Lava
         int fuelTime = this.menu.getFuelTime();
         int maxFuelTime = this.menu.getMaxFuelTime();
         if (fuelTime > 0 && maxFuelTime > 0) {
@@ -71,12 +67,10 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
     public void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
         
-        // Tooltip da Água
         if (this.isHovering(40, 20, 16, 50, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(this.font, Component.literal("§bÁgua: " + this.menu.getWaterLevel() + " / 10 Baldes"), mouseX, mouseY);
         }
 
-        // Tooltip da Lava
         if (this.isHovering(60, 20, 16, 50, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(this.font, Component.literal("§6Combustível: " + this.menu.getFuelTime() + " Ticks"), mouseX, mouseY);
         }

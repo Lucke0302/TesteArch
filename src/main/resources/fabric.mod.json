@@ -18,6 +18,9 @@
 		"main": [
 			"com.lucas.arch.ArcheologyUnnoficial"
 		],
+		"client": [
+			"com.lucas.arch.ArcheologyUnnoficialClient"
+		],
 		"fabric-datagen": [
 			"com.lucas.arch.ArcheologyUnnoficialDataGenerator"
 		]
