@@ -15,7 +15,7 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
     private static final Identifier LAVA_TEXTURE = Identifier.fromNamespaceAndPath("minecraft", "block/lava_still");
 
     public CleansingTableScreen(CleansingTableMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+        super(menu, playerInventory, title, 256, 256);
     }
 
     @Override
@@ -31,21 +31,22 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
         int y = (this.height - this.imageHeight) / 2;
         
         graphics.blit(
-            TEXTURE, 
-            x, y, 
-            x + this.imageWidth, y + this.imageHeight, 
-            0f, (float) this.imageWidth / 256f, 
-            0f, (float) this.imageHeight / 256f
+            RenderPipelines.GUI_TEXTURED,
+            TEXTURE,
+            x, y,
+            0f, 0f,
+            this.imageWidth, this.imageHeight,
+            256, 256
         );
 
-        int tanqueLargura = 16; 
-        int tanqueAlturaMax = 50;
+        int tanqueLargura = 11; 
+        int tanqueAlturaMax = 86;
 
         int waterLevel = this.menu.getWaterLevel();
         if (waterLevel > 0) {
             int alturaAtual = (waterLevel * tanqueAlturaMax) / 10;
-            int aguaX = x + 40; 
-            int aguaY = y + 70 - alturaAtual; 
+            int aguaX = x + 4; 
+            int aguaY = y + 95 - alturaAtual; 
 
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, WATER_TEXTURE, aguaX, aguaY, tanqueLargura, alturaAtual);
         }
@@ -54,8 +55,8 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
         int maxFuelTime = this.menu.getMaxFuelTime();
         if (fuelTime > 0 && maxFuelTime > 0) {
             int alturaAtual = (fuelTime * tanqueAlturaMax) / maxFuelTime;
-            int lavaX = x + 60; 
-            int lavaY = y + 70 - alturaAtual;
+            int lavaX = x + 18; 
+            int lavaY = y + 95 - alturaAtual;
 
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LAVA_TEXTURE, lavaX, lavaY, tanqueLargura, alturaAtual);
         }
@@ -67,11 +68,11 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
     public void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
         
-        if (this.isHovering(40, 20, 16, 50, mouseX, mouseY)) {
+        if (this.isHovering(4, 9, 11, 86, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(this.font, Component.literal("§bÁgua: " + this.menu.getWaterLevel() + " / 10 Baldes"), mouseX, mouseY);
         }
 
-        if (this.isHovering(60, 20, 16, 50, mouseX, mouseY)) {
+        if (this.isHovering(18, 9, 11, 86, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(this.font, Component.literal("§6Combustível: " + this.menu.getFuelTime() + " Ticks"), mouseX, mouseY);
         }
     }

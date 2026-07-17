@@ -5,5 +5,6 @@
   "item.archeologyunnoficial.unknown_mammal_fossil": "Unknown Mammal Fossil",
   "item.archeologyunnoficial.default_plant_dna": "Plant DNA",
   "item.archeologyunnoficial.default_reptile_dna": "Reptile DNA",
-  "tooltip.archeologyunnoficial.dna_quality": "§7DNA Quality: %s"
+  "tooltip.archeologyunnoficial.dna_quality": "§7DNA Quality: %s",
+  "block.archeologyunnoficial.cleansing_table": "Cleansing Table"
 }
