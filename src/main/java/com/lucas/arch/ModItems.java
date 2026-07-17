@@ -18,6 +18,11 @@ public class ModItems {
     public static final Item UNKNOWN_REPTILE_FOSSIL = registerItem("unknown_reptile_fossil", Item::new);
     public static final Item UNKNOWN_FISH_FOSSIL = registerItem("unknown_fish_fossil", Item::new);
     public static final Item UNKNOWN_MAMMAL_FOSSIL = registerItem("unknown_mammal_fossil", Item::new);
+    public static final Item DEFAULT_PLANT_DNA = registerItem("default_plant_dna", 
+        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
+        
+    public static final Item DEFAULT_REPTILE_DNA = registerItem("default_reptile_dna", 
+        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(
@@ -35,6 +40,8 @@ public class ModItems {
             output.accept(UNKNOWN_REPTILE_FOSSIL);
             output.accept(UNKNOWN_FISH_FOSSIL);
             output.accept(UNKNOWN_MAMMAL_FOSSIL);
+            output.accept(DEFAULT_PLANT_DNA);
+            output.accept(DEFAULT_REPTILE_DNA);
         });
     }
 }

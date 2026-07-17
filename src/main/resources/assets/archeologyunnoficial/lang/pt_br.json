@@ -2,5 +2,8 @@
   "item.archeologyunnoficial.unknown_plant_fossil": "Fóssil de Planta Desconhecida",
   "item.archeologyunnoficial.unknown_reptile_fossil": "Fóssil de Réptil Desconhecido",
   "item.archeologyunnoficial.unknown_fish_fossil": "Fóssil de Peixe Desconhecido",
-  "item.archeologyunnoficial.unknown_mammal_fossil": "Fóssil de Mamífero Desconhecido"
+  "item.archeologyunnoficial.unknown_mammal_fossil": "Fóssil de Mamífero Desconhecido",
+  "item.archeologyunnoficial.default_plant_dna": "DNA de Planta",
+  "item.archeologyunnoficial.default_reptile_dna": "DNA de Réptil",
+  "tooltip.archeologyunnoficial.dna_quality": "§7Qualidade do DNA: %s"
 }
