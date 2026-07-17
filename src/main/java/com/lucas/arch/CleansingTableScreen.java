@@ -1,18 +1,19 @@
 package com.lucas.arch;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 
 public class CleansingTableScreen extends AbstractContainerScreen<CleansingTableMenu> {
     
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_table.png");
+    
+    // Identificadores nativos para puxarmos a água e a lava direto dos arquivos do jogo
+    private static final Identifier WATER_TEXTURE = Identifier.fromNamespaceAndPath("minecraft", "block/water_still");
+    private static final Identifier LAVA_TEXTURE = Identifier.fromNamespaceAndPath("minecraft", "block/lava_still");
 
     public CleansingTableScreen(CleansingTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -26,76 +27,58 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
-        
-        // --- TOOLTIPS DOS TANQUES (Ajuste as zonas de colisão X, Y, Largura, Altura) ---
-        int x = (this.width - this.imageWidth) / 2;
-        int y = (this.height - this.imageHeight) / 2;
-
-        // Tooltip da Água (Exemplo: X=40, Y=20)
-        if (isHovering(40, 20, 16, 50, mouseX, mouseY)) {
-            guiGraphics.renderTooltip(this.font, Component.literal("§bÁgua: " + this.menu.getWaterLevel() + " / 10 Baldes"), mouseX, mouseY);
-        }
-
-        // Tooltip do Combustível (Exemplo: X=60, Y=20)
-        if (isHovering(60, 20, 16, 50, mouseX, mouseY)) {
-            guiGraphics.renderTooltip(this.font, Component.literal("§6Combustível: " + this.menu.getFuelTime() + " Ticks"), mouseX, mouseY);
-        }
-    }
-
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
         
-        // 1. Renderiza o seu fundo estático do Pixilart
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        // 1. Renderiza o fundo cinza da sua interface
+        graphics.blit(
+            TEXTURE, 
+            x, y, 
+            x + this.imageWidth, y + this.imageHeight, 
+            0f, (float) this.imageWidth / 256f, 
+            0f, (float) this.imageHeight / 256f
+        );
 
-        // --- CONFIGURAÇÕES DE TAMANHO DOS TANQUES --- //
         int tanqueLargura = 16; 
-        int tanqueAlturaMax = 50; // Altura máxima do tanque cheio em pixels
+        int tanqueAlturaMax = 50;
 
-        // 2. RENDERIZAÇÃO DA ÁGUA (Com 70% de Opacidade)
+        // 2. Renderização da Água
         int waterLevel = this.menu.getWaterLevel();
         if (waterLevel > 0) {
             int alturaAtual = (waterLevel * tanqueAlturaMax) / 10;
-            
-            // Posição na tela (Ajuste esses valores para encaixar no seu layout)
             int aguaX = x + 40; 
-            int aguaY = y + 70 - alturaAtual; // O Y base (70) é o fundo do tanque
+            int aguaY = y + 70 - alturaAtual; 
 
-            // Puxa a textura oficial de água do Minecraft
-            TextureAtlasSprite waterSprite = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(Identifier.fromNamespaceAndPath("minecraft", "block/water_still"));
-
-            // Ativa a transparência no motor gráfico
-            RenderSystem.enableBlend();
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.7F); // 70% de Alpha (Transparência)
-            
-            // Desenha a água
-            guiGraphics.blit(aguaX, aguaY, 0, tanqueLargura, alturaAtual, waterSprite);
-            
-            // Reseta a cor e desativa a transparência para não bugar o resto do jogo
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.disableBlend();
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, WATER_TEXTURE, aguaX, aguaY, tanqueLargura, alturaAtual);
         }
 
-        // 3. RENDERIZAÇÃO DA LAVA/FOGO (Opaco)
+        // 3. Renderização do Fogo/Lava
         int fuelTime = this.menu.getFuelTime();
         int maxFuelTime = this.menu.getMaxFuelTime();
         if (fuelTime > 0 && maxFuelTime > 0) {
             int alturaAtual = (fuelTime * tanqueAlturaMax) / maxFuelTime;
-            
-            int lavaX = x + 60; // Do lado da água
+            int lavaX = x + 60; 
             int lavaY = y + 70 - alturaAtual;
 
-            // Puxa a textura oficial de lava
-            TextureAtlasSprite lavaSprite = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(Identifier.fromNamespaceAndPath("minecraft", "block/lava_still"));
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LAVA_TEXTURE, lavaX, lavaY, tanqueLargura, alturaAtual);
+        }
 
-            // Desenha a lava direto (sem transparência)
-            guiGraphics.blit(lavaX, lavaY, 0, tanqueLargura, alturaAtual, lavaSprite);
+        super.extractContents(graphics, mouseX, mouseY, partialTick);
+    }
+
+    @Override
+    public void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        super.extractTooltip(graphics, mouseX, mouseY);
+        
+        // Tooltip da Água
+        if (this.isHovering(40, 20, 16, 50, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(this.font, Component.literal("§bÁgua: " + this.menu.getWaterLevel() + " / 10 Baldes"), mouseX, mouseY);
+        }
+
+        // Tooltip da Lava
+        if (this.isHovering(60, 20, 16, 50, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(this.font, Component.literal("§6Combustível: " + this.menu.getFuelTime() + " Ticks"), mouseX, mouseY);
         }
     }
 }
