@@ -11,11 +11,15 @@ public class ArcheologyUnnoficial implements ModInitializer {
 
     @Override
     public void onInitialize() {
-		ModConfig.load();
-		ModDataComponentTypes.registerDataComponentTypes();
-        ModItems.registerModItems();
+        ModConfig.load();
+        ModDataComponentTypes.registerDataComponentTypes();
         
-        ModLootTableModifiers.modifyLootTables(); 
+        ModBlocks.registerModBlocks();
+        ModBlockEntities.registerBlockEntities();
+        ModMenuTypes.registerMenuTypes();
+        
+        ModItems.registerModItems();
+        ModLootTableModifiers.modifyLootTables();
     }
 
     public static Identifier id(String path) {
