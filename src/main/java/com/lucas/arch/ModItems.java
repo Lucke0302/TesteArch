@@ -24,6 +24,12 @@ public class ModItems {
     public static final Item DEFAULT_REPTILE_DNA = registerItem("default_reptile_dna", 
         properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
 
+    public static final Item DEFAULT_MAMMAL_DNA = registerItem("default_mammal_dna", 
+        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
+        
+    public static final Item DEFAULT_FISH_DNA = registerItem("default_fish_dna", 
+        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
+
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(
             BuiltInRegistries.ITEM, 

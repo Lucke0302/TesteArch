@@ -3,11 +3,13 @@ package com.lucas.arch;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,7 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class CleansingTableBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider {
 
-    private final NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(16, ItemStack.EMPTY);
+
+    public static final int MAX_WATER_LEVEL = 10;
 
     public int waterLevel = 0;
     public int processProgress = 0;
@@ -81,6 +85,38 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
 
     // --- LÓGICA DE FUNCIONAMENTO --- //
 
+    /**
+     * Tenta encher o tanque de água com um balde de água segurado pelo jogador.
+     * @return true se consumiu o balde (tanque tinha espaço), false se já estava cheio.
+     */
+    public boolean tryAddWater() {
+        if (this.waterLevel >= MAX_WATER_LEVEL) {
+            return false;
+        }
+        this.waterLevel = Math.min(MAX_WATER_LEVEL, this.waterLevel + 10);
+        return true;
+    }
+
+    /**
+     * Tenta adicionar combustível a partir de um item que a fornalha vanilla aceitaria.
+     * @return true se o item era um combustível válido e foi consumido, false caso contrário.
+     */
+    public boolean tryAddFuel(Level level, ItemStack fuelStack) {
+        if (this.fuelTime > 0) {
+            // Só aceita combustível novo quando o atual acabar
+            return false;
+        }
+
+        int burnDuration = level.fuelValues().burnDuration(fuelStack);
+        if (burnDuration <= 0) {
+            return false;
+        }
+
+        this.fuelTime = burnDuration;
+        this.maxFuelTime = burnDuration;
+        return true;
+    }
+
     public void serverTick(Level level, BlockPos pos, BlockState state) {
         boolean isDirty = false;
 
@@ -89,12 +125,91 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
             isDirty = true;
         }
 
-        // Lógica de limpar o fóssil (Será preenchida no Pilar 3 com o Inventário)
-        // Exemplo: if (tem agua && tem fóssil && fuelTime > 0) processProgress++;
+        int inputSlot = findValidInputSlot();
+        boolean canProcess = inputSlot != -1 && this.waterLevel > 0 && this.fuelTime > 0;
+
+        if (canProcess) {
+            this.processProgress++;
+            isDirty = true;
+
+            if (this.processProgress >= this.maxProcessTime) {
+                this.processProgress = 0;
+                if (processFossil(level, inputSlot)) {
+                    isDirty = true;
+                }
+            }
+        } else if (this.processProgress > 0) {
+            // Sem recursos suficientes: o progresso regride em vez de ficar travado
+            this.processProgress = Math.max(0, this.processProgress - 2);
+            isDirty = true;
+        }
 
         if (isDirty) {
             setChanged(level, pos, state);
         }
+    }
+
+    /** Procura o primeiro slot de entrada (0-5) com um fóssil válido. */
+    private int findValidInputSlot() {
+        for (int i = 0; i <= 5; i++) {
+            ItemStack stack = this.inventory.get(i);
+            if (!stack.isEmpty() && ModCleansingRecipes.isValidInput(stack.getItem())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Consome o fóssil e 1 unidade de água, sorteia sucesso/falha e coloca o resultado
+     * num slot de saída (6-15). Se não houver espaço na saída, não consome nada e tenta de novo depois.
+     */
+    private boolean processFossil(Level level, int inputSlot) {
+        ItemStack inputStack = this.inventory.get(inputSlot);
+        CleansingRecipe recipe = ModCleansingRecipes.get(inputStack.getItem());
+        if (recipe == null) {
+            return false;
+        }
+
+        boolean success = level.getRandom().nextFloat() < ModCleansingRecipes.SUCCESS_CHANCE;
+        Item resultItem = success ? recipe.successOutput() : ModCleansingRecipes.rollFailureItem(recipe, level.getRandom());
+
+        if (resultItem == null) {
+            return false;
+        }
+
+        ItemStack resultStack = new ItemStack(resultItem);
+        if (success) {
+            int quality = 40 + level.getRandom().nextInt(46); // 40 a 85 (inclusive)
+            resultStack.set(ModDataComponentTypes.DNA_QUALITY, quality);
+        }
+
+        if (!insertIntoOutput(resultStack)) {
+            return false;
+        }
+
+        inputStack.shrink(1);
+        this.waterLevel = Math.max(0, this.waterLevel - 1);
+        return true;
+    }
+
+    /** Tenta colocar o item resultante num slot de saída existente (empilhando) ou vazio (6-15). */
+    private boolean insertIntoOutput(ItemStack result) {
+        for (int i = 6; i <= 15; i++) {
+            ItemStack slotStack = this.inventory.get(i);
+            if (!slotStack.isEmpty() && ItemStack.isSameItemSameComponents(slotStack, result)
+                && slotStack.getCount() < slotStack.getMaxStackSize()) {
+                slotStack.grow(result.getCount());
+                return true;
+            }
+        }
+        for (int i = 6; i <= 15; i++) {
+            if (this.inventory.get(i).isEmpty()) {
+                this.inventory.set(i, result);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -104,6 +219,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         output.putInt("ProcessProgress", this.processProgress);
         output.putInt("FuelTime", this.fuelTime);
         output.putInt("MaxFuelTime", this.maxFuelTime);
+        ContainerHelper.saveAllItems(output, this.inventory);
     }
 
     @Override
@@ -113,5 +229,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         this.processProgress = input.getIntOr("ProcessProgress", 0);
         this.fuelTime = input.getIntOr("FuelTime", 0);
         this.maxFuelTime = input.getIntOr("MaxFuelTime", 0);
+        this.inventory.clear();
+        ContainerHelper.loadAllItems(input, this.inventory);
     }
 }

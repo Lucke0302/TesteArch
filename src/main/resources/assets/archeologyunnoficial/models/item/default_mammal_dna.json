@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "archeologyunnoficial:item/default_mammal_dna"
+  }
+}

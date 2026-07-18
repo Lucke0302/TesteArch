@@ -28,8 +28,8 @@ public class CleansingTableMenu extends AbstractContainerMenu {
         inventory.startOpen(playerInventory.player);
 
         // Grade de entrada (fósseis) - 3 colunas x 2 linhas
-        int[] inputX = {46, 66, 88};
-        int[] inputY = {36, 57};
+        int[] inputX = {39, 61, 82};
+        int[] inputY = {35, 56};
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < 3; ++col) {
                 this.addSlot(new Slot(inventory, col + (row * 3), inputX[col], inputY[row]));
@@ -37,8 +37,8 @@ public class CleansingTableMenu extends AbstractContainerMenu {
         }
 
         // Grade de saída (itens processados) - 5 colunas x 2 linhas
-        int[] outputX = {152, 173, 194, 215, 236};
-        int[] outputY = {36, 58};
+        int[] outputX = {130, 152, 173, 195, 217};
+        int[] outputY = {35, 56};
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < 5; ++col) {
                 this.addSlot(new Slot(inventory, 6 + col + (row * 5), outputX[col], outputY[row]));
@@ -46,8 +46,8 @@ public class CleansingTableMenu extends AbstractContainerMenu {
         }
 
         // Inventário do jogador - 9 colunas x 3 linhas
-        int[] invX = {11, 38, 66, 93, 121, 149, 176, 204, 231};
-        int[] invY = {135, 162, 189};
+        int[] invX = {28, 49, 70, 91, 112, 133, 154, 175, 197};
+        int[] invY = {101, 121, 141};
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
                 this.addSlot(new Slot(playerInventory, col + row * 9 + 9, invX[col], invY[row]));
@@ -56,7 +56,7 @@ public class CleansingTableMenu extends AbstractContainerMenu {
 
         // Hotbar
         for (int col = 0; col < 9; ++col) {
-            this.addSlot(new Slot(playerInventory, col, invX[col], 224));
+            this.addSlot(new Slot(playerInventory, col, invX[col], 170));
         }
 
         this.addDataSlots(data);

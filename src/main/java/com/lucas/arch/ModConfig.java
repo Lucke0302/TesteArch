@@ -16,7 +16,7 @@ public class ModConfig {
     
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public float fossilDropChance = 1f;
+    public float fossilDropChance = .01f;
     public List<String> fossilDropBlocks = Arrays.asList(
             "minecraft:blocks/sand",
             "minecraft:blocks/gravel",
