@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IGI",
+    "DBG",
+    "III"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "G": "minecraft:glass",
+    "D": "minecraft:diamond",
+    "B": "minecraft:bucket"
+  },
+  "result": {
+    "id": "archeologyunnoficial:cleansing_table",
+    "count": 1
+  }
+}
