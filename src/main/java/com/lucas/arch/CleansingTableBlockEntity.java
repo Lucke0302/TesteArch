@@ -139,7 +139,6 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
                 }
             }
         } else if (this.processProgress > 0) {
-            // Sem recursos suficientes: o progresso regride em vez de ficar travado
             this.processProgress = Math.max(0, this.processProgress - 2);
             isDirty = true;
         }
@@ -149,7 +148,6 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         }
     }
 
-    /** Procura o primeiro slot de entrada (0-5) com um fóssil válido. */
     private int findValidInputSlot() {
         for (int i = 0; i <= 5; i++) {
             ItemStack stack = this.inventory.get(i);
@@ -160,10 +158,6 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         return -1;
     }
 
-    /**
-     * Consome o fóssil e 1 unidade de água, sorteia sucesso/falha e coloca o resultado
-     * num slot de saída (6-15). Se não houver espaço na saída, não consome nada e tenta de novo depois.
-     */
     private boolean processFossil(Level level, int inputSlot) {
         ItemStack inputStack = this.inventory.get(inputSlot);
         CleansingRecipe recipe = ModCleansingRecipes.get(inputStack.getItem());
@@ -180,7 +174,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
 
         ItemStack resultStack = new ItemStack(resultItem);
         if (success) {
-            int quality = 40 + level.getRandom().nextInt(46); // 40 a 85 (inclusive)
+            int quality = 40 + level.getRandom().nextInt(46);
             resultStack.set(ModDataComponentTypes.DNA_QUALITY, quality);
         }
 
@@ -193,7 +187,6 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         return true;
     }
 
-    /** Tenta colocar o item resultante num slot de saída existente (empilhando) ou vazio (6-15). */
     private boolean insertIntoOutput(ItemStack result) {
         for (int i = 6; i <= 15; i++) {
             ItemStack slotStack = this.inventory.get(i);

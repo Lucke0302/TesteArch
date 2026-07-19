@@ -14,7 +14,6 @@ public class EncyclopediaItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide()) {
-            // No Mojmap rodando no servidor, usamos sendSystemMessage
             player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§aAbrindo a Enciclopédia Arqueológica..."));
         }
         return InteractionResult.SUCCESS;

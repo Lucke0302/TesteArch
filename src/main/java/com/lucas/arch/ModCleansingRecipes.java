@@ -9,14 +9,11 @@ import java.util.Map;
 
 /**
  * Dicionário de fósseis aceitos pela Cleansing Table e o que cada um pode virar.
- *
- * Chance de sucesso: 30% (SUCCESS_CHANCE). Os outros 70% caem no pool de falha (junk).
  */
 public class ModCleansingRecipes {
 
     public static final float SUCCESS_CHANCE = 0.30F;
 
-    // Todo fóssil que falha pode gerar areia ou cascalho.
     private static final List<CleansingRecipe.WeightedItem> AREIA_E_CASCALHO = List.of(
         new CleansingRecipe.WeightedItem(Items.SAND, 1),
         new CleansingRecipe.WeightedItem(Items.GRAVEL, 1)
@@ -69,7 +66,6 @@ public class ModCleansingRecipes {
         return RECIPES.get(item);
     }
 
-    /** Sorteia um item de falha dentro do pool ponderado da receita. */
     public static Item rollFailureItem(CleansingRecipe recipe, net.minecraft.util.RandomSource random) {
         List<CleansingRecipe.WeightedItem> pool = recipe.failureOutputs();
         int totalWeight = pool.stream().mapToInt(CleansingRecipe.WeightedItem::weight).sum();

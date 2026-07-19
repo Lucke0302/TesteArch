@@ -10,9 +10,9 @@ import net.minecraft.client.renderer.RenderPipelines;
 public class CleansingTableScreen extends AbstractContainerScreen<CleansingTableMenu> {
     
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_table.png");
-
-    private static final int WATER_COLOR = 0xFF2266DD;
-    private static final int LAVA_COLOR = 0xFFE07A1A;
+    private static final Identifier PROGRESS_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_bar.png");
+    private static final Identifier WATER_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_water.png");
+    private static final Identifier LAVA_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_lava.png");
 
     public CleansingTableScreen(CleansingTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, 240, 200);
@@ -39,26 +39,66 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
             240, 200
         );
 
-        int tanqueLargura = 9; 
-        int tanqueAlturaMax = 84;
-
+        int tanqueLargura = 10; 
+        int tanqueAlturaMax = 85; 
+        
         int waterLevel = this.menu.getWaterLevel();
         if (waterLevel > 0) {
             int alturaAtual = (waterLevel * tanqueAlturaMax) / 10;
-            int aguaX = x + 7; 
+
+            int aguaX = x + 6;  
             int aguaY = y + 93 - alturaAtual; 
 
-            graphics.fill(aguaX, aguaY, aguaX + tanqueLargura, aguaY + alturaAtual, WATER_COLOR);
+            int corteV = tanqueAlturaMax - alturaAtual;
+
+            graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                WATER_TEXTURE,
+                aguaX, aguaY,
+                0f, (float) corteV,   
+                tanqueLargura, alturaAtual, 
+                10, 85 
+            );
         }
 
         int fuelTime = this.menu.getFuelTime();
         int maxFuelTime = this.menu.getMaxFuelTime();
         if (fuelTime > 0 && maxFuelTime > 0) {
             int alturaAtual = (fuelTime * tanqueAlturaMax) / maxFuelTime;
-            int lavaX = x + 21; 
+
+            int lavaX = x + 20; 
             int lavaY = y + 93 - alturaAtual;
 
-            graphics.fill(lavaX, lavaY, lavaX + tanqueLargura, lavaY + alturaAtual, LAVA_COLOR);
+            int corteV = tanqueAlturaMax - alturaAtual;
+
+            graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                LAVA_TEXTURE,
+                lavaX, lavaY,
+                0f, (float) corteV,
+                tanqueLargura, alturaAtual,
+                10, 85
+            );
+        }
+
+        int progress = this.menu.getProcessProgress();
+        int maxProgress = this.menu.getMaxProcessTime();
+
+        if (progress > 0) {
+            int steppedProgress = (progress / 20) * 20;
+
+            int currentWidth = (steppedProgress * 17) / maxProgress;
+
+            if (currentWidth > 0) {
+                graphics.blit(
+                    RenderPipelines.GUI_TEXTURED, 
+                    PROGRESS_TEXTURE,  
+                    x + 106, y + 49,       
+                    0f, 0f,                 
+                    currentWidth, 11,  
+                    17, 11 
+                );
+            }
         }
 
         super.extractContents(graphics, mouseX, mouseY, partialTick);
