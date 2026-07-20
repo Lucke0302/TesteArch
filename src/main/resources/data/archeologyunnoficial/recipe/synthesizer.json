@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ETE",
+    "ECE",
+    "EPE"
+  ],
+  "key": {
+    "E": "minecraft:emerald",
+    "T": "archeologyunnoficial:thermal_module",
+    "C": "archeologyunnoficial:culture_chamber",
+    "P": "archeologyunnoficial:processing_board"
+  },
+  "result": {
+    "id": "archeologyunnoficial:synthesizer",
+    "count": 1
+  }
+}

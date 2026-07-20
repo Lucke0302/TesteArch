@@ -20,6 +20,9 @@ public class ModBlocks {
     public static final Block CLEANSING_TABLE = registerBlock("cleansing_table",
             properties -> new CleansingTableBlock(properties.mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops()));
 
+    public static final Block SYNTHESIZER = registerBlock("synthesizer",
+        properties -> new SynthesizerBlock(properties.mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops()));
+
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function) {
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
         Block block = Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));
@@ -33,9 +36,10 @@ public class ModBlocks {
 
     public static void registerModBlocks() {
         System.out.println("[" + ArcheologyUnnoficial.MOD_ID + "] Registrando Blocos...");
-        
+
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(output -> {
             output.accept(CLEANSING_TABLE);
+            output.accept(SYNTHESIZER);
         });
     }
 }

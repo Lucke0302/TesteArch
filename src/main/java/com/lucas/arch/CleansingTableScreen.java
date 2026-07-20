@@ -15,7 +15,7 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
     private static final Identifier LAVA_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_lava.png");
 
     public CleansingTableScreen(CleansingTableMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, 240, 200);
+        super(menu, playerInventory, title, 240, 164);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
             x, y,
             0f, 0f,
             this.imageWidth, this.imageHeight,
-            240, 200
+            240, 164
         );
 
         int tanqueLargura = 10; 
@@ -93,7 +93,7 @@ public class CleansingTableScreen extends AbstractContainerScreen<CleansingTable
                 graphics.blit(
                     RenderPipelines.GUI_TEXTURED, 
                     PROGRESS_TEXTURE,  
-                    x + 106, y + 49,       
+                    x + 108, y + 31,       
                     0f, 0f,                 
                     currentWidth, 11,  
                     17, 11 

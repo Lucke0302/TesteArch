@@ -33,6 +33,21 @@ public class ModItems {
     public static final Item ENCYCLOPEDIA = registerItem("encyclopedia", 
         properties -> new EncyclopediaItem(properties.stacksTo(1)));
 
+    public static final Item PROCESSING_BOARD = registerItem("processing_board", Item::new); 
+    public static final Item THERMAL_MODULE = registerItem("thermal_module", Item::new); 
+    public static final Item CULTURE_CHAMBER = registerItem("culture_chamber", Item::new); 
+
+    public static final Item BASIC_ORGANIC_FUEL = registerItem("basic_organic_fuel", Item::new); 
+    public static final Item MEDIUM_ORGANIC_FUEL = registerItem("medium_organic_fuel", Item::new); 
+    public static final Item ADVANCED_ORGANIC_FUEL = registerItem("advanced_organic_fuel", Item::new); 
+    public static final Item MEAT_CLUSTER = registerItem("meat_cluster", Item::new); 
+
+    public static final Item ALLOSAURUS_EGG = registerItem("allosaurus_egg",
+        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0))); 
+
+    public static final Item ALLOSAURUS_EMBRYO = registerItem("allosaurus_embryo",
+        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
+
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(
             BuiltInRegistries.ITEM, 
@@ -52,6 +67,15 @@ public class ModItems {
             output.accept(DEFAULT_PLANT_DNA);
             output.accept(DEFAULT_REPTILE_DNA);
             output.accept(ENCYCLOPEDIA);
+            output.accept(PROCESSING_BOARD);
+            output.accept(THERMAL_MODULE);
+            output.accept(CULTURE_CHAMBER);
+            output.accept(BASIC_ORGANIC_FUEL);
+            output.accept(MEDIUM_ORGANIC_FUEL);
+            output.accept(ADVANCED_ORGANIC_FUEL);
+            output.accept(MEAT_CLUSTER);
+            output.accept(ALLOSAURUS_EGG);
+            output.accept(ALLOSAURUS_EMBRYO);
         });
     }
 }

@@ -3,8 +3,29 @@
   "item.archeologyunnoficial.unknown_reptile_fossil": "Unknown Reptile Fossil",
   "item.archeologyunnoficial.unknown_fish_fossil": "Unknown Fish Fossil",
   "item.archeologyunnoficial.unknown_mammal_fossil": "Unknown Mammal Fossil",
+  
   "item.archeologyunnoficial.default_plant_dna": "Plant DNA",
   "item.archeologyunnoficial.default_reptile_dna": "Reptile DNA",
+  "item.archeologyunnoficial.default_fish_dna": "Fish DNA",
+  "item.archeologyunnoficial.default_mammal_dna": "Mammal DNA",
+  
+  "item.archeologyunnoficial.encyclopedia": "Archeological Encyclopedia",
+
+  "item.archeologyunnoficial.thermal_module": "Thermal Module",
+  "item.archeologyunnoficial.culture_chamber": "Culture Chamber",
+  "item.archeologyunnoficial.processing_board": "Processing Board",
+
+  "item.archeologyunnoficial.basic_organic_fuel": "Basic Organic Fuel",
+  "item.archeologyunnoficial.medium_organic_fuel": "Medium Organic Fuel",
+  "item.archeologyunnoficial.advanced_organic_fuel": "Advanced Organic Fuel",
+  
+  "item.archeologyunnoficial.meat_cluster": "Meat Cluster",
+  "item.archeologyunnoficial.allosaurus_embryo": "Allosaurus Embryo",
+
   "tooltip.archeologyunnoficial.dna_quality": "§7DNA Quality: %s",
-  "block.archeologyunnoficial.cleansing_table": "Cleansing Table"
+  
+  "block.archeologyunnoficial.cleansing_table": "Cleansing Table",
+  "block.archeologyunnoficial.synthesizer": "Synthesizer",
+  "item.archeologyunnoficial.cleansing_table": "Cleansing Table",
+  "item.archeologyunnoficial.synthesizer": "Synthesizer"
 }

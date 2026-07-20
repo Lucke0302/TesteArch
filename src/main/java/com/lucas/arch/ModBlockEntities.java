@@ -15,6 +15,13 @@ public class ModBlockEntities {
                     FabricBlockEntityTypeBuilder.create(CleansingTableBlockEntity::new, ModBlocks.CLEANSING_TABLE).build()
             );
 
+    public static final BlockEntityType<SynthesizerBlockEntity> SYNTHESIZER_BE =
+            Registry.register(
+                    BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "synthesizer_be"),
+                    FabricBlockEntityTypeBuilder.create(SynthesizerBlockEntity::new, ModBlocks.SYNTHESIZER).build()
+            );
+
     public static void registerBlockEntities() {
         System.out.println("[" + ArcheologyUnnoficial.MOD_ID + "] Registrando Block Entities...");
     }
