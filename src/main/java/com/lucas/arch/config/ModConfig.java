@@ -18,6 +18,11 @@ public class ModConfig {
 
     public WorldGenMode worldGenMode = WorldGenMode.REIMAGINED;
     public FossilDensity fossilDensity = FossilDensity.MEDIUM;
+
+    public int cleansingTableTicks = 200;
+    public int synthesizerTicks = 1200;
+    public int fuserTicks = 2400;
+    public int cleansingTableWaterCost = 1;
     
     public float fossilDropChance = 0.01f;
     public List<String> fossilDropBlocks = Arrays.asList(

@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.lucas.arch.ImplementedInventory;
 import com.lucas.arch.block.SynthesizerBlock;
+import com.lucas.arch.config.ModConfig;
 import com.lucas.arch.registry.ModBlockEntities;
 import com.lucas.arch.registry.ModDataComponentTypes;
 import com.lucas.arch.registry.ModItems;
@@ -36,6 +37,7 @@ public class SynthesizerBlockEntity extends BlockEntity implements ImplementedIn
 
     public SynthesizerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.SYNTHESIZER_BE, pos, state);
+        this.maxProcessTime = ModConfig.get().synthesizerTicks;
         this.data = new ContainerData() {
             @Override
             public int get(int index) {

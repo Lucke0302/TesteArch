@@ -41,6 +41,20 @@ public class ModBlocks {
             properties -> new Block(properties.mapColor(MapColor.STONE).strength(3.0f, 3.0f).requiresCorrectToolForDrops()),
             "F&A", "Lucke0302");
 
+    private static Block registerBlockWithoutItem(String name, Function<BlockBehaviour.Properties, Block> function) {
+        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
+        return Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));
+    }
+
+    public static final Block BITTER_BERRY_BUSH = registerBlockWithoutItem("bitter_berry_bush",
+            properties -> new net.minecraft.world.level.block.SweetBerryBushBlock(
+                properties.mapColor(MapColor.PLANT)
+                          .noCollision()
+                          .randomTicks()
+                          .instabreak()
+                          .sound(net.minecraft.world.level.block.SoundType.SWEET_BERRY_BUSH)
+            ));
+
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function, String designer, String programmer) {
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
         Block block = Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));

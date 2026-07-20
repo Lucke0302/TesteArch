@@ -37,5 +37,11 @@
   "block.archeologyunnoficial.amber_ore": "Amber Ore",
   "item.archeologyunnoficial.fossil": "Fossil",
   "item.archeologyunnoficial.amber_ore": "Amber Ore",
-  "item.archeologyunnoficial.amber": "Amber"
+  "item.archeologyunnoficial.amber": "Amber",
+  "item.archeologyunnoficial.mosquito_in_amber": "Mosquito in Amber",
+
+  "item.archeologyunnoficial.empty_syringe": "Empty Syringe",
+  "item.archeologyunnoficial.full_syringe": "Additive Syringe",
+  "item.archeologyunnoficial.empty_dart": "Empty Dart",
+  "item.archeologyunnoficial.full_dart": "Tranquilizer Dart"
 }

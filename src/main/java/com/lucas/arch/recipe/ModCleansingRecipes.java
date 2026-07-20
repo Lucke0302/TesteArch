@@ -57,6 +57,12 @@ public class ModCleansingRecipes {
             ModItems.UNKNOWN_FISH_FOSSIL,
             ModItems.DEFAULT_FISH_DNA,
             junkPool(new CleansingRecipe.WeightedItem(Items.BONE_MEAL, 1))
+        ),
+
+        ModItems.MOSQUITO_IN_AMBER, new CleansingRecipe(
+            ModItems.MOSQUITO_IN_AMBER,
+            null, 
+            List.of()
         )
     );
 

@@ -2,6 +2,7 @@ package com.lucas.arch.block.entity;
 
 import com.lucas.arch.ImplementedInventory;
 import com.lucas.arch.block.FuserBlock;
+import com.lucas.arch.config.ModConfig;
 import com.lucas.arch.registry.ModBlockEntities;
 import com.lucas.arch.registry.ModDataComponentTypes;
 import com.lucas.arch.registry.ModItems;
@@ -35,6 +36,7 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
 
     public FuserBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.FUSER_BE, pos, state);
+        this.maxProcessTime = ModConfig.get().fuserTicks;
         this.data = new ContainerData() {
             @Override public int get(int index) {
                 return switch (index) {
@@ -107,7 +109,7 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
             isDirty = true;
             if (this.processProgress >= this.maxProcessTime) {
                 this.processProgress = 0;
-                fuseEgg(level); // Passamos o level para rodar o RNG
+                fuseEgg(level);
                 isDirty = true;
             }
         } else if (this.processProgress > 0) {
@@ -127,7 +129,6 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
     }
 
     private boolean canInsertOutput() {
-        // Exige que o slot de saída esteja TOTALMENTE vazio para processar
         return this.inventory.get(2).isEmpty();
     }
 
@@ -146,7 +147,6 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
 
         int finalQuality = Math.max(1, Math.min(100, baseQuality + bonus));
         
-        // Rola a chance de gerar o ovo
         float roll = level.getRandom().nextFloat() * 100f;
         boolean success = roll <= finalQuality;
 
@@ -155,7 +155,6 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
             result = new ItemStack(ModItems.ALLOSAURUS_EGG);
             result.set(ModDataComponentTypes.DNA_QUALITY, finalQuality);
         } else {
-            // Falha: gera de 3 a 6 clusters de carne (0 a 3, mais base 3)
             int amount = 3 + level.getRandom().nextInt(4);
             result = new ItemStack(ModItems.MEAT_CLUSTER, amount);
         }

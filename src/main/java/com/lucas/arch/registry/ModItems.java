@@ -6,14 +6,19 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.Consumables;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 
 import java.util.function.Function;
 
 import com.lucas.arch.item.DnaItem;
 import com.lucas.arch.item.EncyclopediaItem;
 import com.lucas.arch.item.ArchItem;
+import com.lucas.arch.item.ArchItemNameBlockItem;
 
 public class ModItems {
     public static final String MOD_ID = "archeologyunnoficial";
@@ -28,9 +33,11 @@ public class ModItems {
     public static final Item UNKNOWN_MAMMAL_FOSSIL = registerItem("unknown_mammal_fossil", 
         p -> new ArchItem(p, "F&A", "Lucke0302"));
     public static final Item AMBER = registerItem("amber", 
-        p -> new ArchItem(p, "F&A", "Lucke0302"));
+        p -> new ArchItem(p, "F&A, Lucke0302", "Lucke0302"));
+    public static final Item MOSQUITO_IN_AMBER = registerItem("mosquito_in_amber",
+         p -> new ArchItem(p, "F&A", "Lucke0302"));
 
-    // --- DNAs (Assumindo que você alterou o sprite base) ---
+    // --- DNAs ---
     public static final Item DEFAULT_PLANT_DNA = registerItem("default_plant_dna", 
          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));             
     public static final Item DEFAULT_REPTILE_DNA = registerItem("default_reptile_dna", 
@@ -38,7 +45,9 @@ public class ModItems {
     public static final Item DEFAULT_MAMMAL_DNA = registerItem("default_mammal_dna", 
          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));             
     public static final Item DEFAULT_FISH_DNA = registerItem("default_fish_dna", 
-         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));   
+    public static final Item FRAGMENTED_DNA = registerItem("fragmented_dna",
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
 
     // --- Itens Exclusivos / Novos Designs ---
     public static final Item ENCYCLOPEDIA = registerItem("encyclopedia", 
@@ -74,6 +83,37 @@ public class ModItems {
         );
     }
 
+    // --- Melhoria genética ---
+    public static final Item EMPTY_SYRINGE = registerItem("empty_syringe",
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+
+    public static final Item FULL_SYRINGE = registerItem("full_syringe",
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+
+    public static final Item BIO_PROPELLANT = registerItem("bio_propellant",
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+
+    // --- Contenção ---
+    public static final Item EMPTY_DART = registerItem("empty_dart",
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+
+    public static final Item FULL_DART = registerItem("full_dart",
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+
+    // --- Novas plantas ---
+    public static final Item BITTER_BERRIES = registerItem("bitter_berries",
+         p -> new ArchItemNameBlockItem(ModBlocks.BITTER_BERRY_BUSH, p
+              .useItemDescriptionPrefix()
+              .food(
+                  new net.minecraft.world.food.FoodProperties.Builder()
+                      .nutrition(2)
+                      .saturationModifier(0.1f)
+                      .build(),
+                  Consumables.defaultFood()
+                      .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1), 1.0F))
+                      .build()
+              ), "Lucke0302", "Lucke0302"));
+
     public static void registerModItems() {
         System.out.println("[" + MOD_ID + "] Registrando fósseis customizados...");
 
@@ -95,6 +135,11 @@ public class ModItems {
             output.accept(ALLOSAURUS_EGG);
             output.accept(ALLOSAURUS_EMBRYO);
             output.accept(AMBER);
+            output.accept(MOSQUITO_IN_AMBER);
+            output.accept(EMPTY_SYRINGE);
+            output.accept(FULL_SYRINGE);
+            output.accept(EMPTY_DART);
+            output.accept(FULL_DART);
         });
     }
 }

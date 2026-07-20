@@ -37,5 +37,11 @@
   "block.archeologyunnoficial.amber_ore": "Minério de Âmbar",
   "item.archeologyunnoficial.fossil": "Fóssil",
   "item.archeologyunnoficial.amber_ore": "Minério de Âmbar",
-  "item.archeologyunnoficial.amber": "Âmbar"
+  "item.archeologyunnoficial.amber": "Âmbar",
+  "item.archeologyunnoficial.mosquito_in_amber": "Mosquito no Âmbar",
+
+  "item.archeologyunnoficial.empty_syringe": "Seringa Vazia",
+  "item.archeologyunnoficial.full_syringe": "Seringa com Aditivo",
+  "item.archeologyunnoficial.empty_dart": "Dardo Vazio",
+  "item.archeologyunnoficial.full_dart": "Dardo Tranquilizante"
 }

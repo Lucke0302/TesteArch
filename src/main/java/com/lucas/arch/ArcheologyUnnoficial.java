@@ -55,15 +55,14 @@ public class ArcheologyUnnoficial implements ModInitializer {
         });
     }
 
-    /** Cria uma nova instancia do livro-guia com todas as paginas formatadas. */
     public static ItemStack createGuideBook() {
         ItemStack guideBook = new ItemStack(Items.WRITTEN_BOOK);
 
         // Página 1: Introdução
         MutableComponent page1 = Component.literal("Guia Arqueológico").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
             .append(Component.literal("\n\nBem-vindo ao ").withStyle(ChatFormatting.DARK_GRAY))
-            .append(Component.literal("Archeology Unofficial").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD))
-            .append(Component.literal("!\n\nEste livro contém os manuais de operação para extração de DNA, síntese orgânica e fusão embrionária.").withStyle(ChatFormatting.DARK_GRAY));
+            .append(Component.literal("Archeology Reimagined").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD))
+            .append(Component.literal("!\n\nEste livro contém os manuais de operação para mineração, extração de DNA, síntese e fusão.").withStyle(ChatFormatting.DARK_GRAY));
 
         // Página 2: Mesa de Limpeza
         MutableComponent page2 = Component.literal("1. Mesa de Limpeza").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
@@ -81,7 +80,7 @@ public class ArcheologyUnnoficial implements ModInitializer {
         MutableComponent page4 = Component.literal("3. O Fusor").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
             .append(Component.literal("\n\nFunde o Embrião em um Ovo biológico chocável.\n\n").withStyle(ChatFormatting.DARK_GRAY))
             .append(Component.literal("Bônus de Casca:\n").withStyle(ChatFormatting.BLACK, ChatFormatting.UNDERLINE))
-            .append(Component.literal("• Galinha: +0% Estabilidade\n• Tartaruga: +15% Estabilidade\n• Sniffer: +30% Estabilidade\n\nTempo: 2 min. Falhas geram 3-6 carnes.").withStyle(ChatFormatting.DARK_GRAY));
+            .append(Component.literal("• Galinha: +0% Estabilidade\n• Tartaruga: +15% Estabilidade\n• Sniffer: +30% Estabilidade\n\nTempo: 2 min. Falhas geram carnes.").withStyle(ChatFormatting.DARK_GRAY));
 
         // Página 5: Qualidade e Genética
         MutableComponent page5 = Component.literal("Qualidade de DNA").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
@@ -89,12 +88,20 @@ public class ArcheologyUnnoficial implements ModInitializer {
             .append(Component.literal("100% de pureza").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD))
             .append(Component.literal("!").withStyle(ChatFormatting.DARK_GRAY));
 
+        // Página 6: Exploração e Âmbar
+        MutableComponent page6 = Component.literal("4. Escavação").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
+            .append(Component.literal("\n\nFósseis e minérios de ").withStyle(ChatFormatting.DARK_GRAY))
+            .append(Component.literal("Âmbar").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD))
+            .append(Component.literal(" geram nas profundezas das cavernas.\n\nTambém é possível encontrar pequenos fragmentos de fósseis escavando desmoronamentos de Areia e Cascalho na superfície.").withStyle(ChatFormatting.DARK_GRAY));
+
+
         List<Filterable<Component>> pages = List.of(
             Filterable.passThrough(page1),
             Filterable.passThrough(page2),
             Filterable.passThrough(page3),
             Filterable.passThrough(page4),
-            Filterable.passThrough(page5)
+            Filterable.passThrough(page5),
+            Filterable.passThrough(page6)
         );
 
         WrittenBookContent bookContent = new WrittenBookContent(

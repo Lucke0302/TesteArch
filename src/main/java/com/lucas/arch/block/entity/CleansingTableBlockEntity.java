@@ -19,10 +19,12 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import com.lucas.arch.ImplementedInventory;
+import com.lucas.arch.config.ModConfig;
 import com.lucas.arch.recipe.CleansingRecipe;
 import com.lucas.arch.recipe.ModCleansingRecipes;
 import com.lucas.arch.registry.ModBlockEntities;
 import com.lucas.arch.registry.ModDataComponentTypes;
+import com.lucas.arch.registry.ModItems;
 import com.lucas.arch.screen.CleansingTableMenu;
 
 public class CleansingTableBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider {
@@ -41,6 +43,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
 
     public CleansingTableBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CLEANSING_TABLE_BE, pos, state);
+        this.maxProcessTime = ModConfig.get().cleansingTableTicks;
 
         this.data = new ContainerData() {
             @Override
@@ -132,16 +135,29 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         return false; 
     }
 
+    private boolean canInsert(ItemStack result) {
+        int remaining = result.getCount();
+        for (int i = 6; i <= 15; i++) {
+            ItemStack slotStack = this.inventory.get(i);
+            if (slotStack.isEmpty()) return true;
+            if (ItemStack.isSameItemSameComponents(slotStack, result)) {
+                remaining -= (slotStack.getMaxStackSize() - slotStack.getCount());
+                if (remaining <= 0) return true;
+            }
+        }
+        return false;
+    }
+
     public void serverTick(Level level, BlockPos pos, BlockState state) {
         boolean isDirty = false;
-
         if (this.fuelTime > 0) {
             this.fuelTime--;
             isDirty = true;
         }
 
         int inputSlot = findValidInputSlot();
-        boolean canProcess = inputSlot != -1 && this.waterLevel > 0 && this.fuelTime > 0;
+        
+        boolean canProcess = inputSlot != -1 && this.waterLevel >= ModConfig.get().cleansingTableWaterCost && this.fuelTime > 0;
 
         if (canProcess) {
             this.processProgress++;
@@ -175,30 +191,53 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
 
     private boolean processFossil(Level level, int inputSlot) {
         ItemStack inputStack = this.inventory.get(inputSlot);
-        CleansingRecipe recipe = ModCleansingRecipes.get(inputStack.getItem());
-        if (recipe == null) {
-            return false;
+
+        if (inputStack.is(ModItems.MOSQUITO_IN_AMBER)) {
+            ItemStack amber = new ItemStack(ModItems.AMBER);
+            
+            Item dnaType = level.getRandom().nextBoolean() ? ModItems.DEFAULT_MAMMAL_DNA : ModItems.DEFAULT_REPTILE_DNA;
+            ItemStack dna = new ItemStack(dnaType);
+            
+            dna.set(ModDataComponentTypes.DNA_QUALITY, 85 + level.getRandom().nextInt(16));
+
+            if (!canInsert(amber) || !canInsert(dna)) return false; 
+
+            insertIntoOutput(amber);
+            insertIntoOutput(dna);
+            inputStack.shrink(1);
+            this.waterLevel = Math.max(0, this.waterLevel - ModConfig.get().cleansingTableWaterCost);
+            return true;
         }
+
+        CleansingRecipe recipe = ModCleansingRecipes.get(inputStack.getItem());
+        if (recipe == null) return false;
 
         boolean success = level.getRandom().nextFloat() < ModCleansingRecipes.SUCCESS_CHANCE;
-        Item resultItem = success ? recipe.successOutput() : ModCleansingRecipes.rollFailureItem(recipe, level.getRandom());
+        Item resultItem;
 
-        if (resultItem == null) {
-            return false;
+        if (success) {
+            if (level.getRandom().nextFloat() < 0.20f) {
+                resultItem = ModItems.FRAGMENTED_DNA;
+            } else {
+                resultItem = recipe.successOutput();
+            }
+        } else {
+            resultItem = ModCleansingRecipes.rollFailureItem(recipe, level.getRandom());
         }
 
+        if (resultItem == null) return false;
         ItemStack resultStack = new ItemStack(resultItem);
-        if (success) {
+
+        if (success && resultItem != ModItems.FRAGMENTED_DNA) {
             int quality = 40 + level.getRandom().nextInt(46);
             resultStack.set(ModDataComponentTypes.DNA_QUALITY, quality);
         }
 
-        if (!insertIntoOutput(resultStack)) {
-            return false;
-        }
+        if (!canInsert(resultStack)) return false;
 
+        insertIntoOutput(resultStack);
         inputStack.shrink(1);
-        this.waterLevel = Math.max(0, this.waterLevel - 1);
+        this.waterLevel -= ModConfig.get().cleansingTableWaterCost;
         return true;
     }
 
