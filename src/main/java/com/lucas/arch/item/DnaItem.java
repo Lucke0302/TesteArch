@@ -3,7 +3,6 @@ package com.lucas.arch.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -12,14 +11,13 @@ import java.util.function.Consumer;
 
 import com.lucas.arch.registry.ModDataComponentTypes;
 
-public class DnaItem extends Item {
-    
-    public DnaItem(Properties properties) {
-        super(properties);
+public class DnaItem extends ArchItem {
+         
+    public DnaItem(Properties properties, String designer, String programmer) {
+        super(properties, designer, programmer);
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         
         if (stack.has(ModDataComponentTypes.DNA_QUALITY)) {

@@ -3,12 +3,12 @@ package com.lucas.arch.item;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
-public class EncyclopediaItem extends Item {
-    public EncyclopediaItem(Properties properties) {
-        super(properties);
+public class EncyclopediaItem extends ArchItem {
+
+    public EncyclopediaItem(Properties properties, String designer, String programmer) {
+        super(properties, designer, programmer);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.lucas.arch.registry.ModItems;
 import com.lucas.arch.registry.ModMenuTypes;
 import com.lucas.arch.registry.ModRecipeSerializers;
 import com.lucas.arch.world.ModLootTableModifiers;
+import com.lucas.arch.world.ModWorldGen;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
@@ -42,6 +43,8 @@ public class ArcheologyUnnoficial implements ModInitializer {
         
         ModItems.registerModItems();
         ModLootTableModifiers.modifyLootTables();
+
+        ModWorldGen.generateWorldGen();
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayer player = handler.getPlayer();

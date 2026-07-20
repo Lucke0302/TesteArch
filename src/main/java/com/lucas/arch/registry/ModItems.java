@@ -13,43 +13,58 @@ import java.util.function.Function;
 
 import com.lucas.arch.item.DnaItem;
 import com.lucas.arch.item.EncyclopediaItem;
+import com.lucas.arch.item.ArchItem;
 
 public class ModItems {
     public static final String MOD_ID = "archeologyunnoficial";
 
-    public static final Item UNKNOWN_PLANT_FOSSIL = registerItem("unknown_plant_fossil", Item::new);
-    public static final Item UNKNOWN_REPTILE_FOSSIL = registerItem("unknown_reptile_fossil", Item::new);
-    public static final Item UNKNOWN_FISH_FOSSIL = registerItem("unknown_fish_fossil", Item::new);
-    public static final Item UNKNOWN_MAMMAL_FOSSIL = registerItem("unknown_mammal_fossil", Item::new);
+    // --- Fósseis Originais (F&A) ---
+    public static final Item UNKNOWN_PLANT_FOSSIL = registerItem("unknown_plant_fossil", 
+        p -> new ArchItem(p, "F&A", "Lucke0302"));
+    public static final Item UNKNOWN_REPTILE_FOSSIL = registerItem("unknown_reptile_fossil", 
+        p -> new ArchItem(p, "F&A", "Lucke0302"));
+    public static final Item UNKNOWN_FISH_FOSSIL = registerItem("unknown_fish_fossil", 
+        p -> new ArchItem(p, "F&A", "Lucke0302"));
+    public static final Item UNKNOWN_MAMMAL_FOSSIL = registerItem("unknown_mammal_fossil", 
+        p -> new ArchItem(p, "F&A", "Lucke0302"));
+    public static final Item AMBER = registerItem("amber", 
+        p -> new ArchItem(p, "F&A", "Lucke0302"));
+
+    // --- DNAs (Assumindo que você alterou o sprite base) ---
     public static final Item DEFAULT_PLANT_DNA = registerItem("default_plant_dna", 
-        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
-        
+         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));             
     public static final Item DEFAULT_REPTILE_DNA = registerItem("default_reptile_dna", 
-        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
-
+         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
     public static final Item DEFAULT_MAMMAL_DNA = registerItem("default_mammal_dna", 
-        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
-        
+         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));             
     public static final Item DEFAULT_FISH_DNA = registerItem("default_fish_dna", 
-        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
+         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
 
+    // --- Itens Exclusivos / Novos Designs ---
     public static final Item ENCYCLOPEDIA = registerItem("encyclopedia", 
-        properties -> new EncyclopediaItem(properties.stacksTo(1)));
+         p -> new EncyclopediaItem(p.stacksTo(1), "Lucke0302", "Lucke0302"));
 
-    public static final Item PROCESSING_BOARD = registerItem("processing_board", Item::new); 
-    public static final Item THERMAL_MODULE = registerItem("thermal_module", Item::new); 
-    public static final Item CULTURE_CHAMBER = registerItem("culture_chamber", Item::new); 
+    public static final Item PROCESSING_BOARD = registerItem("processing_board", 
+        p -> new ArchItem(p, "Lucke0302", "Lucke0302")); 
+    public static final Item THERMAL_MODULE = registerItem("thermal_module", 
+        p -> new ArchItem(p, "Lucke0302", "Lucke0302")); 
+    public static final Item CULTURE_CHAMBER = registerItem("culture_chamber", 
+        p -> new ArchItem(p, "Lucke0302", "Lucke0302")); 
 
-    public static final Item BASIC_ORGANIC_FUEL = registerItem("basic_organic_fuel", Item::new); 
-    public static final Item MEDIUM_ORGANIC_FUEL = registerItem("medium_organic_fuel", Item::new); 
-    public static final Item ADVANCED_ORGANIC_FUEL = registerItem("advanced_organic_fuel", Item::new); 
-    public static final Item MEAT_CLUSTER = registerItem("meat_cluster", Item::new); 
+    public static final Item BASIC_ORGANIC_FUEL = registerItem("basic_organic_fuel", 
+        p -> new ArchItem(p, "EduGuter", "Lucke0302")); 
+    public static final Item MEDIUM_ORGANIC_FUEL = registerItem("medium_organic_fuel", 
+        p -> new ArchItem(p, "EduGuter", "Lucke0302")); 
+    public static final Item ADVANCED_ORGANIC_FUEL = registerItem("advanced_organic_fuel", 
+        p -> new ArchItem(p, "EduGuter", "Lucke0302")); 
+    public static final Item MEAT_CLUSTER = registerItem("meat_cluster", 
+        p -> new ArchItem(p, "EduGuter", "Lucke0302")); 
 
+    // --- Ovos e Embriões ---
     public static final Item ALLOSAURUS_EGG = registerItem("allosaurus_egg",
-        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0))); 
-
+        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302")); 
     public static final Item ALLOSAURUS_EMBRYO = registerItem("allosaurus_embryo",
-        properties -> new DnaItem(properties.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0)));
+        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A, Lucke0302", "Lucke0302"));
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(
@@ -79,6 +94,7 @@ public class ModItems {
             output.accept(MEAT_CLUSTER);
             output.accept(ALLOSAURUS_EGG);
             output.accept(ALLOSAURUS_EMBRYO);
+            output.accept(AMBER);
         });
     }
 }

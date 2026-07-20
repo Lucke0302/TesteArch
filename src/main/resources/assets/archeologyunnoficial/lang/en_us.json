@@ -31,5 +31,11 @@
 
   "block.archeologyunnoficial.fuser": "Fuser",
   "item.archeologyunnoficial.fuser": "Fuser",
-  "item.archeologyunnoficial.allosaurus_egg": "Allosaurus Egg"
+  "item.archeologyunnoficial.allosaurus_egg": "Allosaurus Egg",
+
+  "block.archeologyunnoficial.fossil": "Fossil",
+  "block.archeologyunnoficial.amber_ore": "Amber Ore",
+  "item.archeologyunnoficial.fossil": "Fossil",
+  "item.archeologyunnoficial.amber_ore": "Amber Ore",
+  "item.archeologyunnoficial.amber": "Amber"
 }
