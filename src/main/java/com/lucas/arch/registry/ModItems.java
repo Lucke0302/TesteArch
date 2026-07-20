@@ -1,4 +1,4 @@
-package com.lucas.arch;
+package com.lucas.arch.registry;
 
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
@@ -10,6 +10,9 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 
 import java.util.function.Function;
+
+import com.lucas.arch.item.DnaItem;
+import com.lucas.arch.item.EncyclopediaItem;
 
 public class ModItems {
     public static final String MOD_ID = "archeologyunnoficial";

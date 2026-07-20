@@ -27,5 +27,9 @@
   "block.archeologyunnoficial.cleansing_table": "Cleansing Table",
   "block.archeologyunnoficial.synthesizer": "Synthesizer",
   "item.archeologyunnoficial.cleansing_table": "Cleansing Table",
-  "item.archeologyunnoficial.synthesizer": "Synthesizer"
+  "item.archeologyunnoficial.synthesizer": "Synthesizer",
+
+  "block.archeologyunnoficial.fuser": "Fuser",
+  "item.archeologyunnoficial.fuser": "Fuser",
+  "item.archeologyunnoficial.allosaurus_egg": "Allosaurus Egg"
 }

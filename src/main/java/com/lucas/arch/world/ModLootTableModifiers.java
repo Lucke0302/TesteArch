@@ -1,4 +1,7 @@
-package com.lucas.arch;
+package com.lucas.arch.world;
+
+import com.lucas.arch.config.ModConfig;
+import com.lucas.arch.registry.ModItems;
 
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.core.registries.Registries;

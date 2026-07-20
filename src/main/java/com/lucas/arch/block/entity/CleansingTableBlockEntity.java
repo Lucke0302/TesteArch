@@ -1,4 +1,4 @@
-package com.lucas.arch;
+package com.lucas.arch.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -17,6 +17,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
+
+import com.lucas.arch.ImplementedInventory;
+import com.lucas.arch.recipe.CleansingRecipe;
+import com.lucas.arch.recipe.ModCleansingRecipes;
+import com.lucas.arch.registry.ModBlockEntities;
+import com.lucas.arch.registry.ModDataComponentTypes;
+import com.lucas.arch.screen.CleansingTableMenu;
 
 public class CleansingTableBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider {
 
@@ -115,6 +122,14 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         this.fuelTime = burnDuration;
         this.maxFuelTime = burnDuration;
         return true;
+    }
+
+    @Override
+    public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index >= 0 && index <= 5) {
+            return ModCleansingRecipes.isValidInput(stack.getItem());
+        }
+        return false; 
     }
 
     public void serverTick(Level level, BlockPos pos, BlockState state) {

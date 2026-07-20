@@ -1,5 +1,7 @@
-package com.lucas.arch;
+package com.lucas.arch.recipe;
 
+import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.registry.ModItems;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

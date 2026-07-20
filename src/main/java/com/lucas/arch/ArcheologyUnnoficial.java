@@ -4,6 +4,16 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.lucas.arch.config.ModConfig;
+import com.lucas.arch.registry.ModBlockEntities;
+import com.lucas.arch.registry.ModBlocks;
+import com.lucas.arch.registry.ModDataComponentTypes;
+import com.lucas.arch.registry.ModItems;
+import com.lucas.arch.registry.ModMenuTypes;
+import com.lucas.arch.registry.ModRecipeSerializers;
+import com.lucas.arch.world.ModLootTableModifiers;
+
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -46,29 +56,42 @@ public class ArcheologyUnnoficial implements ModInitializer {
     public static ItemStack createGuideBook() {
         ItemStack guideBook = new ItemStack(Items.WRITTEN_BOOK);
 
-        MutableComponent page1 = Component.literal("Guia Arqueologico").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
+        // Página 1: Introdução
+        MutableComponent page1 = Component.literal("Guia Arqueológico").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
             .append(Component.literal("\n\nBem-vindo ao ").withStyle(ChatFormatting.DARK_GRAY))
-            .append(Component.literal("Archeology Unofficial").withStyle(ChatFormatting.GREEN))
-            .append(Component.literal("!\n\nEste livro contem nossos registros iniciais sobre a extracao de DNA antigo e restauracao fossil.").withStyle(ChatFormatting.DARK_GRAY));
+            .append(Component.literal("Archeology Unofficial").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD))
+            .append(Component.literal("!\n\nEste livro contém os manuais de operação para extração de DNA, síntese orgânica e fusão embrionária.").withStyle(ChatFormatting.DARK_GRAY));
 
-        MutableComponent page2 = Component.literal("Mesa de Limpeza").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
-            .append(Component.literal("\n\nA maquina principal. Ela requer:\n- ").withStyle(ChatFormatting.DARK_GRAY))
-            .append(Component.literal("Agua").withStyle(ChatFormatting.AQUA))
-            .append(Component.literal(" (max 10 baldes)\n- ").withStyle(ChatFormatting.DARK_GRAY))
-            .append(Component.literal("Combustivel").withStyle(ChatFormatting.GOLD))
-            .append(Component.literal("\n\nCada processo leva 10s (200 ticks) e consome agua.").withStyle(ChatFormatting.DARK_GRAY));
+        // Página 2: Mesa de Limpeza
+        MutableComponent page2 = Component.literal("1. Mesa de Limpeza").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
+            .append(Component.literal("\n\nRemove impurezas de fósseis (Planta, Réptil, Mamífero, Peixe).\n\n").withStyle(ChatFormatting.DARK_GRAY))
+            .append(Component.literal("Requisitos:\n").withStyle(ChatFormatting.BLACK, ChatFormatting.UNDERLINE))
+            .append(Component.literal("- Água (max 10 baldes)\n- Combustível de calor\n\nTempo: 10s (30% chance de DNA 40-85%).").withStyle(ChatFormatting.DARK_GRAY));
 
-        MutableComponent page3 = Component.literal("Os Fosseis").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
-            .append(Component.literal("\n\nAte o momento, catalogamos 4 matrizes base:\n\n- Planta\n- Reptil\n- Mamifero\n- Peixe\n\nPurifique-os na Mesa.").withStyle(ChatFormatting.DARK_GRAY));
+        // Página 3: Sintetizador
+        MutableComponent page3 = Component.literal("2. O Sintetizador").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
+            .append(Component.literal("\n\nSintetiza DNA puro e Matéria Orgânica em Embriões.\n\n").withStyle(ChatFormatting.DARK_GRAY))
+            .append(Component.literal("Combustíveis Orgânicos:\n").withStyle(ChatFormatting.BLACK, ChatFormatting.UNDERLINE))
+            .append(Component.literal("• Básico: -15% Qualidade\n• Médio: +0% Qualidade\n• Avançado: +15% Qualidade\n\nTempo: 60s. Falhas geram Aglomerados de Carne.").withStyle(ChatFormatting.DARK_GRAY));
 
-        MutableComponent page4 = Component.literal("Extracao de DNA").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
-            .append(Component.literal("\n\nHa apenas 30% de chance de sucesso. O resultado e um DNA puro (40% a 85%).\n\nFalhas destroem o material (areia, cascalho, osso ou carvao).").withStyle(ChatFormatting.DARK_GRAY));
+        // Página 4: O Fusor
+        MutableComponent page4 = Component.literal("3. O Fusor").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
+            .append(Component.literal("\n\nFunde o Embrião em um Ovo biológico chocável.\n\n").withStyle(ChatFormatting.DARK_GRAY))
+            .append(Component.literal("Bônus de Casca:\n").withStyle(ChatFormatting.BLACK, ChatFormatting.UNDERLINE))
+            .append(Component.literal("• Galinha: +0% Estabilidade\n• Tartaruga: +15% Estabilidade\n• Sniffer: +30% Estabilidade\n\nTempo: 2 min. Falhas geram 3-6 carnes.").withStyle(ChatFormatting.DARK_GRAY));
+
+        // Página 5: Qualidade e Genética
+        MutableComponent page5 = Component.literal("Qualidade de DNA").withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
+            .append(Component.literal("\n\nA porcentagem de Qualidade do DNA define a taxa de sucesso nas máquinas e ditará os atributos dos dinossauros.\n\nUse combustíveis avançados e ovos raros para se aproximar de ").withStyle(ChatFormatting.DARK_GRAY))
+            .append(Component.literal("100% de pureza").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD))
+            .append(Component.literal("!").withStyle(ChatFormatting.DARK_GRAY));
 
         List<Filterable<Component>> pages = List.of(
             Filterable.passThrough(page1),
             Filterable.passThrough(page2),
             Filterable.passThrough(page3),
-            Filterable.passThrough(page4)
+            Filterable.passThrough(page4),
+            Filterable.passThrough(page5)
         );
 
         WrittenBookContent bookContent = new WrittenBookContent(

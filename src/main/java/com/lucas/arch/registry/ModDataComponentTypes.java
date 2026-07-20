@@ -1,5 +1,6 @@
-package com.lucas.arch;
+package com.lucas.arch.registry;
 
+import com.lucas.arch.ArcheologyUnnoficial;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;

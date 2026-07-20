@@ -1,4 +1,4 @@
-package com.lucas.arch;
+package com.lucas.arch.recipe;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -6,6 +6,8 @@ import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.lucas.arch.registry.ModItems;
 
 /**
  * Dicionário de fósseis aceitos pela Cleansing Table e o que cada um pode virar.

@@ -1,5 +1,7 @@
-package com.lucas.arch;
+package com.lucas.arch.screen;
 
+import com.lucas.arch.recipe.ModCleansingRecipes;
+import com.lucas.arch.registry.ModMenuTypes;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,28 +26,38 @@ public class CleansingTableMenu extends AbstractContainerMenu {
         checkContainerDataCount(data, 5);
         this.inventory = inventory;
         this.data = data;
-
         inventory.startOpen(playerInventory.player);
 
-        // Grade de entrada (fósseis) - 3 colunas x 2 linhas
+        // Grade de entrada (Fósseis) - Slots 0 a 5
         int[] inputX = {43, 62, 81};
         int[] inputY = {19, 38};
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < 3; ++col) {
-                this.addSlot(new Slot(inventory, col + (row * 3), inputX[col], inputY[row]));
+                int slotIndex = col + (row * 3);
+                this.addSlot(new Slot(inventory, slotIndex, inputX[col], inputY[row]) {
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        return inventory.canPlaceItem(slotIndex, stack);
+                    }
+                });
             }
         }
 
-        // Grade de saída (itens processados) - 5 colunas x 2 linhas
+        // Grade de saída (Itens Processados) - Slots 6 a 15 (Bloqueados para colocar)
         int[] outputX = {137, 156, 174, 193, 212};
         int[] outputY = {19, 38};
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < 5; ++col) {
-                this.addSlot(new Slot(inventory, 6 + col + (row * 5), outputX[col], outputY[row]));
+                int slotIndex = 6 + col + (row * 5);
+                this.addSlot(new Slot(inventory, slotIndex, outputX[col], outputY[row]) {
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        return false; // Bloqueado
+                    }
+                });
             }
         }
 
-        // Inventário do jogador - 9 colunas x 3 linhas
         int[] invX = {45, 63, 81, 99, 117, 135, 153, 171, 189};
         int[] invY = {75, 93, 111};
         for (int row = 0; row < 3; ++row) {
@@ -74,14 +86,21 @@ public class CleansingTableMenu extends AbstractContainerMenu {
         if (slot != null && slot.hasItem()) {
             ItemStack originalStack = slot.getItem();
             newStack = originalStack.copy();
-            
+
             if (invSlot < 16) {
                 if (!this.moveItemStackTo(originalStack, 16, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
+                slot.onQuickCraft(originalStack, newStack);
             } 
-            else if (!this.moveItemStackTo(originalStack, 0, 16, false)) {
-                return ItemStack.EMPTY;
+            else {
+                if (ModCleansingRecipes.isValidInput(originalStack.getItem())) {
+                    if (!this.moveItemStackTo(originalStack, 0, 6, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else {
+                    return ItemStack.EMPTY;
+                }
             }
 
             if (originalStack.isEmpty()) {
@@ -89,6 +108,12 @@ public class CleansingTableMenu extends AbstractContainerMenu {
             } else {
                 slot.setChanged();
             }
+
+            if (originalStack.getCount() == newStack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(player, originalStack);
         }
         return newStack;
     }

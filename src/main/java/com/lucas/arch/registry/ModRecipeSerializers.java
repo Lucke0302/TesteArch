@@ -1,4 +1,7 @@
-package com.lucas.arch;
+package com.lucas.arch.registry;
+
+import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.recipe.GuideBookRecipe;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;

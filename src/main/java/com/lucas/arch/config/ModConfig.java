@@ -1,7 +1,9 @@
-package com.lucas.arch;
+package com.lucas.arch.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.lucas.arch.ArcheologyUnnoficial;
+
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;

@@ -1,4 +1,9 @@
-package com.lucas.arch;
+package com.lucas.arch.registry;
+
+import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.block.entity.CleansingTableBlockEntity;
+import com.lucas.arch.block.entity.FuserBlockEntity;
+import com.lucas.arch.block.entity.SynthesizerBlockEntity;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
@@ -21,6 +26,13 @@ public class ModBlockEntities {
                     Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "synthesizer_be"),
                     FabricBlockEntityTypeBuilder.create(SynthesizerBlockEntity::new, ModBlocks.SYNTHESIZER).build()
             );
+            
+    public static final BlockEntityType<FuserBlockEntity> FUSER_BE =
+    Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "fuser_be"),
+        FabricBlockEntityTypeBuilder.create(FuserBlockEntity::new, ModBlocks.FUSER).build()
+    );    
 
     public static void registerBlockEntities() {
         System.out.println("[" + ArcheologyUnnoficial.MOD_ID + "] Registrando Block Entities...");

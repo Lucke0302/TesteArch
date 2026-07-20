@@ -1,4 +1,4 @@
-package com.lucas.arch;
+package com.lucas.arch.recipe;
 
 import net.minecraft.world.item.Item;
 

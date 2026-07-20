@@ -1,4 +1,4 @@
-package com.lucas.arch;
+package com.lucas.arch.registry;
 
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
@@ -15,6 +15,11 @@ import net.minecraft.world.level.material.MapColor;
 
 import java.util.function.Function;
 
+import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.block.CleansingTableBlock;
+import com.lucas.arch.block.FuserBlock;
+import com.lucas.arch.block.SynthesizerBlock;
+
 public class ModBlocks {
 
     public static final Block CLEANSING_TABLE = registerBlock("cleansing_table",
@@ -22,6 +27,9 @@ public class ModBlocks {
 
     public static final Block SYNTHESIZER = registerBlock("synthesizer",
         properties -> new SynthesizerBlock(properties.mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops()));
+
+    public static final Block FUSER = registerBlock("fuser",
+        properties -> new FuserBlock(properties.mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops()));
 
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function) {
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
@@ -40,6 +48,7 @@ public class ModBlocks {
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(output -> {
             output.accept(CLEANSING_TABLE);
             output.accept(SYNTHESIZER);
+            output.accept(FUSER);
         });
     }
 }

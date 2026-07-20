@@ -1,4 +1,4 @@
-package com.lucas.arch; //
+package com.lucas.arch.block.entity; //
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -16,6 +16,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
+
+import com.lucas.arch.ImplementedInventory;
+import com.lucas.arch.block.SynthesizerBlock;
+import com.lucas.arch.registry.ModBlockEntities;
+import com.lucas.arch.registry.ModDataComponentTypes;
+import com.lucas.arch.registry.ModItems;
+import com.lucas.arch.screen.SynthesizerMenu;
 
 public class SynthesizerBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
@@ -59,6 +66,19 @@ public class SynthesizerBlockEntity extends BlockEntity implements ImplementedIn
     }
 
     @Override
+    public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 0) {
+            return stack.has(ModDataComponentTypes.DNA_QUALITY);
+        }
+        if (index == 1) {
+            return stack.is(ModItems.BASIC_ORGANIC_FUEL) ||
+                   stack.is(ModItems.MEDIUM_ORGANIC_FUEL) ||
+                   stack.is(ModItems.ADVANCED_ORGANIC_FUEL);
+        }
+        return false; 
+    }
+
+    @Override
     public NonNullList<ItemStack> getItems() {
         return this.inventory;
     }
@@ -71,8 +91,7 @@ public class SynthesizerBlockEntity extends BlockEntity implements ImplementedIn
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
-
-        return null; 
+        return new SynthesizerMenu(syncId, playerInventory, this, this.data);
     }
 
     public boolean tryAddFuel(Level level, ItemStack fuelStack) {

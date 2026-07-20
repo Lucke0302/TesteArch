@@ -25,7 +25,11 @@
   "tooltip.archeologyunnoficial.dna_quality": "§7Qualidade do DNA: %s",
   
   "block.archeologyunnoficial.cleansing_table": "Mesa de Limpeza",
-  "block.archeologyunnoficial.synthesizer": "Sintetizador",,
+  "block.archeologyunnoficial.synthesizer": "Sintetizador",
   "item.archeologyunnoficial.cleansing_table": "Mesa de Limpeza",
-  "item.archeologyunnoficial.synthesizer": "Sintetizador"
+  "item.archeologyunnoficial.synthesizer": "Sintetizador",
+
+  "block.archeologyunnoficial.fuser": "Fusor",
+  "item.archeologyunnoficial.fuser": "Fusor",
+  "item.archeologyunnoficial.allosaurus_egg": "Ovo de Allossauro"
 }

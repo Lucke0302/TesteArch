@@ -1,4 +1,4 @@
-package com.lucas.arch;
+package com.lucas.arch.item;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
