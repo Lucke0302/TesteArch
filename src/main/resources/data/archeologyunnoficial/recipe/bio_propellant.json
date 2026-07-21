@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    { "item": "minecraft:gunpowder" },
-    { "item": "minecraft:sugar" },
-    { "item": "minecraft:wheat_seeds" }
+    "minecraft:gunpowder",
+    "minecraft:sugar",
+    "minecraft:wheat_seeds"
   ],
   "result": {
     "id": "archeologyunnoficial:bio_propellant",

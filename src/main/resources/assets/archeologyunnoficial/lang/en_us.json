@@ -43,5 +43,13 @@
   "item.archeologyunnoficial.empty_syringe": "Empty Syringe",
   "item.archeologyunnoficial.full_syringe": "Additive Syringe",
   "item.archeologyunnoficial.empty_dart": "Empty Dart",
-  "item.archeologyunnoficial.full_dart": "Tranquilizer Dart"
+  "item.archeologyunnoficial.full_dart": "Tranquilizer Dart",
+
+  "item.archeologyunnoficial.bitter_berries": "Bitter Berries",
+  "item.archeologyunnoficial.fragmented_dna": "Fragmented DNA",
+  "item.archeologyunnoficial.bio_propellant": "Bio Propellant",
+
+  "item.archeologyunnoficial.sand_powder": "Sand Powder",
+  "item.archeologyunnoficial.gravel_powder": "Gravel Powder",
+  "item.archeologyunnoficial.tuff_powder": "Tuff Powder"
 }

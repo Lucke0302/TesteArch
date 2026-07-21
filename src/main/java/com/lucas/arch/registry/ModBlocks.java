@@ -1,6 +1,8 @@
 package com.lucas.arch.registry;
 
 import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.block.ArchBrushableBlock;
+import com.lucas.arch.block.BitterBerryBushBlock;
 import com.lucas.arch.block.CleansingTableBlock;
 import com.lucas.arch.block.FuserBlock;
 import com.lucas.arch.block.SynthesizerBlock;
@@ -11,6 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -41,13 +44,22 @@ public class ModBlocks {
             properties -> new Block(properties.mapColor(MapColor.STONE).strength(3.0f, 3.0f).requiresCorrectToolForDrops()),
             "F&A", "Lucke0302");
 
+    public static final Block BRUSHED_SAND = registerBlockWithoutItem("brushed_sand", 
+            properties -> new ArchBrushableBlock(SoundEvents.BRUSH_SAND, SoundEvents.BRUSH_SAND_COMPLETED, properties.mapColor(MapColor.SAND).strength(0.5f).sound(net.minecraft.world.level.block.SoundType.SUSPICIOUS_SAND)));
+
+    public static final Block BRUSHED_GRAVEL = registerBlockWithoutItem("brushed_gravel", 
+            properties -> new ArchBrushableBlock(SoundEvents.BRUSH_GRAVEL, SoundEvents.BRUSH_GRAVEL_COMPLETED, properties.mapColor(MapColor.STONE).strength(0.6f).sound(net.minecraft.world.level.block.SoundType.SUSPICIOUS_GRAVEL)));
+
+    public static final Block BRUSHED_TUFF = registerBlockWithoutItem("brushed_tuff", 
+            properties -> new ArchBrushableBlock(SoundEvents.BRUSH_GRAVEL, SoundEvents.BRUSH_GRAVEL_COMPLETED, properties.mapColor(MapColor.TERRACOTTA_BROWN).strength(1.5f).requiresCorrectToolForDrops().sound(net.minecraft.world.level.block.SoundType.TUFF)));
+        
     private static Block registerBlockWithoutItem(String name, Function<BlockBehaviour.Properties, Block> function) {
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
         return Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));
     }
 
     public static final Block BITTER_BERRY_BUSH = registerBlockWithoutItem("bitter_berry_bush",
-            properties -> new net.minecraft.world.level.block.SweetBerryBushBlock(
+            properties -> new BitterBerryBushBlock( 
                 properties.mapColor(MapColor.PLANT)
                           .noCollision()
                           .randomTicks()

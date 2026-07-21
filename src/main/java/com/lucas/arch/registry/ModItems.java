@@ -37,6 +37,16 @@ public class ModItems {
     public static final Item MOSQUITO_IN_AMBER = registerItem("mosquito_in_amber",
          p -> new ArchItem(p, "F&A", "Lucke0302"));
 
+    // --- Pós de Escavação ---
+    public static final Item SAND_POWDER = registerItem("sand_powder", 
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+    
+    public static final Item GRAVEL_POWDER = registerItem("gravel_powder", 
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+    
+    public static final Item TUFF_POWDER = registerItem("tuff_powder", 
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+
     // --- DNAs ---
     public static final Item DEFAULT_PLANT_DNA = registerItem("default_plant_dna", 
          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));             
@@ -140,6 +150,12 @@ public class ModItems {
             output.accept(FULL_SYRINGE);
             output.accept(EMPTY_DART);
             output.accept(FULL_DART);
+            output.accept(FRAGMENTED_DNA);
+            output.accept(BITTER_BERRIES);
+            output.accept(BIO_PROPELLANT);
+            output.accept(SAND_POWDER);
+            output.accept(GRAVEL_POWDER);
+            output.accept(TUFF_POWDER);
         });
     }
 }

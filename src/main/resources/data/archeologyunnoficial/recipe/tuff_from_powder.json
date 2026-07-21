@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "archeologyunnoficial:tuff_powder"
+  },
+  "result": {
+    "id": "minecraft:tuff",
+    "count": 1
+  }
+}

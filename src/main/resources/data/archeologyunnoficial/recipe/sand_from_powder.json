@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "archeologyunnoficial:sand_powder"
+  },
+  "result": {
+    "id": "minecraft:sand",
+    "count": 1
+  }
+}

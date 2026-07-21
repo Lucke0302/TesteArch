@@ -43,5 +43,13 @@
   "item.archeologyunnoficial.empty_syringe": "Seringa Vazia",
   "item.archeologyunnoficial.full_syringe": "Seringa com Aditivo",
   "item.archeologyunnoficial.empty_dart": "Dardo Vazio",
-  "item.archeologyunnoficial.full_dart": "Dardo Tranquilizante"
+  "item.archeologyunnoficial.full_dart": "Dardo Tranquilizante",
+
+  "item.archeologyunnoficial.bitter_berries": "Bagas Amargas",
+  "item.archeologyunnoficial.fragmented_dna": "DNA Fragmentado",
+  "item.archeologyunnoficial.bio_propellant": "Biopropelente",
+
+  "item.archeologyunnoficial.sand_powder": "Pó de Areia",
+  "item.archeologyunnoficial.gravel_powder": "Pó de Cascalho",
+  "item.archeologyunnoficial.tuff_powder": "Pó de Tufo"
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "archeologyunnoficial:block/brushed_gravel_3"
+  }
+}
