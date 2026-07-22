@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 public class AllosaurusModel extends GeoModel<AllosaurusEntity> {
     @Override
     public Identifier getModelResource(GeoRenderState renderState) {
-        return Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "geo/allosaurus.geo.json");
+        return Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "geckolib/models/allosaurus");
     }
 
     @Override
@@ -19,6 +19,6 @@ public class AllosaurusModel extends GeoModel<AllosaurusEntity> {
 
     @Override
     public Identifier getAnimationResource(AllosaurusEntity animatable) {
-        return Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "animations/allosaurus.animation.json");
+        return Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "geckolib/animations/allosaurus");
     }
 }
