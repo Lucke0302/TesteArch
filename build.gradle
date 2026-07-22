@@ -9,11 +9,15 @@ group = project.maven_group
 repositories {
 	mavenCentral()
 	maven { url = "https://maven.fabricmc.net/" }
-	maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
+	// This is the repositories block in your build.gradle. NOT the one in publishing, or in buildscript. If it does not exist already, create it.
+	exclusiveContent {
+        forRepository {
+            maven {
+                name = 'GeckoLib'
+                url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+            }
         }
+        filter { includeGroupAndSubgroups('com.geckolib') }
     }
 }
 
@@ -27,7 +31,7 @@ dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	implementation "curse.maven:geckolib-388172:8327535"
+	implementation "com.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"	
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
