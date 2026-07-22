@@ -8,6 +8,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.Consumables;
@@ -123,6 +124,21 @@ public class ModItems {
                       .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1), 1.0F))
                       .build()
               ), "Lucke0302", "Lucke0302"));
+    
+    public static final Item CYCAD_SEED = registerItem("cycad_seed",
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+
+    public static final Item CYCAD_FRUIT = registerItem("cycad_fruit",
+         p -> new ArchItem(p.food(
+             new FoodProperties.Builder()
+                 .nutrition(3)
+                 .saturationModifier(0.2f)
+                 .build(),
+             Consumables.defaultFood()
+                 .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.POISON, 160, 0), 1.0F)) 
+                 .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.NAUSEA, 200, 0), 0.8F)) 
+                 .build()
+         ), "Lucke0302", "Lucke0302"));
 
     public static void registerModItems() {
         System.out.println("[" + MOD_ID + "] Registrando fósseis customizados...");
@@ -156,6 +172,10 @@ public class ModItems {
             output.accept(SAND_POWDER);
             output.accept(GRAVEL_POWDER);
             output.accept(TUFF_POWDER);
+            output.accept(ModBlocks.SEQUOIA_SAPLING);
+            output.accept(CYCAD_SEED);
+            output.accept(CYCAD_FRUIT);
+            output.accept(ModBlocks.CYCAD_SAPLING);
         });
     }
 }

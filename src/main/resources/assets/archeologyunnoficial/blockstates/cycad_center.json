@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "has_fruit=true": { "model": "minecraft:block/oak_slab" },
+    "has_fruit=false": { "model": "minecraft:block/jungle_slab" }
+  }
+}

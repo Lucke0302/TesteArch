@@ -4,7 +4,10 @@ import com.lucas.arch.ArcheologyUnnoficial;
 import com.lucas.arch.block.ArchBrushableBlock;
 import com.lucas.arch.block.BitterBerryBushBlock;
 import com.lucas.arch.block.CleansingTableBlock;
+import com.lucas.arch.block.CycadCenterBlock;
+import com.lucas.arch.block.CycadSaplingBlock;
 import com.lucas.arch.block.FuserBlock;
+import com.lucas.arch.block.SequoiaSaplingBlock;
 import com.lucas.arch.block.SynthesizerBlock;
 import com.lucas.arch.item.ArchBlockItem;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -67,6 +70,32 @@ public class ModBlocks {
                           .sound(net.minecraft.world.level.block.SoundType.SWEET_BERRY_BUSH)
             ));
 
+    public static final Block SEQUOIA_SAPLING = registerBlock("sequoia_sapling",
+            properties -> new SequoiaSaplingBlock(
+                properties.mapColor(MapColor.PLANT)
+                        .noCollision()
+                        .instabreak()
+                        .sound(net.minecraft.world.level.block.SoundType.GRASS)
+            ), "Lucke0302", "Lucke0302");
+
+    public static final Block CYCAD_CENTER = registerBlockWithoutItem("cycad_center",
+        properties -> new CycadCenterBlock(properties.mapColor(MapColor.WOOD).strength(1.0f)));
+
+    public static final Block CYCAD_SAPLING = registerBlock("cycad_sapling",
+        properties -> new CycadSaplingBlock(
+            properties.mapColor(MapColor.PLANT)
+                      .noCollision()
+                      .instabreak()
+                      .sound(net.minecraft.world.level.block.SoundType.GRASS)
+        ), "Lucke0302", "Lucke0302");
+
+    public static final Block CYCAD_LOG = registerBlock("cycad_log",
+        properties -> new Block(properties.mapColor(MapColor.WOOD)
+                                        .strength(2.0f)
+                                        .sound(net.minecraft.world.level.block.SoundType.WOOD)
+                                        .noOcclusion()), 
+        "Lucke0302", "Lucke0302");
+
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function, String designer, String programmer) {
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
         Block block = Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));
@@ -87,6 +116,7 @@ public class ModBlocks {
             output.accept(FUSER);
             output.accept(FOSSIL);
             output.accept(AMBER_ORE);
+            output.accept(CYCAD_LOG);
         });
     }
 }
