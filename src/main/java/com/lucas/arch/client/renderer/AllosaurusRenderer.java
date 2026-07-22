@@ -12,4 +12,4 @@ public class AllosaurusRenderer<R extends LivingEntityRenderState & GeoRenderSta
         super(context, new AllosaurusModel());
         this.shadowRadius = 0.5f;
     }
-}
+} 
