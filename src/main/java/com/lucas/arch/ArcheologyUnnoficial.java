@@ -9,6 +9,7 @@ import com.lucas.arch.config.ModConfig;
 import com.lucas.arch.registry.ModBlockEntities;
 import com.lucas.arch.registry.ModBlocks;
 import com.lucas.arch.registry.ModDataComponentTypes;
+import com.lucas.arch.registry.ModEntities;
 import com.lucas.arch.registry.ModItems;
 import com.lucas.arch.registry.ModMenuTypes;
 import com.lucas.arch.registry.ModRecipeSerializers;
@@ -52,6 +53,9 @@ public class ArcheologyUnnoficial implements ModInitializer {
         ModLootTableModifiers.modifyLootTables();
 
         ModWorldGen.generateWorldGen();
+
+        ModEntities.registerEntities();
+        ModEntities.registerAttributes();
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayer player = handler.getPlayer();
