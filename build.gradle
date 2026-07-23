@@ -19,6 +19,11 @@ repositories {
         }
         filter { includeGroupAndSubgroups('com.geckolib') }
     }
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content { includeGroup("maven.modrinth") }
+	}
 }
 
 fabricApi {
@@ -32,6 +37,11 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "com.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"	
+	
+	runtimeOnly "maven.modrinth:sodium:${project.sodium_version}"
+	runtimeOnly "maven.modrinth:lithium:${project.lithium_version}"
+	runtimeOnly "maven.modrinth:ferrite-core:${project.ferritecore_version}"
+	runtimeOnly "maven.modrinth:jade:${project.jade_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"

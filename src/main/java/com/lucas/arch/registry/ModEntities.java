@@ -16,7 +16,7 @@ public class ModEntities {
         BuiltInRegistries.ENTITY_TYPE,
         Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "allosaurus"),
         EntityType.Builder.of(AllosaurusEntity::new, MobCategory.CREATURE)
-                .sized(1.5f, 2.0f)
+                .sized(1.2f, 1.1f)
                 .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "allosaurus")))
     );
 
