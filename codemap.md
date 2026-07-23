@@ -11,29 +11,27 @@
 
 ## 1. Estrutura geral de pacotes
 
-```
-com.lucas.arch
-├── ArcheologyReimagined.java          → ModInitializer (bootstrap servidor+comum)
-├── ArcheologyReimaginedClient.java    → ClientModInitializer (renderers, screens)
-├── ArcheologyReimaginedDataGenerator.java  → datagen entrypoint (vazio, sem providers ainda)
-├── ImplementedInventory.java          → interface default para block entities com inventário
-│
-├── block/                             → classes de Block customizadas
-│   └── entity/                        → BlockEntity correspondentes
-├── client/
-│   ├── model/                         → GeoModel (GeckoLib) do lado cliente
-│   └── renderer/                      → GeoEntityRenderer (GeckoLib)
-├── config/                            → ModConfig + enums de configuração
-├── entity/                            → entidades vivas (Animal/PathfinderMob)
-│   └── ai/                            → Goals customizadas de IA
-├── item/                              → classes de Item customizadas
-├── mixin/                             → mixins (injeção em classes vanilla)
-├── recipe/                            → receitas customizadas (CustomRecipe) e catálogos
-├── registry/                          → todos os `Registry.register(...)` do mod
-├── screen/                            → Menu (Container) + Screen (GUI client-side)
-└── world/                             → worldgen (biome modifications, loot table mods)
-    └── gen/                           → geradores de estrutura procedural (árvores etc.)
-```
+    com.lucas.arch
+    ├── ArcheologyReimagined.java          → ModInitializer (bootstrap servidor+comum)
+    ├── ArcheologyReimaginedClient.java    → ClientModInitializer (renderers, screens)
+    ├── ArcheologyReimaginedDataGenerator.java  → datagen entrypoint (vazio, sem providers ainda)
+    ├── ImplementedInventory.java          → interface default para block entities com inventário
+    │
+    ├── block/                             → classes de Block customizadas
+    │   └── entity/                        → BlockEntity correspondentes
+    ├── client/
+    │   ├── model/                         → GeoModel (GeckoLib) do lado cliente
+    │   └── renderer/                      → GeoEntityRenderer (GeckoLib)
+    ├── config/                            → ModConfig + enums de configuração
+    ├── entity/                            → entidades vivas (Animal/PathfinderMob)
+    │   └── ai/                            → Goals customizadas de IA
+    ├── item/                              → classes de Item customizadas
+    ├── mixin/                             → mixins (injeção em classes vanilla)
+    ├── recipe/                            → receitas customizadas (CustomRecipe) e catálogos
+    ├── registry/                          → todos os `Registry.register(...)` do mod
+    ├── screen/                            → Menu (Container) + Screen (GUI client-side)
+    └── world/                             → worldgen (biome modifications, loot table mods)
+        └── gen/                           → geradores de estrutura procedural (árvores etc.)
 
 Recursos (`src/main/resources/`) seguem o padrão Fabric/Minecraft:
 `assets/archeology_reimagined/{blockstates,models,items,textures,lang,geckolib}` e
@@ -70,8 +68,7 @@ progresso/combustível, `serverTick()` no BlockEntity, e blockstate com propried
 
 **Como funciona hoje:**
 - Ao spawnar (`tick()` no `tickCount == 1`), sorteia cor (`COLORS[]`, ainda fixo em 3
-  opções) e uma escala
-  visual entre 2.7 e 3.5 (`SCALE` synced dado).
+  opções) e uma escala visual entre 2.7 e 3.5 (`SCALE` synced dado).
 - Hitbox escala com a visual scale elevada a 0.9 (`getDefaultDimensions`).
 - `finalizeSpawn` varia HP e dano de ataque em ±20% por indivíduo.
 - Persegue comida solta no chão (`SeekDroppedFoodGoal`) e é atraída por ela
@@ -132,7 +129,7 @@ natural** registrada em `ModWorldGen.java` para ela nascer sozinha no bioma.
 | Peça | Arquivo |
 |---|---|
 | Block | `block/BitterBerryBushBlock.java` — extends `SweetBerryBushBlock` vanilla, com dano + lentidão ao pisar (`entityInside`) |
-| Item | `ModItems.BITTER_BERRIES` — comestível, aplica `SLOWNESS` ao consumir |
+| Item | `item/ArchItemNameBlockItem.java` — classe que faz a ponte instanciando `ModItems.BITTER_BERRIES`, tornando-o comestível (aplica `SLOWNESS`) e permitindo plantio |
 | Worldgen | `data/.../worldgen/configured_feature/bitter_berry_bush.json` + `placed_feature/bitter_berry_common.json` / `bitter_berry_rare.json` |
 | Wiring dinâmico por bioma | `world/ModWorldGen.java` → lê `ModConfig.bitterBerryBiomes` (lista de biomas ou tags `#namespace:tag`) e registra a feature via `BiomeModifications` |
 
@@ -157,9 +154,9 @@ Compactação. Receita de craft: `data/.../recipe/guide_book.json` via
 
 ---
 
-## 3. Registries (`com.lucas.arch.registry`)
+## 3. Registries (`com.lucas.arch.registry` e World)
 
-| Classe | Registra |
+| Classe | Registra / Propósito |
 |---|---|
 | `ModItems.java` | todos os itens (fósseis, DNA, combustíveis, pós, seringas, dardos, plantas...) |
 | `ModBlocks.java` | todos os blocks + seus BlockItems (via `ArchBlockItem`) |
@@ -169,6 +166,7 @@ Compactação. Receita de craft: `data/.../recipe/guide_book.json` via
 | `ModRecipeSerializers.java` | `GUIDE_BOOK_RECIPE` (CustomRecipe) |
 | `ModDataComponentTypes.java` | `DNA_QUALITY` (Integer, persistente + sincronizado) |
 | `ModTags.java` | `Items.CARNIVORE_FOOD` (TagKey) |
+| `world/ModLootTableModifiers.java` | Adiciona modificadores globais nas loot tables (injeção de drops customizados) |
 
 ## 4. Mixins (`com.lucas.arch.mixin`)
 
@@ -178,13 +176,11 @@ Compactação. Receita de craft: `data/.../recipe/guide_book.json` via
 | `BlockEntityMixin` | `BlockEntity.validateBlockState` | bypass de validação para `ArchBrushableBlockEntity` funcionar com blockstates customizados |
 | `ExampleMixin` | `MinecraftServer.loadLevel` | **template não usado**, candidato a remoção |
 
-## 5. Config (`config/ModConfig.java`)
+## 5. Config (`com.lucas.arch.config`)
 
-Campos conhecidos: `worldGenMode` (Classic/Original/Reimagined), `fossilDensity`
-(Low/Medium/High), tempos de processamento das 3 máquinas, `cleansingTableWaterCost`,
-`fossilDropChance` + `fossilDropBlocks` (lista), e o novo **`bitterBerryBiomes`**
-(lista de strings — id de bioma ou `#tag`). Serializado via Gson em
-`config/archeology_reimagined.json`, auto-regenerado se corrompido/faltando campos.
+- **`ModConfig.java`**: Classe principal. Campos conhecidos: `worldGenMode` (Classic/Original/Reimagined), `fossilDensity` (Low/Medium/High), tempos de processamento das 3 máquinas, `cleansingTableWaterCost`, `fossilDropChance` + `fossilDropBlocks` (lista), e o novo **`bitterBerryBiomes`** (lista de strings — id de bioma ou `#tag`). Serializado via Gson em `config/archeology_reimagined.json`, auto-regenerado se corrompido/faltando campos.
+- **`WorldGenMode.java`**: Enum definindo as 3 abordagens de worldgen possíveis (Classic, Original, Reimagined).
+- **`FossilDensity.java`**: Enum determinando a frequência de aparição de fósseis (Low, Medium, High).
 
 ## 6. Dependências relevantes (`build.gradle`)
 
