@@ -42,6 +42,8 @@ dependencies {
 	runtimeOnly "maven.modrinth:lithium:${project.lithium_version}"
 	runtimeOnly "maven.modrinth:ferrite-core:${project.ferritecore_version}"
 	runtimeOnly "maven.modrinth:jade:${project.jade_version}"
+	runtimeOnly "maven.modrinth:spark:${project.spark_version}"
+	runtimeOnly "maven.modrinth:modmenu:${project.mod_menu_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
@@ -94,4 +96,12 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+loom {
+    runs {
+        client {
+            vmArg "-Xmx2048m"
+        }
+    }
 }
