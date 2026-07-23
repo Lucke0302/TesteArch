@@ -1,4 +1,4 @@
-# CODEMAP — ArcheologyUnnoficial
+# CODEMAP — ArcheologyReimagined
 
 > **Objetivo deste arquivo:** mapear onde cada feature do mod vive no código, para
 > qualquer pessoa (ou IA) que precise navegar o projeto sem ter que reler tudo do zero.
@@ -13,9 +13,9 @@
 
 ```
 com.lucas.arch
-├── ArcheologyUnnoficial.java          → ModInitializer (bootstrap servidor+comum)
-├── ArcheologyUnnoficialClient.java    → ClientModInitializer (renderers, screens)
-├── ArcheologyUnnoficialDataGenerator.java  → datagen entrypoint (vazio, sem providers ainda)
+├── ArcheologyReimagined.java          → ModInitializer (bootstrap servidor+comum)
+├── ArcheologyReimaginedClient.java    → ClientModInitializer (renderers, screens)
+├── ArcheologyReimaginedDataGenerator.java  → datagen entrypoint (vazio, sem providers ainda)
 ├── ImplementedInventory.java          → interface default para block entities com inventário
 │
 ├── block/                             → classes de Block customizadas
@@ -36,8 +36,8 @@ com.lucas.arch
 ```
 
 Recursos (`src/main/resources/`) seguem o padrão Fabric/Minecraft:
-`assets/archeologyunnoficial/{blockstates,models,items,textures,lang,geckolib}` e
-`data/archeologyunnoficial/{recipe,loot_table,worldgen,tags}`.
+`assets/archeology_reimagined/{blockstates,models,items,textures,lang,geckolib}` e
+`data/archeology_reimagined/{recipe,loot_table,worldgen,tags}`.
 
 ---
 
@@ -64,9 +64,9 @@ progresso/combustível, `serverTick()` no BlockEntity, e blockstate com propried
 | Registro da entidade | `registry/ModEntities.java` |
 | Modelo (cliente) | `client/model/AllosaurusModel.java` |
 | Renderer (cliente) | `client/renderer/AllosaurusRenderer.java` — escala visual dinâmica via `DataTicket` |
-| Assets GeckoLib | `assets/archeologyunnoficial/geckolib/models/allosaurus.geo.json`, `geckolib/animations/allosaurus.animation.json` |
-| Textura | `assets/archeologyunnoficial/textures/entity/allosaurus_base.png` |
-| Tag de comida | `data/archeologyunnoficial/tags/item/carnivore_food.json` + `registry/ModTags.java` |
+| Assets GeckoLib | `assets/archeology_reimagined/geckolib/models/allosaurus.geo.json`, `geckolib/animations/allosaurus.animation.json` |
+| Textura | `assets/archeology_reimagined/textures/entity/allosaurus_base.png` |
+| Tag de comida | `data/archeology_reimagined/tags/item/carnivore_food.json` + `registry/ModTags.java` |
 
 **Como funciona hoje:**
 - Ao spawnar (`tick()` no `tickCount == 1`), sorteia cor (`COLORS[]`, ainda fixo em 3
@@ -89,7 +89,7 @@ progresso/combustível, `serverTick()` no BlockEntity, e blockstate com propried
 | BlockEntity | `block/entity/ArchBrushableBlockEntity.java` — extends `BrushableBlockEntity` |
 | Mixin de suporte | `mixin/BlockEntityMixin.java` — bypassa `validateBlockState` pro brushable custom funcionar |
 | Registro | `registry/ModBlocks.java` (`BRUSHED_SAND/GRAVEL/TUFF`), `registry/ModBlockEntities.java` (`ARCH_BRUSHABLE_BE`) |
-| Trigger de colocação | `ArcheologyUnnoficial.java` → listener em `UseBlockCallback.EVENT`: jogador usa `Items.BRUSH` em Areia/Cascalho/Tufo com espaço livre acima → vira o bloco escovável |
+| Trigger de colocação | `ArcheologyReimagined.java` → listener em `UseBlockCallback.EVENT`: jogador usa `Items.BRUSH` em Areia/Cascalho/Tufo com espaço livre acima → vira o bloco escovável |
 
 **Fluxo:** jogador escova → a cada "dusted" completo, 7.5% de chance de item raro
 (fóssil aleatório ou Sniffer Egg, ver `dropRareItem()`) e destrói o bloco; senão dropa
@@ -137,7 +137,7 @@ natural** registrada em `ModWorldGen.java` para ela nascer sozinha no bioma.
 | Wiring dinâmico por bioma | `world/ModWorldGen.java` → lê `ModConfig.bitterBerryBiomes` (lista de biomas ou tags `#namespace:tag`) e registra a feature via `BiomeModifications` |
 
 Isso é uma mudança de arquitetura importante: a lista de biomas onde a planta nasce
-agora é **configurável via `config/archeologyunnoficial.json`**, não hardcoded.
+agora é **configurável via `config/archeology_reimagined.json`**, não hardcoded.
 
 ### 2.8 Fósseis, Âmbar, DNA
 Ver seção de itens abaixo. Lógica de mineração/worldgen (`fossil_ore`, `amber_ore`,
@@ -150,7 +150,7 @@ são `ArchItem` genéricos (só craft + tooltip), **sem lógica de uso** impleme
 Isso continua sendo o maior gap entre a doc de design e o código.
 
 ### 2.10 Guia Arqueológico
-`ArcheologyUnnoficial.createGuideBook()` agora tem **8 páginas**,
+`ArcheologyReimagined.createGuideBook()` agora tem **8 páginas**,
 incluindo páginas novas sobre Escovação/Pincel, Botânica Exótica, Química Avançada e
 Compactação. Receita de craft: `data/.../recipe/guide_book.json` via
 `recipe/GuideBookRecipe.java`.
@@ -184,7 +184,7 @@ Campos conhecidos: `worldGenMode` (Classic/Original/Reimagined), `fossilDensity`
 (Low/Medium/High), tempos de processamento das 3 máquinas, `cleansingTableWaterCost`,
 `fossilDropChance` + `fossilDropBlocks` (lista), e o novo **`bitterBerryBiomes`**
 (lista de strings — id de bioma ou `#tag`). Serializado via Gson em
-`config/archeologyunnoficial.json`, auto-regenerado se corrompido/faltando campos.
+`config/archeology_reimagined.json`, auto-regenerado se corrompido/faltando campos.
 
 ## 6. Dependências relevantes (`build.gradle`)
 

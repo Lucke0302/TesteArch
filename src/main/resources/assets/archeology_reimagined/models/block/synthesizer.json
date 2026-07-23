@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "archeology_reimagined:block/synthesizer_bottom",
+    "top": "archeology_reimagined:block/synthesizer_top",
+    "side": "archeology_reimagined:block/synthesizer_side_idle"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MMM",
+    "MCM",
+    "MMM"
+  ],
+  "key": {
+    "C": "minecraft:coal",
+    "M": [
+      "minecraft:porkchop",
+      "minecraft:beef",
+      "minecraft:chicken",
+      "minecraft:mutton",
+      "minecraft:rabbit",
+      "minecraft:cooked_porkchop",
+      "minecraft:cooked_beef",
+      "minecraft:cooked_chicken",
+      "minecraft:cooked_mutton",
+      "minecraft:cooked_rabbit"
+    ]
+  },
+  "result": {
+    "id": "archeology_reimagined:medium_organic_fuel",
+    "count": 1
+  }
+}

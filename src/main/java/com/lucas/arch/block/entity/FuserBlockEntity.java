@@ -64,7 +64,7 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.archeologyunnoficial.fuser");
+        return Component.translatable("block.archeology_reimagined.fuser");
     }
 
     @Nullable

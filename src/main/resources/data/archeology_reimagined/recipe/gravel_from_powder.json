@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "archeology_reimagined:gravel_powder"
+  },
+  "result": {
+    "id": "minecraft:gravel",
+    "count": 1
+  }
+}

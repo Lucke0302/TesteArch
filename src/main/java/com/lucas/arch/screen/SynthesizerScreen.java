@@ -1,6 +1,6 @@
 package com.lucas.arch.screen;
 
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.RenderPipelines;
 
 public class SynthesizerScreen extends AbstractContainerScreen<SynthesizerMenu> {
     
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/synthesizer.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "textures/gui/synthesizer.png");
     
-    private static final Identifier PROGRESS_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_bar.png");
-    private static final Identifier LAVA_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "textures/gui/cleansing_lava.png");
+    private static final Identifier PROGRESS_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "textures/gui/cleansing_bar.png");
+    private static final Identifier LAVA_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "textures/gui/cleansing_lava.png");
 
     public SynthesizerScreen(SynthesizerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, 240, 164); 

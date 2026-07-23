@@ -1,6 +1,6 @@
 package com.lucas.arch.recipe;
 
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.registry.ModItems;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -52,7 +52,7 @@ public class GuideBookRecipe extends CustomRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput input) {
-        return ArcheologyUnnoficial.createGuideBook();
+        return ArcheologyReimagined.createGuideBook();
     }
 
     @Override

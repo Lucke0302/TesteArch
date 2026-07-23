@@ -1,0 +1,55 @@
+{
+  "item.archeology_reimagined.unknown_plant_fossil": "Unknown Plant Fossil",
+  "item.archeology_reimagined.unknown_reptile_fossil": "Unknown Reptile Fossil",
+  "item.archeology_reimagined.unknown_fish_fossil": "Unknown Fish Fossil",
+  "item.archeology_reimagined.unknown_mammal_fossil": "Unknown Mammal Fossil",
+  
+  "item.archeology_reimagined.default_plant_dna": "Plant DNA",
+  "item.archeology_reimagined.default_reptile_dna": "Reptile DNA",
+  "item.archeology_reimagined.default_fish_dna": "Fish DNA",
+  "item.archeology_reimagined.default_mammal_dna": "Mammal DNA",
+  
+  "item.archeology_reimagined.encyclopedia": "Archeological Encyclopedia",
+
+  "item.archeology_reimagined.thermal_module": "Thermal Module",
+  "item.archeology_reimagined.culture_chamber": "Culture Chamber",
+  "item.archeology_reimagined.processing_board": "Processing Board",
+
+  "item.archeology_reimagined.basic_organic_fuel": "Basic Organic Fuel",
+  "item.archeology_reimagined.medium_organic_fuel": "Medium Organic Fuel",
+  "item.archeology_reimagined.advanced_organic_fuel": "Advanced Organic Fuel",
+  
+  "item.archeology_reimagined.meat_cluster": "Meat Cluster",
+  "item.archeology_reimagined.allosaurus_embryo": "Allosaurus Embryo",
+
+  "tooltip.archeology_reimagined.dna_quality": "§7DNA Quality: %s",
+  
+  "block.archeology_reimagined.cleansing_table": "Cleansing Table",
+  "block.archeology_reimagined.synthesizer": "Synthesizer",
+  "item.archeology_reimagined.cleansing_table": "Cleansing Table",
+  "item.archeology_reimagined.synthesizer": "Synthesizer",
+
+  "block.archeology_reimagined.fuser": "Fuser",
+  "item.archeology_reimagined.fuser": "Fuser",
+  "item.archeology_reimagined.allosaurus_egg": "Allosaurus Egg",
+
+  "block.archeology_reimagined.fossil": "Fossil",
+  "block.archeology_reimagined.amber_ore": "Amber Ore",
+  "item.archeology_reimagined.fossil": "Fossil",
+  "item.archeology_reimagined.amber_ore": "Amber Ore",
+  "item.archeology_reimagined.amber": "Amber",
+  "item.archeology_reimagined.mosquito_in_amber": "Mosquito in Amber",
+
+  "item.archeology_reimagined.empty_syringe": "Empty Syringe",
+  "item.archeology_reimagined.full_syringe": "Additive Syringe",
+  "item.archeology_reimagined.empty_dart": "Empty Dart",
+  "item.archeology_reimagined.full_dart": "Tranquilizer Dart",
+
+  "item.archeology_reimagined.bitter_berries": "Bitter Berries",
+  "item.archeology_reimagined.fragmented_dna": "Fragmented DNA",
+  "item.archeology_reimagined.bio_propellant": "Bio Propellant",
+
+  "item.archeology_reimagined.sand_powder": "Sand Powder",
+  "item.archeology_reimagined.gravel_powder": "Gravel Powder",
+  "item.archeology_reimagined.tuff_powder": "Tuff Powder"
+}

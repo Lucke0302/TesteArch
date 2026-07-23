@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "dusted=0": { "model": "archeology_reimagined:block/brushed_gravel_0" },
+    "dusted=1": { "model": "archeology_reimagined:block/brushed_gravel_1" },
+    "dusted=2": { "model": "archeology_reimagined:block/brushed_gravel_2" },
+    "dusted=3": { "model": "archeology_reimagined:block/brushed_gravel_3" }
+  }
+}

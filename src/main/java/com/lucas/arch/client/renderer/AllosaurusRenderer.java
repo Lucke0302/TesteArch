@@ -11,13 +11,13 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 
 public class AllosaurusRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<AllosaurusEntity, R> {
 
     public static final com.geckolib.constant.dataticket.DataTicket<Float> VISUAL_SCALE =
         com.geckolib.constant.dataticket.DataTicket.create(
-            ArcheologyUnnoficial.MOD_ID + ":visual_scale", Float.class);
+            ArcheologyReimagined.MOD_ID + ":visual_scale", Float.class);
 
     public AllosaurusRenderer(EntityRendererProvider.Context context) {
         super(context, new AllosaurusModel());

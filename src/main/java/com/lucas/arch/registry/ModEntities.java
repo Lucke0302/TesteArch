@@ -6,7 +6,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Registry;
 
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.MobCategory;
 
@@ -14,14 +14,14 @@ public class ModEntities {
 
     public static final EntityType<AllosaurusEntity> ALLOSAURUS = Registry.register(
         BuiltInRegistries.ENTITY_TYPE,
-        Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "allosaurus"),
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "allosaurus"),
         EntityType.Builder.of(AllosaurusEntity::new, MobCategory.CREATURE)
                 .sized(1.2f, 1.1f)
-                .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "allosaurus")))
+                .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "allosaurus")))
     );
 
     public static void registerEntities() {
-        ArcheologyUnnoficial.LOGGER.info("Registering entities for " + ArcheologyUnnoficial.MOD_ID);
+        ArcheologyReimagined.LOGGER.info("Registering entities for " + ArcheologyReimagined.MOD_ID);
     }
 
     public static void registerAttributes() {

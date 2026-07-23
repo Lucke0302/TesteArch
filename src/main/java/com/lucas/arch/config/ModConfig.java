@@ -2,7 +2,7 @@ package com.lucas.arch.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
@@ -62,7 +62,7 @@ public class ModConfig {
     }
 
     public static void load() {
-        File configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), ArcheologyUnnoficial.MOD_ID + ".json");
+        File configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), ArcheologyReimagined.MOD_ID + ".json");
         if (configFile.exists()) {
             try (FileReader reader = new FileReader(configFile)) {
                 instance = GSON.fromJson(reader, ModConfig.class);
@@ -86,7 +86,7 @@ public class ModConfig {
                 save(configFile);
 
             } catch (Exception e) {
-                ArcheologyUnnoficial.LOGGER.error("Erro ao ler a config ou arquivo corrompido! Recriando padrao.", e);
+                ArcheologyReimagined.LOGGER.error("Erro ao ler a config ou arquivo corrompido! Recriando padrao.", e);
                 instance = new ModConfig();
                 save(configFile);
             }
@@ -100,7 +100,7 @@ public class ModConfig {
         try (FileWriter writer = new FileWriter(file)) {
             GSON.toJson(instance, writer);
         } catch (IOException e) {
-            ArcheologyUnnoficial.LOGGER.error("Erro ao salvar a config!", e);
+            ArcheologyReimagined.LOGGER.error("Erro ao salvar a config!", e);
         }
     }
 }

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "archeologyunnoficial:block/synthesizer_bottom",
-    "top": "archeologyunnoficial:block/synthesizer_top",
-    "side": "archeologyunnoficial:block/synthesizer_side_active"
-  }
-}

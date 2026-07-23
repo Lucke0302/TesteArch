@@ -84,7 +84,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
     
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.archeologyunnoficial.cleansing_table");
+        return Component.translatable("block.archeology_reimagined.cleansing_table");
     }
 
     @Nullable

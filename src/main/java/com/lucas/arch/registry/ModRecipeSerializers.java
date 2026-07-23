@@ -1,6 +1,6 @@
 package com.lucas.arch.registry;
 
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.recipe.GuideBookRecipe;
 
 import net.minecraft.core.Registry;
@@ -13,11 +13,11 @@ public class ModRecipeSerializers {
     public static final RecipeSerializer<GuideBookRecipe> GUIDE_BOOK_RECIPE =
         Registry.register(
             BuiltInRegistries.RECIPE_SERIALIZER,
-            Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "guide_book_crafting"),
+            Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "guide_book_crafting"),
             GuideBookRecipe.SERIALIZER
         );
 
     public static void registerRecipeSerializers() {
-        System.out.println("[" + ArcheologyUnnoficial.MOD_ID + "] Registrando Recipe Serializers...");
+        System.out.println("[" + ArcheologyReimagined.MOD_ID + "] Registrando Recipe Serializers...");
     }
 }

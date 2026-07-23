@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "archeology_reimagined:block/fuser_bottom",
+    "top": "archeology_reimagined:block/fuser_top",
+    "side": "archeology_reimagined:block/fuser_sides"
+  }
+}

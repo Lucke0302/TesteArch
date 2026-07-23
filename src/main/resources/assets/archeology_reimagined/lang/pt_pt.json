@@ -1,0 +1,55 @@
+{
+  "item.archeology_reimagined.unknown_plant_fossil": "Fóssil de Planta Desconhecida",
+  "item.archeology_reimagined.unknown_reptile_fossil": "Fóssil de Réptil Desconhecido",
+  "item.archeology_reimagined.unknown_fish_fossil": "Fóssil de Peixe Desconhecido",
+  "item.archeology_reimagined.unknown_mammal_fossil": "Fóssil de Mamífero Desconhecido",
+  
+  "item.archeology_reimagined.default_plant_dna": "DNA de Planta",
+  "item.archeology_reimagined.default_reptile_dna": "DNA de Réptil",
+  "item.archeology_reimagined.default_fish_dna": "DNA de Peixe",
+  "item.archeology_reimagined.default_mammal_dna": "DNA de Mamífero",
+  
+  "item.archeology_reimagined.encyclopedia": "Enciclopédia Arqueológica",
+
+  "item.archeology_reimagined.thermal_module": "Módulo Térmico",
+  "item.archeology_reimagined.culture_chamber": "Câmara de Cultivo",
+  "item.archeology_reimagined.processing_board": "Placa de Processamento",
+
+  "item.archeology_reimagined.basic_organic_fuel": "Combustível Orgânico Básico",
+  "item.archeology_reimagined.medium_organic_fuel": "Combustível Orgânico Médio",
+  "item.archeology_reimagined.advanced_organic_fuel": "Combustível Orgânico Avançado",
+  
+  "item.archeology_reimagined.meat_cluster": "Aglomerado de Carne",
+  "item.archeology_reimagined.allosaurus_embryo": "Embrião de Allossauro",
+
+  "tooltip.archeology_reimagined.dna_quality": "§7Qualidade do DNA: %s",
+  
+  "block.archeology_reimagined.cleansing_table": "Mesa de Limpeza",
+  "block.archeology_reimagined.synthesizer": "Sintetizador",
+  "item.archeology_reimagined.cleansing_table": "Mesa de Limpeza",
+  "item.archeology_reimagined.synthesizer": "Sintetizador",
+
+  "block.archeology_reimagined.fuser": "Fusor",
+  "item.archeology_reimagined.fuser": "Fusor",
+  "item.archeology_reimagined.allosaurus_egg": "Ovo de Allossauro",
+
+  "block.archeology_reimagined.fossil": "Fóssil",
+  "block.archeology_reimagined.amber_ore": "Minério de Âmbar",
+  "item.archeology_reimagined.fossil": "Fóssil",
+  "item.archeology_reimagined.amber_ore": "Minério de Âmbar",
+  "item.archeology_reimagined.amber": "Âmbar",
+  "item.archeology_reimagined.mosquito_in_amber": "Mosquito no Âmbar",
+
+  "item.archeology_reimagined.empty_syringe": "Seringa Vazia",
+  "item.archeology_reimagined.full_syringe": "Seringa com Aditivo",
+  "item.archeology_reimagined.empty_dart": "Dardo Vazio",
+  "item.archeology_reimagined.full_dart": "Dardo Tranquilizante",
+
+  "item.archeology_reimagined.bitter_berries": "Bagas Amargas",
+  "item.archeology_reimagined.fragmented_dna": "DNA Fragmentado",
+  "item.archeology_reimagined.bio_propellant": "Biopropelente",
+
+  "item.archeology_reimagined.sand_powder": "Pó de Areia",
+  "item.archeology_reimagined.gravel_powder": "Pó de Cascalho",
+  "item.archeology_reimagined.tuff_powder": "Pó de Tufo"
+}

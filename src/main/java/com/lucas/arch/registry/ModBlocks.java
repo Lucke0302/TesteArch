@@ -1,6 +1,6 @@
 package com.lucas.arch.registry;
 
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.block.ArchBrushableBlock;
 import com.lucas.arch.block.BitterBerryBushBlock;
 import com.lucas.arch.block.CleansingTableBlock;
@@ -57,7 +57,7 @@ public class ModBlocks {
             properties -> new ArchBrushableBlock(SoundEvents.BRUSH_GRAVEL, SoundEvents.BRUSH_GRAVEL_COMPLETED, properties.mapColor(MapColor.TERRACOTTA_BROWN).strength(1.5f).requiresCorrectToolForDrops().sound(net.minecraft.world.level.block.SoundType.TUFF)));
         
     private static Block registerBlockWithoutItem(String name, Function<BlockBehaviour.Properties, Block> function) {
-        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
+        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, name));
         return Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));
     }
 
@@ -97,10 +97,10 @@ public class ModBlocks {
         "Lucke0302", "Lucke0302");
 
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function, String designer, String programmer) {
-        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
+        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, name));
         Block block = Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));
         
-        ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, name));
+        ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, name));
         
         Item blockItem = new ArchBlockItem(block, new Item.Properties().setId(itemKey), designer, programmer);
         Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
@@ -109,7 +109,7 @@ public class ModBlocks {
     }
 
     public static void registerModBlocks() {
-        System.out.println("[" + ArcheologyUnnoficial.MOD_ID + "] Registrando Blocos...");
+        System.out.println("[" + ArcheologyReimagined.MOD_ID + "] Registrando Blocos...");
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(output -> {
             output.accept(CLEANSING_TABLE);
             output.accept(SYNTHESIZER);

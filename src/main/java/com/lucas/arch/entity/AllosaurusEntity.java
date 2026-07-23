@@ -32,7 +32,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import com.lucas.arch.registry.ModTags;
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.entity.ai.SeekDroppedFoodGoal;
 
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -140,9 +140,9 @@ public class AllosaurusEntity extends Animal implements GeoEntity {
                 float visualScale = 2.7f + (this.random.nextFloat() * 0.8f);
                 this.entityData.set(SCALE, visualScale);
 
-                ArcheologyUnnoficial.LOGGER.info("Allosaurus scale set to {}, dimensions before refresh: {}", visualScale, this.getDimensions(this.getPose()));
+                ArcheologyReimagined.LOGGER.info("Allosaurus scale set to {}, dimensions before refresh: {}", visualScale, this.getDimensions(this.getPose()));
                 this.refreshDimensions();
-                ArcheologyUnnoficial.LOGGER.info("Allosaurus dimensions after refresh: {}", this.getDimensions(this.getPose()));
+                ArcheologyReimagined.LOGGER.info("Allosaurus dimensions after refresh: {}", this.getDimensions(this.getPose()));
             }
         }
     }

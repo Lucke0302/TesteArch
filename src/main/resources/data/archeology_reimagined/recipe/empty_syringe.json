@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGI",
+    "G G",
+    "IGG"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "I": "minecraft:iron_nugget"
+  },
+  "result": {
+    "id": "archeology_reimagined:empty_syringe",
+    "count": 1
+  }
+}

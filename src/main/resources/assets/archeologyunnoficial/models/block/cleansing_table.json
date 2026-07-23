@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "top": "archeologyunnoficial:block/cleansing_table_top",
-    "front": "archeologyunnoficial:block/cleansing_table_front",
-    "side": "archeologyunnoficial:block/cleansing_table_side"
-  }
-}

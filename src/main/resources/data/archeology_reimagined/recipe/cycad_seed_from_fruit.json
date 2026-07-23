@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "archeology_reimagined:cycad_fruit"
+  ],
+  "result": {
+    "id": "archeology_reimagined:cycad_seed",
+    "count": 2
+  }
+}

@@ -87,7 +87,7 @@ public class SynthesizerBlockEntity extends BlockEntity implements ImplementedIn
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.archeologyunnoficial.synthesizer");
+        return Component.translatable("block.archeology_reimagined.synthesizer");
     }
 
     @Nullable

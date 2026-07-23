@@ -22,7 +22,7 @@ import com.lucas.arch.item.ArchItem;
 import com.lucas.arch.item.ArchItemNameBlockItem;
 
 public class ModItems {
-    public static final String MOD_ID = "archeologyunnoficial";
+    public static final String MOD_ID = "archeology_reimagined";
 
     // --- Fósseis Originais (F&A) ---
     public static final Item UNKNOWN_PLANT_FOSSIL = registerItem("unknown_plant_fossil", 

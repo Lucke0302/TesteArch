@@ -1,10 +1,10 @@
 {
   "replace": false,
   "values": [
-    "archeologyunnoficial:cleansing_table",
-    "archeologyunnoficial:synthesizer",
-    "archeologyunnoficial:fuser",
-    "archeologyunnoficial:fossil",
-    "archeologyunnoficial:amber_ore"
+    "archeology_reimagined:cleansing_table",
+    "archeology_reimagined:synthesizer",
+    "archeology_reimagined:fuser",
+    "archeology_reimagined:fossil",
+    "archeology_reimagined:amber_ore"
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "archeology_reimagined:block/cleansing_table" },
+    "facing=south": { "model": "archeology_reimagined:block/cleansing_table", "y": 180 },
+    "facing=west":  { "model": "archeology_reimagined:block/cleansing_table", "y": 270 },
+    "facing=east":  { "model": "archeology_reimagined:block/cleansing_table", "y": 90 }
+  }
+}

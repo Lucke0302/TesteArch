@@ -36,7 +36,7 @@ public class DnaItem extends ArchItem {
             
             MutableComponent colorfulValue = Component.literal(quality + "%").withStyle(qualityColor);
             
-            tooltip.accept(Component.translatable("tooltip.archeologyunnoficial.dna_quality", colorfulValue));
+            tooltip.accept(Component.translatable("tooltip.archeology_reimagined.dna_quality", colorfulValue));
         }
         
         super.appendHoverText(stack, context, display, tooltip, flag);

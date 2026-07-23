@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CGC",
+    "CVC",
+    "CPC"
+  ],
+  "key": {
+    "C": "minecraft:copper_block",
+    "G": "minecraft:glass_pane",
+    "V": "archeology_reimagined:culture_chamber",
+    "P": "archeology_reimagined:processing_board"
+  },
+  "result": {
+    "id": "archeology_reimagined:fuser",
+    "count": 1
+  }
+}

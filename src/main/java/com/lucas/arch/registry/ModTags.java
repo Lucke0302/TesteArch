@@ -10,7 +10,7 @@ public class ModTags {
         // Substituímos o ModConstants pelo ID direto em string
         public static final TagKey<Item> CARNIVORE_FOOD = TagKey.create(
                 Registries.ITEM, 
-                Identifier.fromNamespaceAndPath("archeologyunnoficial", "carnivore_food")
+                Identifier.fromNamespaceAndPath("archeology_reimagined", "carnivore_food")
         );
     }
 }

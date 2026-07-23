@@ -1,6 +1,6 @@
 package com.lucas.arch.world;
 
-import com.lucas.arch.ArcheologyUnnoficial;
+import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.config.ModConfig;
 import com.lucas.arch.config.WorldGenMode;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -26,19 +26,19 @@ public class ModWorldGen {
 
         String density = config.fossilDensity.name().toLowerCase();
 
-        ResourceKey<PlacedFeature> fossilPlacedKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "fossil_ore_" + density));
-        ResourceKey<PlacedFeature> amberPlacedKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "amber_ore_" + density));
+        ResourceKey<PlacedFeature> fossilPlacedKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "fossil_ore_" + density));
+        ResourceKey<PlacedFeature> amberPlacedKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "amber_ore_" + density));
 
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, fossilPlacedKey);
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, amberPlacedKey);
 
-        ResourceKey<PlacedFeature> bitterBerryCommonKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "bitter_berry_common"));
-        ResourceKey<PlacedFeature> bitterBerryRareKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(ArcheologyUnnoficial.MOD_ID, "bitter_berry_rare"));
+        ResourceKey<PlacedFeature> bitterBerryCommonKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "bitter_berry_common"));
+        ResourceKey<PlacedFeature> bitterBerryRareKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "bitter_berry_rare"));
 
         for (String biomeEntry : config.bitterBerryBiomes) {
             Predicate<BiomeSelectionContext> selector = resolveBiomeSelector(biomeEntry);
             if (selector == null) {
-                ArcheologyUnnoficial.LOGGER.warn("[archeologyunnoficial] Entrada inválida em bitterBerryBiomes, ignorando: " + biomeEntry);
+                ArcheologyReimagined.LOGGER.warn("[archeology_reimagined] Entrada inválida em bitterBerryBiomes, ignorando: " + biomeEntry);
                 continue;
             }
             BiomeModifications.addFeature(selector, GenerationStep.Decoration.VEGETAL_DECORATION, bitterBerryCommonKey);

@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "archeologyunnoficial:block/cleansing_table" },
-    "facing=south": { "model": "archeologyunnoficial:block/cleansing_table", "y": 180 },
-    "facing=west":  { "model": "archeologyunnoficial:block/cleansing_table", "y": 270 },
-    "facing=east":  { "model": "archeologyunnoficial:block/cleansing_table", "y": 90 }
-  }
-}

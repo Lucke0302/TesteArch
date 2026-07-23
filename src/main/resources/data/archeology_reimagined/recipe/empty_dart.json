@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGF",
+    "GIG",
+    "IGG"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "I": "minecraft:iron_nugget",
+    "F": "minecraft:feather"
+  },
+  "result": {
+    "id": "archeology_reimagined:empty_dart",
+    "count": 1
+  }
+}

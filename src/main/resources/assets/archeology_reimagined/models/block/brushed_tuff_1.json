@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "archeology_reimagined:block/brushed_tuff_1"
+  }
+}

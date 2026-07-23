@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "B": "minecraft:coal_block",
+    "A": [
+      "minecraft:golden_carrot",
+      "minecraft:golden_apple",
+      "minecraft:enchanted_golden_apple",
+      "archeology_reimagined:meat_cluster"
+    ]
+  },
+  "result": {
+    "id": "archeology_reimagined:advanced_organic_fuel",
+    "count": 1
+  }
+}
