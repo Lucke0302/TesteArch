@@ -29,17 +29,17 @@ import com.geckolib.util.GeckoLibUtil;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import com.lucas.arch.registry.ModTags;
-import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.entity.ai.SeekDroppedFoodGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.EntityDimensions;
-import com.geckolib.renderer.base.GeoRenderState;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 
 import java.util.EnumMap;
 
-public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mudança para TamableAnimal
+public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mudança para TamableAnimal
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -47,6 +47,9 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
     public static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Byte> DOMINANT_STATE = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.BYTE);
+
+    public static final EntityDataAccessor<Boolean> IS_MALE = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<String> AGE_TIER_SYNC = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.STRING);
 
     // --- NBT KEYS ---
     private static final String NBT_COLOR = "AllosaurusColor";
@@ -101,6 +104,8 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
         builder.define(COLOR, 0xFFFFFFFF);
         builder.define(SCALE, 3.1f); 
         builder.define(DOMINANT_STATE, (byte) 0);
+        builder.define(IS_MALE, true);
+        builder.define(AGE_TIER_SYNC, AgeTier.BABY.name());
     }
 
     @Override
@@ -157,13 +162,13 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
 
-        this.isMale = this.random.nextBoolean();
+        this.entityData.set(IS_MALE, this.random.nextBoolean());
 
         if (reason == EntitySpawnReason.COMMAND || reason == EntitySpawnReason.SPAWN_ITEM_USE) {
-            this.ageTier = AgeTier.ADULT;
+            this.setAgeTier(AgeTier.ADULT);
             this.baseScale = 3.1f;
         } else {
-            this.ageTier = AgeTier.BABY;
+            this.setAgeTier(AgeTier.BABY);
             this.baseScale = 2.7f + (this.random.nextFloat() * 0.8f);
         }
             
@@ -212,13 +217,6 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
         nav.setCanFloat(true);
         nav.setMaxVisitedNodesMultiplier(this.getBbWidth() > 2.0F ? 2.0F : 1.0F);
         return nav;
-    }
-
-    public void setAgeTier(AgeTier tier) {
-        if (this.ageTier == tier) return;
-        this.ageTier = tier;
-        this.updateStats();
-        this.refreshDimensions();
     }
 
     @Override
@@ -277,8 +275,21 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
         return this.entityData.get(COLOR);
     }
 
-    public boolean isMale() { return this.isMale; }
-    public AgeTier getAgeTier() { return this.ageTier; }
+    public boolean isMale() {
+        return this.entityData.get(IS_MALE);
+    }
+
+    public AgeTier getAgeTier() {
+        return AgeTier.valueOf(this.entityData.get(AGE_TIER_SYNC));
+    }
+
+    public void setAgeTier(AgeTier tier) {
+        if (this.getAgeTier() == tier) return;
+        this.entityData.set(AGE_TIER_SYNC, tier.name());
+        this.updateStats();
+        this.refreshDimensions();
+    }
+
     public float getTrait(Trait trait) { return this.traits.getOrDefault(trait, 0.0f); }
     public float getFeeling(Feeling feeling) { return this.feelings.getOrDefault(feeling, 0.0f); }
     public byte getDominantState() { return this.entityData.get(DOMINANT_STATE); }
