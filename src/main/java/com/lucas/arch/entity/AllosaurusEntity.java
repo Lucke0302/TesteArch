@@ -10,7 +10,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.TamableAnimal; // Substitui o Animal vanilla
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -34,6 +34,7 @@ import com.lucas.arch.entity.ai.SeekDroppedFoodGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityDimensions;
 
 import java.util.EnumMap;
 
@@ -53,6 +54,8 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
     private static final String NBT_AGE_TIER = "AgeTier";
     private static final String NBT_AFFINITY = "HumanAffinity";
     private static final String NBT_GENETIC_MULTIPLIER = "GeneticStatMultiplier";
+    private static final float HITBOX_SCALE_RATIO = 0.9f;
+    private static final float MAX_SAFE_HITBOX_SCALE = 3.0f;
 
     // --- ESTRUTURAS DE DADOS ---
     private final EnumMap<Trait, Float> traits = new EnumMap<>(Trait.class);
@@ -74,6 +77,21 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
         for (Feeling feeling : Feeling.values()) {
             this.feelings.put(feeling, 0.0f);
         }
+    }
+
+    @Override
+    public EntityDimensions getDefaultDimensions(Pose pose) {
+        EntityDimensions vanillaScaledDims = super.getDefaultDimensions(pose);
+
+        float visualScale = this.getVisualScale();
+        if (visualScale <= 0f) {
+            return vanillaScaledDims;
+        }
+
+        float cappedScale = Math.min(visualScale, MAX_SAFE_HITBOX_SCALE);
+        float relativeRatio = (cappedScale * HITBOX_SCALE_RATIO) / visualScale;
+
+        return vanillaScaledDims.scale(relativeRatio);
     }
 
     @Override
@@ -102,17 +120,33 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
+
         this.entityData.set(COLOR, input.getIntOr(NBT_COLOR, 0xFFFFFFFF));
-        this.baseScale = input.getFloatOr(NBT_SCALE, 1.0f);
-        
         this.isMale = input.getBooleanOr(NBT_IS_MALE, true);
-        this.ageTier = AgeTier.valueOf(input.getStringOr(NBT_AGE_TIER, AgeTier.BABY.name()));
         this.humanAffinity = input.getFloatOr(NBT_AFFINITY, 0.5f);
         this.geneticStatMultiplier = input.getFloatOr(NBT_GENETIC_MULTIPLIER, 1.0f);
-        this.updateStats();
+
+        float scaleFromNbt = input.getFloatOr(NBT_SCALE, Float.NaN);
+        String ageTierFromNbt = input.getStringOr(NBT_AGE_TIER, "");
+
+        boolean hasCustomScale = !Float.isNaN(scaleFromNbt);
+        boolean hasCustomAgeTier = !ageTierFromNbt.isBlank();
+
+        if (hasCustomScale) {
+            this.baseScale = scaleFromNbt;
+        }
+        if (hasCustomAgeTier) {
+            this.ageTier = AgeTier.valueOf(ageTierFromNbt);
+        }
 
         for (Trait trait : Trait.values()) {
             this.traits.put(trait, input.getFloatOr("Trait_" + trait.name(), 0.0f));
+        }
+
+        if (hasCustomScale || hasCustomAgeTier) {
+            this.updateStats();
+        } else {
+            this.entityData.set(SCALE, this.getVisualScale());
         }
 
         this.refreshDimensions();
@@ -121,12 +155,17 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
-        
-        // Sorteio de Sexo e Escala Base
+
         this.isMale = this.random.nextBoolean();
-        this.baseScale = 2.7f + (this.random.nextFloat() * 0.8f);
-        this.ageTier = AgeTier.BABY;
-        
+
+        if (reason == EntitySpawnReason.COMMAND || reason == EntitySpawnReason.SPAWN_ITEM_USE) {
+            this.ageTier = AgeTier.ADULT;
+            this.baseScale = 3.1f;
+        } else {
+            this.ageTier = AgeTier.BABY;
+            this.baseScale = 2.7f + (this.random.nextFloat() * 0.8f);
+        }
+            
         // --- DISTRIBUIÇÃO GENÉTICA DE TRAITS  ---
         float totalPoints = Trait.values().length / 2.0f;
         float[] rolls = new float[Trait.values().length];
@@ -172,6 +211,13 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
         nav.setCanFloat(true);
         nav.setMaxVisitedNodesMultiplier(this.getBbWidth() > 2.0F ? 2.0F : 1.0F);
         return nav;
+    }
+
+    public void setAgeTier(AgeTier tier) {
+        if (this.ageTier == tier) return;
+        this.ageTier = tier;
+        this.updateStats();
+        this.refreshDimensions();
     }
 
     @Override
