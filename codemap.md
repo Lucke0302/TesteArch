@@ -56,8 +56,9 @@ Todos os quatro blocks compartilham o mesmo padrão: `ContainerData` para sincro
 
 | Peça | Arquivo |
 |---|---|
-| Entidade | `entity/AllosaurusEntity.java` — extends `Animal`, implementa `GeoEntity` (GeckoLib) |
+| Entidade | `entity/AllosaurusEntity.java` — extends `TamableAnimal`, implementa `GeoEntity` (GeckoLib) |
 | IA custom | `entity/ai/SeekDroppedFoodGoal.java` — persegue itens dropados da tag `carnivore_food` |
+| Enums de Personalidades-Idade-Sentimentos | `entity/Trait.java`, `entity/AgeTier.java`, `entity/Feeling.java` |
 | Registro da entidade | `registry/ModEntities.java` |
 | Modelo (cliente) | `client/model/AllosaurusModel.java` |
 | Renderer (cliente) | `client/renderer/AllosaurusRenderer.java` — escala visual dinâmica via `DataTicket` |
