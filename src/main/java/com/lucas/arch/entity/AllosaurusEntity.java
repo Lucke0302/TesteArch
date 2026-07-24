@@ -35,6 +35,7 @@ import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityDimensions;
+import com.geckolib.renderer.base.GeoRenderState;
 
 import java.util.EnumMap;
 
@@ -106,12 +107,12 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
     protected void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.putInt(NBT_COLOR, this.entityData.get(COLOR));
-        output.putFloat(NBT_SCALE, this.entityData.get(SCALE));
+        output.putFloat(NBT_SCALE, this.baseScale);
         output.putBoolean(NBT_IS_MALE, this.isMale);
         output.putString(NBT_AGE_TIER, this.ageTier.name());
         output.putFloat(NBT_AFFINITY, this.humanAffinity);
         output.putFloat(NBT_GENETIC_MULTIPLIER, this.geneticStatMultiplier);
-        
+
         for (Trait trait : Trait.values()) {
             output.putFloat("Trait_" + trait.name(), this.traits.getOrDefault(trait, 0.0f));
         }
