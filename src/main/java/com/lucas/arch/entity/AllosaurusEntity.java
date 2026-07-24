@@ -59,7 +59,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
     private final EnumMap<Feeling, Float> feelings = new EnumMap<>(Feeling.class);
     private boolean isMale;
     private AgeTier ageTier = AgeTier.BABY;
-    private float baseScale = 1.0f;
+    private float baseScale = 3.1f;
     private float humanAffinity = 0.5f;
     private float geneticStatMultiplier = 1.0f;
 
@@ -80,8 +80,8 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(COLOR, 0xFFFFFFFF);
-        builder.define(SCALE, 1.0f);
-        builder.define(DOMINANT_STATE, (byte) 0); // 0 = Neutro
+        builder.define(SCALE, 3.1f); 
+        builder.define(DOMINANT_STATE, (byte) 0);
     }
 
     @Override
@@ -104,7 +104,6 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
         super.readAdditionalSaveData(input);
         this.entityData.set(COLOR, input.getIntOr(NBT_COLOR, 0xFFFFFFFF));
         this.baseScale = input.getFloatOr(NBT_SCALE, 1.0f);
-        this.entityData.set(SCALE, this.baseScale);
         
         this.isMale = input.getBooleanOr(NBT_IS_MALE, true);
         this.ageTier = AgeTier.valueOf(input.getStringOr(NBT_AGE_TIER, AgeTier.BABY.name()));
@@ -125,10 +124,9 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
         
         // Sorteio de Sexo e Escala Base
         this.isMale = this.random.nextBoolean();
-        this.baseScale = 0.7f + (this.random.nextFloat() * 0.3f);
-        this.entityData.set(SCALE, this.baseScale);
+        this.baseScale = 2.7f + (this.random.nextFloat() * 0.8f);
         this.ageTier = AgeTier.BABY;
-
+        
         // --- DISTRIBUIÇÃO GENÉTICA DE TRAITS  ---
         float totalPoints = Trait.values().length / 2.0f;
         float[] rolls = new float[Trait.values().length];
@@ -189,10 +187,13 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
 
     public void updateStats() {
         float ageMultiplier = this.ageTier.getScaleMultiplier();
+        float effectiveScale = this.baseScale * ageMultiplier;
 
         if (this.getAttribute(Attributes.SCALE) != null) {
-            this.getAttribute(Attributes.SCALE).setBaseValue(this.baseScale * ageMultiplier);
+            this.getAttribute(Attributes.SCALE).setBaseValue(effectiveScale);
         }
+
+        this.entityData.set(SCALE, effectiveScale);
 
         if (this.getAttribute(Attributes.ATTACK_DAMAGE) != null) {
             this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(20.0 * this.geneticStatMultiplier * ageMultiplier);
@@ -201,7 +202,6 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
         if (this.getAttribute(Attributes.MAX_HEALTH) != null) {
             double oldMaxHealth = this.getMaxHealth();
             this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100.0 * this.geneticStatMultiplier * ageMultiplier);
-            
             if (this.getHealth() > 0 && oldMaxHealth > 0) {
                 this.setHealth((float) (this.getHealth() * (this.getMaxHealth() / oldMaxHealth)));
             }
@@ -306,6 +306,15 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity { // Mu
             float hungerIncrease = 0.05f + (gluttony * 0.05f); 
             this.setFeeling(Feeling.HUNGER, this.getFeeling(Feeling.HUNGER) + hungerIncrease);
         }
+    }
+
+    public float getVisualScale() {
+        if (this.getAttributes().hasAttribute(Attributes.SCALE)) {
+            return (float) this.getAttributeValue(Attributes.SCALE);
+        }
+        
+        // Fallback de segurança usando o SynchedEntityData
+        return this.entityData.get(SCALE);
     }
 
     @Override
