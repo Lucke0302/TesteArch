@@ -5,8 +5,7 @@
   "mixins": [
     "ExampleMixin",
     "FallingBlockEntityMixin",
-    "BlockEntityMixin",
-    "EntityRendererMixin"
+    "BlockEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

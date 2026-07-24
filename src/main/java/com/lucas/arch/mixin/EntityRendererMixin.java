@@ -1,4 +1,4 @@
-package com.lucas.arch.mixin;
+/*package com.lucas.arch.mixin;
 
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -26,4 +26,4 @@ public abstract class EntityRendererMixin {
             livingState.addGeckolibData(AllosaurusRenderer.IS_MALE_TICKET, allo.isMale());
         }
     }
-}
+}*/
