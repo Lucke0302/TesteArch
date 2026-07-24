@@ -111,6 +111,9 @@ public class ModItems {
     public static final Item FULL_DART = registerItem("full_dart",
          p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
 
+    public static final Item BITTER_BERRY_JAR = registerItem("bitter_berry_jar", 
+         p -> new ArchItem(p, "Edu Guter", "Lucke0302"));
+
     // --- Novas plantas ---
     public static final Item BITTER_BERRIES = registerItem("bitter_berries",
          p -> new ArchItemNameBlockItem(ModBlocks.BITTER_BERRY_BUSH, p
@@ -176,6 +179,7 @@ public class ModItems {
             output.accept(CYCAD_SEED);
             output.accept(CYCAD_FRUIT);
             output.accept(ModBlocks.CYCAD_SAPLING);
+            output.accept(BITTER_BERRY_JAR);
         });
     }
 }

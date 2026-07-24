@@ -51,5 +51,9 @@
 
   "item.archeology_reimagined.sand_powder": "Sand Powder",
   "item.archeology_reimagined.gravel_powder": "Gravel Powder",
-  "item.archeology_reimagined.tuff_powder": "Tuff Powder"
+  "item.archeology_reimagined.tuff_powder": "Tuff Powder",
+
+  "item.archeology_reimagined.bitter_berry_jar": "Bitter Berry Jar",
+  "block.archeology_reimagined.biocatalyzer": "Biocatalyzer",
+  "item.archeology_reimagined.biocatalyzer": "Biocatalyzer"
 }

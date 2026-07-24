@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "CVC",
+    "IPI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "archeology_reimagined:culture_chamber",
+    "V": "archeology_reimagined:thermal_module",
+    "P": "archeology_reimagined:processing_board"
+  },
+  "result": {
+    "id": "archeology_reimagined:biocatalyzer",
+    "count": 1
+  }
+}

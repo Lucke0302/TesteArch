@@ -51,5 +51,9 @@
 
   "item.archeology_reimagined.sand_powder": "Pó de Areia",
   "item.archeology_reimagined.gravel_powder": "Pó de Cascalho",
-  "item.archeology_reimagined.tuff_powder": "Pó de Tufo"
+  "item.archeology_reimagined.tuff_powder": "Pó de Tufo",
+
+  "item.archeology_reimagined.bitter_berry_jar": "Frasco de Bagas Amargas",
+  "block.archeology_reimagined.biocatalyzer": "Biocatalisador",
+  "item.archeology_reimagined.biocatalyzer": "Biocatalisador"
 }

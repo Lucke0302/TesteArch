@@ -1,6 +1,7 @@
 package com.lucas.arch;
 
 import com.lucas.arch.registry.ModMenuTypes;
+import com.lucas.arch.screen.BiocatalyzerScreen;
 import com.lucas.arch.screen.CleansingTableScreen;
 import com.lucas.arch.screen.FuserScreen;
 import com.lucas.arch.screen.SynthesizerScreen;
@@ -20,6 +21,8 @@ public class ArcheologyReimaginedClient implements ClientModInitializer {
         MenuScreens.register(ModMenuTypes.FUSER_MENU, FuserScreen::new);
 
         EntityRenderers.register(ModEntities.ALLOSAURUS, AllosaurusRenderer::new);
+
+        MenuScreens.register(ModMenuTypes.BIOCATALYZER_MENU, BiocatalyzerScreen::new);
 
     }
 }

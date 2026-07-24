@@ -2,6 +2,7 @@ package com.lucas.arch.registry;
 
 import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.block.ArchBrushableBlock;
+import com.lucas.arch.block.BiocatalyzerBlock;
 import com.lucas.arch.block.BitterBerryBushBlock;
 import com.lucas.arch.block.CleansingTableBlock;
 import com.lucas.arch.block.CycadCenterBlock;
@@ -96,6 +97,11 @@ public class ModBlocks {
                                         .noOcclusion()), 
         "Lucke0302", "Lucke0302");
 
+    // --- Adição no ModBlocks ---
+    public static final Block BIOCATALYZER = registerBlock("biocatalyzer",
+        properties -> new BiocatalyzerBlock(properties.mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops()),
+        "Lucke0302", "Lucke0302");
+
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function, String designer, String programmer) {
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, name));
         Block block = Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));
@@ -117,6 +123,7 @@ public class ModBlocks {
             output.accept(FOSSIL);
             output.accept(AMBER_ORE);
             output.accept(CYCAD_LOG);
+            output.accept(BIOCATALYZER);
         });
     }
 }

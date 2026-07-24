@@ -1,12 +1,15 @@
+#### Renderização Avançada de Pele (Grayscale + Overlay)
+- [ ] Implementar a *Render Layer* de proteção no AllosaurusRenderer para garantir que olhos, garras e dentes não sejam tingidos pelo filtro de cor da pele.
+
 # Archeology Reimagined — Documento de Design & Status de Features
 
-Um mod de arqueologia e biotecnologia pré-histórica focado em escavação, engenharia genética, botânica e ressuscitação de criaturas da era mesozoica.
+Um mod de arqueologia e biotecnologia pré-histórica focado em escavação, engenharia genética, catálise biológica, botânica e ressuscitação de criaturas da era mesozoica.
 
 ---
 
 ## O Ciclo de Produção & Clonagem
 
-A progressão do mod é estruturada em 4 etapas encadeadas para ressuscitar espécies extintas:
+A progressão do mod é estruturada em etapas encadeadas para ressuscitar espécies extintas e sintetizar utilitários biotecnológicos:
 
 ### 1.1 Escavação e Coleta
 * **Pincelamento em Superfície:** Ao usar um Pincel (`Items.BRUSH`) em blocos de Areia, Cascalho ou Tufo que tenham espaço livre acima, o bloco vira uma variante escovável customizada (`BRUSHED_SAND/GRAVEL/TUFF`).
@@ -38,6 +41,13 @@ A progressão do mod é estruturada em 4 etapas encadeadas para ressuscitar esp�
   * *Sucesso:* Gera um **Ovo de Dinossauro chocável** (ex: `ALLOSAURUS_EGG`) herdando a qualidade final.
   * *Falha:* O ovo se rompe e produz de 3 a 6 unidades de *Aglomerado de Carne*.
 
+### 1.5 Catálise Biológica & Utilitários (Biocatalisador)
+* **Requisitos:** Requer 400 ticks (20 segundos) e consumo de combustíveis químicos/orgânicos estritos no slot inferior.
+* **Rotas de Catálise:**
+  * **Seringa com Aditivo:** DNA Fragmentado + Seringa Vazia nos slots superiores + **Combustível Orgânico Avançado** no slot de combustível $\rightarrow$ Gera 1 *Seringa com Aditivo* (`full_syringe`).
+  * **Dardo Tranquilizante:** Frasco de Bagas Amargas (`bitter_berry_jar`) + Dardo Vazio nos slots superiores + **Biopropelente** no slot de combustível $\rightarrow$ Gera 1 *Dardo Tranquilizante* (`full_dart`) e substitui o Frasco de Bagas por um **Frasco de Vidro Vazio** (`glass_bottle`) no slot de entrada.
+* **Crafting do Frasco de Bagas Amargas:** 8 Bagas Amargas ao redor de 1 Frasco de Vidro na Bancada de Trabalho.
+
 ---
 
 ## Entidades Vivas — Allossauro (`AllosaurusEntity`)
@@ -62,6 +72,7 @@ A progressão do mod é estruturada em 4 etapas encadeadas para ressuscitar esp�
   * Arbusto espinhoso gerado em florestas/taigas (configurável via arquivo de config).
   * Prende entidades, causa dano de contato e aplica o efeito *Lentidão*.
   * Colheita produz `BITTER_BERRIES`, que podem ser consumidas pelo jogador para fome, mas aplicam *Lentidão*.
+  * Permite criar o *Frasco de Bagas Amargas* (`bitter_berry_jar`) para catalisar compostos tranquilizantes.
 * **Cica (`Cycad`):**
   * Estrutura gerada com tronco (`CYCAD_LOG`), bloco central (`CYCAD_CENTER`) e folhagem.
   * Farinha de osso no bloco central induz a regeneração do fruto (50% de chance).
@@ -76,14 +87,16 @@ A progressão do mod é estruturada em 4 etapas encadeadas para ressuscitar esp�
 ## Utilitários, Compactação e Guia
 
 * **Compactação de Pós:** Receitas de bancada 3x3 para reconverter 9 Pós (`sand_powder`, `gravel_powder`, `tuff_powder`) de volta em blocos sólidos de Areia, Cascalho e Tufo.
-* **Guia Arqueológico:** Item de livro customizado com 8 páginas interativas explicando escavação, funcionamento das máquinas, botânica exótica e compactação.
+* **Guia Arqueológico:** Item de livro customizado com 8 páginas interativas explicando escavação, funcionamento das máquinas, catálise biológica, botânica exótica e compactação.
 
 ---
 
 ## Status Geral de Implementação
 
 ### Concluído e Funcional
-- [x] Maquinário completo (Mesa de Limpeza, Sintetizador, Fusor) com GUIs, sincronização de dados (`ContainerData`), consumo de combustíveis e barra de progresso.
+- [x] Maquinário básico completo (Mesa de Limpeza, Sintetizador, Fusor) com GUIs, sincronização de dados (`ContainerData`), consumo de combustíveis e barra de progresso.
+- [x] Maquinário Biocatalisador (`BiocatalyzerBlock`) com validação estrita de pares ingrediente/combustível, produção de Seringas/Dardos e devolução automática de Frascos de Vidro no slot.
+- [x] Item Frasco de Bagas Amargas (`bitter_berry_jar`) e receita de bancada associada.
 - [x] Lógica de Pincelamento/Escovação customizada gerando pós e fósseis em areia/cascalho/tufo.
 - [x] Receitas de compactação 3x3 de pós para blocos maciços.
 - [x] Base da entidade Allossauro com GeckoLib 5 (RNG de escala 2.7-3.5x, paleta de cores, variação de atributos ±20%).
@@ -100,25 +113,30 @@ A progressão do mod é estruturada em 4 etapas encadeadas para ressuscitar esp�
 - [ ] **Placeholders de Botânica:**
   * A Sequóia e a Cica usam blocos vanilla (`OAK_LOG`, `OAK_LEAVES`, `OAK_SLAB`) como placeholder visual. Falta adicionar texturas e modelos próprios.
   * A Semente de Cica (`CYCAD_SEED`) existe como item, mas ainda não possui lógica/bloco para ser plantada no chão.
-- [ ] **Geração Natural de Sequóias:** O gerador da Sequóia funciona via farinha de osso na muda, mas a árvore ainda não spawna naturalmente nos biomas via worldgen.
+- [ ] **Geração Natural de Sequóias:** O gerador da Sequóia funciona via farinha de osso na muda, mas a árvore ainda não spawna naturally nos biomas via worldgen.
 
 ---
 
 ### A Fazer (Backlog de Features)
 
+#### Sistema de Sentimentos & Personalidades (`Feelings & Traits`)
+- [ ] **Traços de Personalidade:** Genética sorteada no nascimento (*Agressivo*, *Tímido*, *Guloso*, *Territorial*).
+- [ ] **Estados Emocionais (Feelings):** Medidores contínuos de *Raiva*, *Fome*, *Medo* e *Curiosidade*.
+- [ ] **Dinâmica das Goals:** Transições dinâmicas entre atração por comida, ataque ao jogador, fuga ou defesa de território com base no saldo emocional no instante.
+
+#### Utilitários Químicos & Contenção (Mecânicas de Uso em Entidades)
+- [ ] **Dardos Tranquilizantes (`FULL_DART`):** Implementar projétil disparável (arma/zarabatana ou arremesso) para sedar dinossauros à distância.
+- [ ] **Seringas com Aditivos (`FULL_SYRINGE`):** Implementar interação no botão direito para injeção direta no dinossauro, aplicando mutações de atributos ou cura acelerada.
+
 #### Sistema de Domesticação (Taming) & Vínculo
 - [ ] Dinossauros nascem selvagens.
-- [ ] Processo de domesticação alimentando filhotes recém-nascidos com alimentos nobres (`meat_cluster` / carnes).
+- [ ] Processo de domesticação alimentando filhotes recém-nascidos com alimentos nobres (`meat_cluster` / carnes) ou tranquilizados.
 - [ ] Registro do UUID do jogador como Dono (`Owner`) da entidade.
 
 #### Sela Customizada e Montaria
 - [ ] Item de Sela de Dinossauro.
 - [ ] **Trava de Segurança:** Apenas o dono pode montar na entidade.
 - [ ] **Controle WASD:** Permitir que o jogador pilote o Allossauro, controlando direção, velocidade e ataque primário.
-
-#### Utilitários Químicos & Contenção (Lógica de Uso)
-- [ ] **Dardos Tranquilizantes (`FULL_DART`) & Biopropelente:** Implementar arma/mecanismo para disparar dardos e sedar dinossauros à distância.
-- [ ] **Seringas com Aditivos (`FULL_SYRINGE`):** Implementar lógica de aplicação no dinossauro para alterar status ou curar a entidade.
 
 #### Renderização Avançada de Pele (Grayscale + Overlay)
 - [ ] Implementar a *Render Layer* de proteção no AllosaurusRenderer para garantir que olhos, garras e dentes não sejam tingidos pelo filtro de cor da pele.

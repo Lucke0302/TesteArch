@@ -5,6 +5,7 @@ import com.lucas.arch.block.entity.CleansingTableBlockEntity;
 import com.lucas.arch.block.entity.FuserBlockEntity;
 import com.lucas.arch.block.entity.SynthesizerBlockEntity;
 import com.lucas.arch.block.entity.ArchBrushableBlockEntity;
+import com.lucas.arch.block.entity.BiocatalyzerBlockEntity;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
@@ -42,6 +43,13 @@ public class ModBlockEntities {
         Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "fuser_be"),
         FabricBlockEntityTypeBuilder.create(FuserBlockEntity::new, ModBlocks.FUSER).build()
     );    
+
+    public static final BlockEntityType<BiocatalyzerBlockEntity> BIOCATALYZER_BE =
+    Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "biocatalyzer_be"),
+        FabricBlockEntityTypeBuilder.create(BiocatalyzerBlockEntity::new, ModBlocks.BIOCATALYZER).build()
+    );
 
     public static void registerBlockEntities() {
         System.out.println("[" + ArcheologyReimagined.MOD_ID + "] Registrando Block Entities...");
