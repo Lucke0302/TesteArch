@@ -15,7 +15,6 @@ import com.geckolib.renderer.base.GeoRenderState;
 
 public class AllosaurusRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<AllosaurusEntity, R> {
 
-    // Adicionamos a tipagem explícita <Boolean> para o compilador não se perder na inferência
     public static final RenderStateDataKey<Boolean> IS_MALE_KEY = 
         RenderStateDataKey.create(() -> "allosaurus_is_male");
 
