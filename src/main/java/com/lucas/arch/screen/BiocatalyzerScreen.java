@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class BiocatalyzerScreen extends AbstractContainerScreen<BiocatalyzerMenu> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "textures/gui/fuser.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "textures/gui/biocatalyzer.png");
     private static final Identifier PROGRESS_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "textures/gui/cleansing_bar.png");
     private static final Identifier LAVA_TEXTURE = Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "textures/gui/cleansing_lava.png");
 
@@ -21,7 +21,7 @@ public class BiocatalyzerScreen extends AbstractContainerScreen<BiocatalyzerMenu
     protected void init() {
         super.init();
         this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
-        this.inventoryLabelY = 10000;
+        this.inventoryLabelY = 10000; 
     }
 
     @Override
@@ -47,17 +47,22 @@ public class BiocatalyzerScreen extends AbstractContainerScreen<BiocatalyzerMenu
                 graphics.blit(RenderPipelines.GUI_TEXTURED, PROGRESS_TEXTURE, x + 108, y + 31, 0f, 0f, currentWidth, 11, 17, 11);
             }
         }
+
         super.extractContents(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
     public void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
+
+        // Tooltip ao passar o mouse sobre o Tanque de Combustível
         if (this.isHovering(13, 8, 10, 85, mouseX, mouseY)) {
             int maxFuelTime = this.menu.getMaxFuelTime();
             int fuelPercent = maxFuelTime > 0 ? (this.menu.getFuelTime() * 100) / maxFuelTime : 0;
             graphics.setTooltipForNextFrame(this.font, Component.literal("§6Combustível: " + fuelPercent + "%"), mouseX, mouseY);
         }
+
+        // Tooltip ao passar o mouse sobre a Barra de Progresso
         if (this.isHovering(108, 31, 17, 11, mouseX, mouseY)) {
             int maxProgress = this.menu.getMaxProcessTime();
             int percent = maxProgress > 0 ? (this.menu.getProcessProgress() * 100) / maxProgress : 0;

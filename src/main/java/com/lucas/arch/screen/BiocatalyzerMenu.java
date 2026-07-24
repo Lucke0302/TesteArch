@@ -28,19 +28,30 @@ public class BiocatalyzerMenu extends AbstractContainerMenu {
         this.data = data;
         inventory.startOpen(playerInventory.player);
 
-        // Slots de Entrada (Cima): Slot 0 e 1
-        this.addSlot(new Slot(inventory, 0, 57, 19));
-        this.addSlot(new Slot(inventory, 1, 75, 19));
-
-        // Slot de Combustível (Baixo): Slot 2
-        this.addSlot(new Slot(inventory, 2, 66, 43) {
+        // --- SLOTS DA MÁQUINA ---
+        
+        // Slots 0 & 1: Reagentes Superiores (DNA Fragmentado, Seringa Vazia, Frasco de Bagas, Dardo Vazio)
+        this.addSlot(new Slot(inventory, 0, 57, 19) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.is(ModItems.ADVANCED_ORGANIC_FUEL) || stack.is(ModItems.BIO_PROPELLANT);
+                return isInputIngredient(stack);
+            }
+        });
+        
+        this.addSlot(new Slot(inventory, 1, 75, 19) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return isInputIngredient(stack);
             }
         });
 
-        // Slot de Saída (Direita): Slot 3
+        this.addSlot(new Slot(inventory, 2, 66, 43) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return isFuel(stack);
+            }
+        });
+
         this.addSlot(new Slot(inventory, 3, 155, 29) {
             @Override
             public boolean mayPlace(ItemStack stack) {
@@ -48,7 +59,7 @@ public class BiocatalyzerMenu extends AbstractContainerMenu {
             }
         });
 
-        // Inventário do Jogador
+        // --- INVENTÁRIO DO JOGADOR ---
         int[] invX = {45, 63, 81, 99, 117, 135, 153, 171, 189};
         int[] invY = {75, 93, 111};
         for (int row = 0; row < 3; ++row) {
@@ -56,6 +67,7 @@ public class BiocatalyzerMenu extends AbstractContainerMenu {
                 this.addSlot(new Slot(playerInventory, col + row * 9 + 9, invX[col], invY[row]));
             }
         }
+        
         // Hotbar
         for (int col = 0; col < 9; ++col) {
             this.addSlot(new Slot(playerInventory, col, invX[col], 134));
@@ -77,13 +89,16 @@ public class BiocatalyzerMenu extends AbstractContainerMenu {
             ItemStack originalStack = slot.getItem();
             newStack = originalStack.copy();
 
-            if (invSlot < 4) { // Do Biocatalisador para o Inventário
+            // Retirar da máquina para o inventário
+            if (invSlot < 4) {
                 if (!this.moveItemStackTo(originalStack, 4, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
                 slot.onQuickCraft(originalStack, newStack);
-            } else { // Do Inventário para o Biocatalisador
-                if (originalStack.is(ModItems.ADVANCED_ORGANIC_FUEL) || originalStack.is(ModItems.BIO_PROPELLANT)) {
+            } 
+            // Inserir do inventário para a máquina
+            else {
+                if (isFuel(originalStack)) {
                     if (!this.moveItemStackTo(originalStack, 2, 3, false)) return ItemStack.EMPTY;
                 } else if (isInputIngredient(originalStack)) {
                     if (!this.moveItemStackTo(originalStack, 0, 2, false)) return ItemStack.EMPTY;
@@ -101,9 +116,13 @@ public class BiocatalyzerMenu extends AbstractContainerMenu {
         return newStack;
     }
 
-    private boolean isInputIngredient(ItemStack stack) {
+    private static boolean isInputIngredient(ItemStack stack) {
         return stack.is(ModItems.FRAGMENTED_DNA) || stack.is(ModItems.EMPTY_SYRINGE) ||
                stack.is(ModItems.BITTER_BERRY_JAR) || stack.is(ModItems.EMPTY_DART);
+    }
+
+    private static boolean isFuel(ItemStack stack) {
+        return stack.is(ModItems.ADVANCED_ORGANIC_FUEL) || stack.is(ModItems.BIO_PROPELLANT);
     }
 
     public int getProcessProgress() { return this.data.get(0); }
