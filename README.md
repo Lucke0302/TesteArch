@@ -56,10 +56,14 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
 * **Hitbox Dinâmica:** A dimensão física (`getDefaultDimensions`) escala proporcionalmente à escala visual elevada à potência de `0.9`.
 * **Atributos Individuais:** No spawn (`finalizeSpawn`), HP Máximo e Dano de Ataque variam em **±20%** por indivíduo.
 
-### 2.2 Comportamento & IA Customizada
-* **Inteligência Alimentar (`SeekDroppedFoodGoal`):** A entidade detecta e persegue itens de comida dropados no chão marcados com a tag `#archeology_reimagined:carnivore_food` (carnes vanilla + `meat_cluster`).
-* **Atração (`TemptGoal`):** Jogadores segurando itens da tag de carnívoros atraem a atenção do dinossauro.
-* **Animações (GeckoLib 5):** Animações de `idle` e `walk` gerenciadas continuamente, com suporte a trigger de `attack`.
+### 2.2 Comportamento & Motor Emocional (Fuzzy AI)
+* **Sistema de Sentimentos:** A entidade acumula Raiva, Medo, Fome e Curiosidade com base em eventos do mundo (levar dano, tempo ocioso). O sentimento com maior peso ativo se torna o **Estado Dominante**.
+* **Behavior Tree (Fuzzy Goals):** As decisões da entidade não são estáticas. Elas dependem dos limiares de emoção:
+  * *FuzzyHungerGoal:* Caça outros animais ou ataca jogadores agressivamente se a Fome for alta. Se dócil/curioso, apenas rodeia o jogador esperando ser alimentado.
+  * *FuzzyAggressiveGoal:* Em picos de Raiva, aumenta o raio de detecção e a velocidade para atacar alvos ignorando a própria espécie.
+  * *FuzzyFleeGoal:* Em picos de Medo (amplificado pela Covardia), usa o pathfinder para fugir ativamente de ameaças maiores.
+  * *FuzzyCuriosityGoal:* Rodeia passivamente o jogador, drenando a curiosidade.
+* **Coleira Invisível (`DinosaurFollowOwnerGoal`):** Dinossauros domados possuem uma mecânica de seguir o dono organicamente (caminhando em direção ao dono se afastados mais de 24 blocos), sem utilizar o teleporte quebra-imersão do Vanilla.
 
 ### 2.3 Incubação do Ovo
 
@@ -78,6 +82,8 @@ tochas (normal/alma/redstone, incluindo variantes de parede) e fogo.
 Ao atingir 100%, o bloco é substituído por um Allossauro recém-nascido (`AgeTier.BABY`), herdando a
 qualidade genética do DNA original processado no Fusor. Com o mod **Jade** instalado, a porcentagem de
 eclosão é exibida no tooltip ao mirar no ovo.
+
+* **Mecânica de Taming:** Filhotes possuem 50% de chance base de doma usando comidas carnívoras (`#archeology_reimagined:carnivore_food`), enquanto adultos possuem 10%. A chance flutua de acordo com a genética (Gula e Curiosidade aumentam a chance; Agressividade e Covardia diminuem).
 
 ---
 
@@ -115,7 +121,9 @@ eclosão é exibida no tooltip ao mirar no ovo.
 - [x] Lógica de Pincelamento/Escovação customizada gerando pós e fósseis em areia/cascalho/tufo.
 - [x] Receitas de compactação 3x3 de pós para blocos maciços.
 - [x] Base da entidade Allossauro com GeckoLib 5 (RNG de escala 2.7-3.5x, paleta de cores, variação de atributos ±20%).
-- [x] IA do Allossauro para caçar e buscar comida dropada no chão (`SeekDroppedFoodGoal`).
+- [x] Sistema de Sentimentos & Personalidades: Genética de Traits (Agressividade, Covardia, Gula, Curiosidade) influenciando passivamente o Estado Dominante da entidade e sendo exibidos no Jade.
+- [x] Fuzzy Behavior Tree: Motor emocional gerenciando Fome, Fuga, Raiva e Curiosidade, incluindo `DinosaurFollowOwnerGoal` (Coleira Invisível sem teleporte).
+- [x] Sistema de Domesticação (Taming): Matemática de doma via comida carnívora influenciada diretamente pelas Traits genéticas da entidade.
 - [x] Arbusto de Bagas Amargas com dano, debuff e geração configurável por bioma via JSON.
 - [x] Gerador procedural 3D da Sequóia Gigante via farinha de osso na muda.
 - [x] Estrutura da planta Cica com ciclo de colheita e efeito nocivo no consumo do fruto.
@@ -136,19 +144,9 @@ eclosão é exibida no tooltip ao mirar no ovo.
 
 ### A Fazer (Backlog de Features)
 
-#### Sistema de Sentimentos & Personalidades (`Feelings & Traits`)
-- [ ] **Traços de Personalidade:** Genética sorteada no nascimento (*Agressivo*, *Tímido*, *Guloso*, *Territorial*).
-- [ ] **Estados Emocionais (Feelings):** Medidores contínuos de *Raiva*, *Fome*, *Medo* e *Curiosidade*.
-- [ ] **Dinâmica das Goals:** Transições dinâmicas entre atração por comida, ataque ao jogador, fuga ou defesa de território com base no saldo emocional no instante.
-
 #### Utilitários Químicos & Contenção (Mecânicas de Uso em Entidades)
 - [ ] **Dardos Tranquilizantes (`FULL_DART`):** Implementar projétil disparável (arma/zarabatana ou arremesso) para sedar dinossauros à distância.
 - [ ] **Seringas com Aditivos (`FULL_SYRINGE`):** Implementar interação no botão direito para injeção direta no dinossauro, aplicando mutações de atributos ou cura acelerada.
-
-#### Sistema de Domesticação (Taming) & Vínculo
-- [ ] Dinossauros nascem selvagens.
-- [ ] Processo de domesticação alimentando filhotes recém-nascidos com alimentos nobres (`meat_cluster` / carnes) ou tranquilizados.
-- [ ] Registro do UUID do jogador como Dono (`Owner`) da entidade.
 
 #### Sela Customizada e Montaria
 - [ ] Item de Sela de Dinossauro.

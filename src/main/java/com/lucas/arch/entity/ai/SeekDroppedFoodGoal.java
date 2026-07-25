@@ -69,7 +69,7 @@ public class SeekDroppedFoodGoal extends Goal {
             this.targetItem.discard();
 
             if (this.mob instanceof com.geckolib.animatable.GeoEntity geoEntity) {
-                geoEntity.triggerAnim("attack_controller", "attack");
+                geoEntity.triggerAnim("eat_controller", "eat");
             }
             return;
         }

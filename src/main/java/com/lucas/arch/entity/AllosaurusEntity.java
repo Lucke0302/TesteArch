@@ -29,13 +29,21 @@ import com.geckolib.util.GeckoLibUtil;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import com.lucas.arch.registry.ModTags;
+import com.lucas.arch.entity.ai.FuzzyHungerGoal;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import com.lucas.arch.entity.ai.FuzzyFleeGoal;
+import com.lucas.arch.entity.ai.FuzzyAggressiveGoal;
+import com.lucas.arch.entity.ai.FuzzyCuriosityGoal;
+import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
 import com.lucas.arch.entity.ai.SeekDroppedFoodGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
 
 import java.util.EnumMap;
 
@@ -60,6 +68,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     private static final String NBT_GENETIC_MULTIPLIER = "GeneticStatMultiplier";
     private static final float HITBOX_SCALE_RATIO = 0.9f;
     private static final float MAX_SAFE_HITBOX_SCALE = 3.0f;
+    private static final float DOMINANT_STATE_THRESHOLD = 0.3f;
 
     // --- ESTRUTURAS DE DADOS ---
     private final EnumMap<Trait, Float> traits = new EnumMap<>(Trait.class);
@@ -120,6 +129,9 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         for (Trait trait : Trait.values()) {
             output.putFloat("Trait_" + trait.name(), this.traits.getOrDefault(trait, 0.0f));
         }
+        for (Feeling feeling : Feeling.values()) {
+            output.putFloat("Feeling_" + feeling.name(), this.feelings.getOrDefault(feeling, 0.0f));
+        }        
     }
 
     @Override
@@ -147,6 +159,9 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
 
         for (Trait trait : Trait.values()) {
             this.traits.put(trait, input.getFloatOr("Trait_" + trait.name(), 0.0f));
+        }
+        for (Feeling feeling : Feeling.values()) {
+            this.feelings.put(feeling, input.getFloatOr("Feeling_" + feeling.name(), 0.0f));
         }
 
         if (hasCustomScale || hasCustomAgeTier) {
@@ -253,6 +268,91 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         }
     }
 
+    private void updateDominantState() {
+        Feeling dominant = null;
+        float highestEffectiveValue = DOMINANT_STATE_THRESHOLD;
+
+        float aggro = this.getTrait(Trait.AGGRESSIVENESS);
+        float coward = this.getTrait(Trait.COWARDICE);
+        float glut = this.getTrait(Trait.GLUTTONY);
+        float curio = this.getTrait(Trait.CURIOSITY);
+
+        for (Feeling feeling : Feeling.values()) {
+            float rawValue = this.getFeeling(feeling);
+            float multiplier = 1.0f;
+
+            switch (feeling) {
+                case ANGER -> {
+                    multiplier += (aggro * 0.6f) + (curio * aggro * 0.4f) - (coward * 0.5f);
+                }
+                case FEAR -> {
+                    multiplier += (coward * 0.6f) - (aggro * 0.5f) - (curio * 0.3f);
+                }
+                case HUNGER -> {
+                    multiplier += (glut * 0.5f) + (aggro * 0.3f);
+                }
+                case CURIOSITY -> {
+                    multiplier += (curio * 0.5f) + (glut * curio * 0.3f) - (coward * 0.6f);
+                }
+            }
+
+            float effectiveValue = rawValue * Math.max(0.1f, multiplier);
+
+            if (effectiveValue > highestEffectiveValue) {
+                highestEffectiveValue = effectiveValue;
+                dominant = feeling;
+            }
+        }
+
+        byte newState = (byte) (dominant == null ? 0 : dominant.ordinal() + 1);
+        if (this.entityData.get(DOMINANT_STATE) != newState) {
+            this.entityData.set(DOMINANT_STATE, newState);
+        }
+    }
+
+    @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+
+        if (this.isTame()) {
+            return super.mobInteract(player, hand);
+        }
+
+        if (itemStack.is(ModTags.Items.CARNIVORE_FOOD)) {
+            if (!player.getAbilities().instabuild) {
+                itemStack.shrink(1);
+            }
+
+            if (!this.level().isClientSide()) {
+                AgeTier age = this.getAgeTier();
+                boolean isYoung = (age == AgeTier.BABY || age == AgeTier.CHILD);
+                
+                float baseChance = isYoung ? 0.50f : 0.10f;
+                
+                float traitBonus = (this.getTrait(Trait.CURIOSITY) * 0.10f) + 
+                                   (this.getTrait(Trait.GLUTTONY) * 0.10f) - 
+                                   (this.getTrait(Trait.AGGRESSIVENESS) * 0.10f) - 
+                                   (this.getTrait(Trait.COWARDICE) * 0.10f);
+                
+                float finalChance = Math.max(0.01f, baseChance + traitBonus);
+                
+                // TODO: Adicionar +0.10f (10% flat) se a entidade estiver sob o efeito do Dardo Tranquilizante
+                
+                if (this.random.nextFloat() < finalChance) {
+                    this.tame(player);
+                    this.setTarget(null);
+                    this.level().broadcastEntityEvent(this, (byte)7);
+                } else {
+                    this.level().broadcastEntityEvent(this, (byte)6);
+                }
+            }
+            
+            return InteractionResult.SUCCESS;
+        }
+
+        return super.mobInteract(player, hand);
+    }
+
     public void setFeeling(Feeling feeling, float value) {
         this.feelings.put(feeling, net.minecraft.util.Mth.clamp(value, 0.0f, 1.0f));
     }
@@ -305,6 +405,8 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         }));
         controllers.add(new AnimationController<AllosaurusEntity>("attack_controller", 0, state -> PlayState.STOP)
             .triggerableAnim("attack", RawAnimation.begin().thenPlay("animation.allosaurus.attack")));
+        controllers.add(new AnimationController<AllosaurusEntity>("eat_controller", 0, state -> PlayState.STOP)
+            .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.allosaurus.eat")));
     }
 
     @Override
@@ -339,17 +441,13 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
 
-        // Só processa lógicas orgânicas se não estiver morto ou inativo
         if (!this.isAlive()) return;
 
-        // Loop de Decaimento: Sentimentos se acalmam conforme o tempo (baseado no Trait)
         for (Feeling feeling : Feeling.values()) {
             float currentValue = this.getFeeling(feeling);
             if (currentValue > 0.0f) {
                 float traitValue = this.getTrait(getAssociatedTrait(feeling));
                 
-                // Fórmula: 1200 ticks * Math.max(0.2f, traitValue)
-                // Ex: Trait 0.8 = 960 ticks | Trait 0.2 = 240 ticks
                 int decayInterval = (int) (1200 * Math.max(0.2f, traitValue));
                 
                 if (decayInterval > 0 && this.tickCount % decayInterval == 0) {
@@ -358,13 +456,13 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
             }
         }
 
-        // Fome Passiva: Cresce gradativamente. Dinossauros com alta Gula (GLUTTONY) sentem fome mais rápido.
-        // TickCount % 1200 = A cada minuto
         if (this.tickCount % 1200 == 0) {
             float gluttony = this.getTrait(Trait.GLUTTONY);
             float hungerIncrease = 0.05f + (gluttony * 0.05f); 
             this.setFeeling(Feeling.HUNGER, this.getFeeling(Feeling.HUNGER) + hungerIncrease);
         }
+
+        this.updateDominantState();
     }
 
     public float getVisualScale() {
@@ -372,15 +470,26 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
             return (float) this.getAttributeValue(Attributes.SCALE);
         }
         
-        // Fallback de segurança usando o SynchedEntityData
         return this.entityData.get(SCALE);
     }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(7, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(3, new SeekDroppedFoodGoal(this, 1.2D, 10.0D));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.1D, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
+        
+        this.goalSelector.addGoal(1, new FuzzyFleeGoal(this));
+        this.goalSelector.addGoal(2, new FuzzyAggressiveGoal(this));
+        this.goalSelector.addGoal(3, new FuzzyHungerGoal(this));
+        
+        this.goalSelector.addGoal(4, new SeekDroppedFoodGoal(this, 1.2D, 10.0D));
+        
+        this.goalSelector.addGoal(5, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
+        
+        this.goalSelector.addGoal(6, new TemptGoal(this, 1.1D, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
+        
+        this.goalSelector.addGoal(7, new FuzzyCuriosityGoal(this));
+        
+        this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
     }
 }

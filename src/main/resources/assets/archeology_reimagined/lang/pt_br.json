@@ -20,7 +20,7 @@
   "item.archeology_reimagined.advanced_organic_fuel": "Combustível Orgânico Avançado",
   
   "item.archeology_reimagined.meat_cluster": "Aglomerado de Carne",
-  "item.archeology_reimagined.allosaurus_embryo": "Embrião de Allossauro",
+  "item.archeology_reimagined.allosaurus_embryo": "Embrião de Alossauro",
 
   "tooltip.archeology_reimagined.dna_quality": "§7Qualidade do DNA: %s",
   
@@ -31,8 +31,9 @@
 
   "block.archeology_reimagined.fuser": "Fusor",
   "item.archeology_reimagined.fuser": "Fusor",
-  "item.archeology_reimagined.allosaurus_egg_block": "Ovo de Allossauro",
-  "block.archeology_reimagined.allosaurus_egg_block": "Ovo de Allossauro",
+  "item.archeology_reimagined.allosaurus_egg_block": "Ovo de Alossauro",
+  "block.archeology_reimagined.allosaurus_egg_block": "Ovo de Alossauro",  
+  "entity.archeology_reimagined.allosaurus": "Alossauro",
 
   "block.archeology_reimagined.fossil": "Fóssil",
   "block.archeology_reimagined.amber_ore": "Minério de Âmbar",
@@ -57,6 +58,19 @@
   "item.archeology_reimagined.bitter_berry_jar": "Frasco de Bagas Amargas",
   "block.archeology_reimagined.biocatalyzer": "Biocatalisador",
   "item.archeology_reimagined.biocatalyzer": "Biocatalisador",
+  
+  "config.jade.plugin_archeology_reimagined.allosaurus_egg": "Progresso de Eclosão do ovo de Alossauro",
+  "config.jade.plugin_archeology_reimagined.allosaurus_data": "Dados do Alossauro",
 
-  "config.jade.plugin_archeology_reimagined.allosaurus_egg": "Progresso de Eclosão do ovo de Alossauro"
+  "trait.archeology_reimagined.aggressiveness": "Agressivo",
+  "trait.archeology_reimagined.cowardice": "Covarde",
+  "trait.archeology_reimagined.curiosity": "Curioso",
+  "trait.archeology_reimagined.gluttony": "Guloso",
+  "feeling.archeology_reimagined.anger": "Bravo",
+  "feeling.archeology_reimagined.fear": "Medo",
+  "feeling.archeology_reimagined.curiosity": "Curioso",
+  "feeling.archeology_reimagined.hunger": "Faminto",
+  "feeling.archeology_reimagined.neutral": "Neutro",
+  "tooltip.archeology_reimagined.personality": "Personalidade:",
+  "tooltip.archeology_reimagined.state": "Estado: "
 }

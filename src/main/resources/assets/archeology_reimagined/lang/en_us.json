@@ -33,6 +33,7 @@
   "item.archeology_reimagined.fuser": "Fuser",
   "block.archeology_reimagined.allosaurus_egg_block": "Allosaurus Egg",
   "item.archeology_reimagined.allosaurus_egg_block": "Allosaurus Egg",
+  "entity.archeology_reimagined.allosaurus": "Allosaurus",
 
   "block.archeology_reimagined.fossil": "Fossil",
   "block.archeology_reimagined.amber_ore": "Amber Ore",
@@ -58,5 +59,18 @@
   "block.archeology_reimagined.biocatalyzer": "Biocatalyzer",
   "item.archeology_reimagined.biocatalyzer": "Biocatalyzer",
 
-  "config.jade.plugin_archeology_reimagined.allosaurus_egg": "Allosaurus Egg Hatch Progress"
+  "config.jade.plugin_archeology_reimagined.allosaurus_egg": "Allosaurus Egg Hatch Progress",
+  "config.jade.plugin_archeology_reimagined.allosaurus_data": "Allosaurus Data",
+
+  "trait.archeology_reimagined.aggressiveness": "Aggressive",
+  "trait.archeology_reimagined.cowardice": "Coward",
+  "trait.archeology_reimagined.curiosity": "Curious",
+  "trait.archeology_reimagined.gluttony": "Gluttonous",
+  "feeling.archeology_reimagined.anger": "Angry",
+  "feeling.archeology_reimagined.fear": "Feared",
+  "feeling.archeology_reimagined.curiosity": "Curious",
+  "feeling.archeology_reimagined.hunger": "Hungry",
+  "feeling.archeology_reimagined.neutral": "Neutral",
+  "tooltip.archeology_reimagined.personality": "Personality:",
+  "tooltip.archeology_reimagined.state": "State: "
 }
