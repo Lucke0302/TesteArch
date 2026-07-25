@@ -21,20 +21,42 @@ public enum AllosaurusClientProvider implements IEntityComponentProvider {
     public void appendTooltip(ITooltip tooltip, EntityAccessor accessor, IPluginConfig config) {
         CompoundTag data = accessor.getServerData();
 
+        // Sexo (Dimorfismo)
+        data.getBoolean("IsMale").ifPresent(isMale -> {
+            MutableComponent genderComponent = Component.translatable(isMale ? "gender.archeology_reimagined.male" : "gender.archeology_reimagined.female")
+                .withStyle(isMale ? ChatFormatting.BLUE : ChatFormatting.LIGHT_PURPLE);
+            
+            tooltip.add(Component.translatable("tooltip.archeology_reimagined.gender")
+                .withStyle(ChatFormatting.GRAY)
+                .append(genderComponent));
+        });
+
+        // Estágio de Crescimento + Porcentagem
+        data.getString("AgeTier").ifPresent(ageRaw -> {
+            MutableComponent ageComponent = Component.translatable("agetier.archeology_reimagined." + ageRaw.toLowerCase());
+            
+            data.getInt("GrowthPercent").ifPresent(percent -> 
+                ageComponent.append(Component.literal(" (" + percent + "%)").withStyle(ChatFormatting.GREEN))
+            );
+
+            tooltip.add(Component.translatable("tooltip.archeology_reimagined.age_tier")
+                .withStyle(ChatFormatting.GRAY)
+                .append(ageComponent.withStyle(ChatFormatting.WHITE)));
+        });
+
+        // Traits de Personalidade
         data.getString("PrimaryTrait").ifPresent(primaryRaw -> {
             String secondaryRaw = data.getString("SecondaryTrait").orElse("");
-
             MutableComponent primary = Component.translatable("trait.archeology_reimagined." + primaryRaw.toLowerCase());
             MutableComponent traitsComp = Component.literal("  ").append(primary);
-
             if (!secondaryRaw.isEmpty()) {
                 traitsComp.append(" / ").append(Component.translatable("trait.archeology_reimagined." + secondaryRaw.toLowerCase()));
             }
-
             tooltip.add(Component.translatable("tooltip.archeology_reimagined.personality").withStyle(ChatFormatting.GRAY));
             tooltip.add(traitsComp.withStyle(ChatFormatting.GOLD));
         });
 
+        // Estado Emocional Dominante
         data.getByte("DominantState").ifPresent(stateId -> {
             MutableComponent stateComponent;
             
@@ -51,7 +73,6 @@ public enum AllosaurusClientProvider implements IEntityComponentProvider {
             } else {
                 stateComponent = Component.translatable("feeling.archeology_reimagined.neutral").withStyle(ChatFormatting.WHITE);
             }
-
             tooltip.add(Component.translatable("tooltip.archeology_reimagined.state").withStyle(ChatFormatting.GRAY).append(stateComponent));
         });
     }

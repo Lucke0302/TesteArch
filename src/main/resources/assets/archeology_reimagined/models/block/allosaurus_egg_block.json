@@ -1,7 +1,36 @@
 {
-  "parent": "minecraft:block/cross",
-  "render_type": "minecraft:cutout",
-  "textures": {
-    "cross": "archeology_reimagined:block/allosaurus_egg_block"
-  }
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "archeology_reimagined:block/egg/allosaurus_egg",
+		"particle": "archeology_reimagined:block/egg/allosaurus_egg"
+	},
+	"elements": [
+		{
+			"from": [4, 0, 4],
+			"to": [12, 6, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [0, 2.5, 5, 5], "texture": "#0"},
+				"east": {"uv": [7, 10, 11, 12], "texture": "#0"},
+				"south": {"uv": [0, 9, 6, 12], "texture": "#0"},
+				"west": {"uv": [5.5, 3.5, 10.5, 6], "texture": "#0"},
+				"up": {"uv": [0, 9, 6, 12], "texture": "#0"},
+				"down": {"uv": [6.75, 1, 9.25, 3.5], "texture": "#0"}
+			}
+		},
+		{
+			"from": [5, 6, 5],
+			"to": [11, 9, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 8, 7]},
+			"faces": {
+				"north": {"uv": [1.25, 0, 3.75, 2.25], "texture": "#0"},
+				"east": {"uv": [8, 8, 10, 10], "texture": "#0"},
+				"south": {"uv": [1.5, 6, 4.5, 9], "texture": "#0"},
+				"west": {"uv": [6.75, 1, 9.25, 3.5], "texture": "#0"},
+				"up": {"uv": [5.5, 3.5, 8.25, 6], "texture": "#0"},
+				"down": {"uv": [1, 0, 7, 6], "texture": "#missing"}
+			}
+		}
+	]
 }

@@ -70,5 +70,13 @@
   "feeling.archeology_reimagined.hunger": "Faminto",
   "feeling.archeology_reimagined.neutral": "Neutro",
   "tooltip.archeology_reimagined.personality": "Personalidade:",
-  "tooltip.archeology_reimagined.state": "Estado: "
+  "tooltip.archeology_reimagined.state": "Estado: ",
+  "tooltip.archeology_reimagined.age_tier": "Estágio: ",
+  "agetier.archeology_reimagined.baby": "Filhote",
+  "agetier.archeology_reimagined.child": "Criança",
+  "agetier.archeology_reimagined.juvenile": "Juvenil",
+  "agetier.archeology_reimagined.adult": "Adulto",
+  "tooltip.archeology_reimagined.gender": "Sexo: ",
+  "gender.archeology_reimagined.male": "Macho",
+  "gender.archeology_reimagined.female": "Fêmea"
 }

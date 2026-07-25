@@ -85,6 +85,26 @@ eclosão é exibida no tooltip ao mirar no ovo.
 
 * **Mecânica de Taming:** Filhotes possuem 50% de chance base de doma usando comidas carnívoras (`#archeology_reimagined:carnivore_food`), enquanto adultos possuem 10%. A chance flutua de acordo com a genética (Gula e Curiosidade aumentam a chance; Agressividade e Covardia diminuem).
 
+### 2.4 Mecânica de Caça & Simulação de Alimentação (`AllosaurusHuntPreyGoal` / `doHurtTarget`)
+* **Gatilho de Caça:** Ativado via algoritmo de desejo de caça:
+  $$\text{Desejo} = (\text{Fome} \times 2.0) + \text{Gula} + (\text{Agressividade} \times 0.5)$$
+* **Alvos Selecionados:** Galinhas, Porcos, Ovelhas e Vacas num raio de 32 blocos.
+* **Consumo Dinâmico & Nutrição:** Ao abater uma presa em combate (`doHurtTarget`), o Allossauro simula o consumo imediato da carne correspondente ao mob (ex: Vaca $\rightarrow$ Beef, Ovelha $\rightarrow$ Mutton, Allossauro $\rightarrow$ Meat Cluster). 
+* **Bônus de Abate:** Abates diretos garantem **2x mais nutrição** em saturação do que itens caídos do chão e aplicam cura imediata equivalente aos pontos de nutrição da carne.
+
+### 2.5 Sistema de Atrofia por Desnutrição (`applyStuntedGrowthDebuff`)
+* **Ciclo de Crescimento:** Requer **120.000 ticks** (~100 minutos) e acúmulo de **400.0 pontos de saturação** para progredir entre os estágios (`BABY` $\rightarrow$ `CHILD` $\rightarrow$ `JUVENILE` $\rightarrow$ `ADULT`).
+* **Debuff de Atrofia:** Se atingir os 120.000 ticks sem a saturação necessária, a entidade passa a sofrer atrofia contínua:
+  * A cada 600 ticks, recebe efeitos morais de `WEAKNESS` e `SLOWNESS` proporcionais ao tempo de atraso.
+  * O estresse metabólico aumenta o sentimento de `ANGER` em +0.05 periodicamente.
+
+### 2.6 Sistema Visual de Qualidade de DNA & Tooltips
+* **Identificação Visual (`DnaItem`):** A qualidade do DNA codificada nos `DataComponents.DNA_QUALITY` altera dinamicamente a cor exibida no tooltip do item:
+  * **< 55%:** Vermelho (`DARK_RED` / `RED`)
+  * **55% - 69%:** Amarelo (`YELLOW`)
+  * **70% - 84%:** Verde (`GREEN`)
+  * **$\ge$ 85%:** Aqua (`AQUA`)
+
 ---
 
 ## Botânica Pré-Histórica
@@ -130,15 +150,21 @@ eclosão é exibida no tooltip ao mirar no ovo.
 - [x] Livro Guia com 8 páginas ilustradas.
 - [x] Mecânica de incubação do Ovo de Allossauro: bloco plantável, progresso dependente de fontes de calor adjacentes, nascimento automático do filhote ao atingir 100%.
 - [x] Integração com Jade exibindo progresso de eclosão do ovo em tempo real.
+- [x] Modelo 3D customizado em Blockbench para o Ovo de Allossauro (`allosaurus_egg_block.json`) montado em elementos geométricos.
+- [x] Modelo 3D customizado com espinhos laterais para o Tronco de Cica (`CYCAD_LOG` / `cycad_log.json`).
+- [x] Caça ativa a mobs passivos (`AllosaurusHuntPreyGoal`) com nutrição regenerativa de combate e bônus de cura por abate.
+- [x] Mecânica de atrofia muscular e debuffs em filhotes com fome estagnada.
+- [x] Framework de autoria (`ArchItem`/`ArchBlockItem`) atribuindo designer e programador nos tooltips de todos os itens do mod.
+- [x] Sistema de cores dinâmicas no tooltip para frascos e amostras de DNA baseado na qualidade genômica.
+- [x] Biblioteca completa de animações GeckoLib 5 para o Allossauro no arquivo `allosaurus.animation.json` (`walk`, `run`, `idle`, `attack`, `eat`, `drink`, `sit`, `sleep`, `speak`, `swim`, `jump/fall`).
 
 ---
 
 ### Parcialmente Implementado / Requer Ajustes
-- [ ] **Placeholders de Botânica:**
-  * A Sequóia e a Cica usam blocos vanilla (`OAK_LOG`, `OAK_LEAVES`, `OAK_SLAB`) como placeholder visual. Falta adicionar texturas e modelos próprios.
-  * A Semente de Cica (`CYCAD_SEED`) existe como item, mas ainda não possui lógica/bloco para ser plantada no chão.
-  * O bloco do Ovo de Allossauro também está sem textura própria (usa modelo cross como placeholder).
-- [ ] **Geração Natural de Sequóias:** O gerador da Sequóia funciona via farinha de osso na muda, mas a árvore ainda não spawna naturalmente nos biomas via worldgen.
+- [ ] **Placeholders de Botânica Restantes:**
+  * O bloco do centro da Cica (`CYCAD_CENTER`) altera o estado de fruta utilizando slabs vanilla (`OAK_SLAB` / `JUNGLE_SLAB`).
+  * A muda da Cica (`CYCAD_SAPLING`) e a muda da Sequóia (`SEQUOIA_SAPLING`) usam o modelo da muda de carvalho (`OAK_SAPLING`).
+  * A Semente de Cica (`CYCAD_SEED`) existe como item, mas ainda não possui lógica/bloco para ser plantada diretamente no chão.
 
 ---
 

@@ -52,13 +52,13 @@ Todas usam `ContainerData` para sincronização de progresso/combustível.
 | Peça | Arquivo |
 |---|---|
 | Entidade | `entity/AllosaurusEntity.java` — extends `TamableAnimal`, implementa `GeoEntity` |
-| IA (Goals) | `entity/ai/SeekDroppedFoodGoal.java`, `entity/ai/DinosaurFollowOwnerGoal.java` |
+| IA (Goals) | `entity/ai/SeekDroppedFoodGoal.java`, `entity/ai/DinosaurFollowOwnerGoal.java`, `entity/ai/DinosaurTemptGoal.java`, `entity/ai/AllosaurusHuntPreyGoal.java` |
 | IA (Fuzzy) | `entity/ai/AbstractFuzzyGoal.java`, `entity/ai/FuzzyHungerGoal.java`, `entity/ai/FuzzyAggressiveGoal.java`, `entity/ai/FuzzyFleeGoal.java`, `entity/ai/FuzzyCuriosityGoal.java` |
 | Enums | `entity/Trait.java`, `entity/AgeTier.java`, `entity/Feeling.java` |
 | Registro | `registry/ModEntities.java` |
 | Modelo (cliente) | `client/model/AllosaurusModel.java` — `getTextureResource()` retorna `null`; textura definida pelo renderer |
 | Renderer (cliente) | `client/renderer/AllosaurusRenderer.java` |
-| Assets | `assets/.../geckolib/models/allosaurus.geo.json`, `.../animations/allosaurus.animation.json` |
+| Assets | `assets/.../geckolib/models/allosaurus.geo.json`, `.../animations/allosaurus.animation.json` (Animações: `walk`, `run`, `idle`, `attack`, `eat`, `drink`, `sit`, `sleep`, `speak`, `swim`, `jump/fall`) |
 | Texturas | `assets/.../textures/entity/allosaurus_baby.png`, `_male.png`, `_female.png` |
 | Tags | `data/archeology_reimagined/tags/item/carnivore_food.json` |
 | Ovo (bloco) | `block/AllosaurusEggBlock.java` + `block/entity/AllosaurusEggBlockEntity.java` + `item/AllosaurusEggBlockItem.java` |
@@ -144,6 +144,23 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 | Server provider (Entities)| `compat/jade/AllosaurusServerProvider.java` |
 | Client provider (Entities)| `compat/jade/AllosaurusClientProvider.java` |
 | Plugin | `compat/jade/ArchJadePlugin.java` — `@WailaPlugin` |
+
+### 2.13 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
+
+| Classe | Propósito |
+|---|---|
+| `ArchItem.java` | Item base do mod. Injeta tooltips automáticos de autoria (*"Designed by X"*, *"Programmed by Y"*). |
+| `ArchBlockItem.java` | `BlockItem` estendido com o mesmo sistema de autoria de `ArchItem`. |
+| `ArchItemNameBlockItem.java` | `ItemNameBlockItem` para sementes/plantas com sistema de autoria. |
+| `DnaItem.java` | Exibe tooltip dinâmico de `DNA_QUALITY` formatado em cores conforme a porcentagem (Vermelho, Amarelo, Verde, Aqua). |
+| `EncyclopediaItem.java` | Item de enciclopédia interativa (placeholder via mensagem de sistema ao usar botão direito). |
+
+### 2.14 Worldgen & Injeção de Loot Tables (`com.lucas.arch.world`)
+
+| Arquivo | Propósito |
+|---|---|
+| `world/ModWorldGen.java` | Registra minérios de Fóssil e Âmbar no subsolo do Overworld (`UNDERGROUND_ORES`) e geração de Bagas Amargas conforme biomas configurados no `ModConfig`. |
+| `world/ModLootTableModifiers.java` | Escuta `LootTableEvents.MODIFY` para injetar drops de fósseis desestruturados ao quebrar areia, cascalho e tufo no modo `REIMAGINED`. |
 
 **Notas técnicas:**
 - Desde MC 1.21.6, Jade **proíbe** a mesma classe implementar `IServerDataProvider` e `IComponentProvider`

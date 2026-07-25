@@ -17,6 +17,9 @@ public class FuzzyAggressiveGoal extends AbstractFuzzyGoal {
     private final double speedModifier = 1.4D; 
     private LivingEntity target;
 
+    private int unreachableTicks = 0;
+    private int recalculatePathTimer = 0;
+
     public FuzzyAggressiveGoal(AllosaurusEntity dino) {
         super(dino, Feeling.ANGER, Trait.AGGRESSIVENESS);
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
@@ -51,12 +54,16 @@ public class FuzzyAggressiveGoal extends AbstractFuzzyGoal {
 
     @Override
     protected boolean canFuzzyContinue() {
-        return this.target != null && this.target.isAlive() && this.dino.distanceToSqr(this.target) < (searchRadius * searchRadius);
+        return this.target != null && this.target.isAlive() 
+            && this.dino.distanceToSqr(this.target) < (searchRadius * searchRadius)
+            && this.unreachableTicks < 60;
     }
 
     @Override
     public void start() {
         this.dino.getNavigation().moveTo(this.target, this.speedModifier);
+        this.unreachableTicks = 0;
+        this.recalculatePathTimer = 0;
     }
 
     @Override
@@ -64,9 +71,10 @@ public class FuzzyAggressiveGoal extends AbstractFuzzyGoal {
         this.dino.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
         
         double distToTarget = this.dino.distanceToSqr(this.target);
-        double attackReach = (this.dino.getBbWidth() * 2.0F * this.dino.getBbWidth() * 2.0F) + this.target.getBbWidth();
+        double attackReach = (this.dino.getBbWidth() * 2.0F * this.dino.getBbWidth() * 2.0F) + this.target.getBbWidth() + 1.5F;
 
         if (distToTarget <= attackReach) {
+            this.unreachableTicks = 0;
             if (this.dino.level() instanceof ServerLevel serverLevel) {
                 this.dino.doHurtTarget(serverLevel, this.target);
             }
@@ -74,7 +82,20 @@ public class FuzzyAggressiveGoal extends AbstractFuzzyGoal {
                 geoEntity.triggerAnim("attack_controller", "attack");
             }
         } else {
-            this.dino.getNavigation().moveTo(this.target, this.speedModifier);
+            if (this.recalculatePathTimer <= 0) {
+                boolean pathStarted = this.dino.getNavigation().moveTo(this.target, this.speedModifier);
+                this.recalculatePathTimer = 15;
+                if (!pathStarted || this.dino.getNavigation().isDone()) {
+                    this.unreachableTicks++;
+                } else {
+                    this.unreachableTicks = 0;
+                }
+            } else {
+                this.recalculatePathTimer--;
+                if (this.dino.getNavigation().isDone()) {
+                    this.unreachableTicks++;
+                }
+            }
         }
     }
 

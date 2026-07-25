@@ -1,5 +1,6 @@
 package com.lucas.arch.compat.jade;
 
+import com.lucas.arch.entity.AgeTier;
 import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.Trait;
 import net.minecraft.nbt.CompoundTag;
@@ -25,8 +26,14 @@ public enum AllosaurusServerProvider implements IServerDataProvider<EntityAccess
 
             data.putString("PrimaryTrait", topTraits.get(0).name());
             data.putString("SecondaryTrait", topTraits.get(1).name());
-
             data.putByte("DominantState", allo.getDominantState());
+            data.putString("AgeTier", allo.getAgeTier().name());
+            
+            data.putBoolean("IsMale", allo.isMale());
+
+            if (allo.getAgeTier() != AgeTier.ADULT) {
+                data.putInt("GrowthPercent", allo.getGrowthPercent());
+            }
         }
     }
 

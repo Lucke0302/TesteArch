@@ -29,21 +29,24 @@ import com.geckolib.util.GeckoLibUtil;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import com.lucas.arch.registry.ModTags;
+
 import com.lucas.arch.entity.ai.FuzzyHungerGoal;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import com.lucas.arch.entity.ai.FuzzyFleeGoal;
 import com.lucas.arch.entity.ai.FuzzyAggressiveGoal;
 import com.lucas.arch.entity.ai.FuzzyCuriosityGoal;
 import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
+import com.lucas.arch.entity.ai.DinosaurTemptGoal;
 import com.lucas.arch.entity.ai.SeekDroppedFoodGoal;
-import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 
 import java.util.EnumMap;
 
@@ -73,11 +76,15 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     // --- ESTRUTURAS DE DADOS ---
     private final EnumMap<Trait, Float> traits = new EnumMap<>(Trait.class);
     private final EnumMap<Feeling, Float> feelings = new EnumMap<>(Feeling.class);
-    private boolean isMale;
     private AgeTier ageTier = AgeTier.BABY;
     private float baseScale = 3.1f;
     private float humanAffinity = 0.5f;
     private float geneticStatMultiplier = 1.0f;
+    private int growthTicks = 0;
+    private float accumulatedSaturation = 0.0f;
+
+    private static final int TICKS_TO_GROW = 1200;
+    private static final float SATURATION_TO_GROW = 4.0f;
 
     private static final int[] COLORS = { 0xFFD97C3A, 0xFF8B5A2B, 0xFF6B8E23 };
 
@@ -86,7 +93,6 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         this.setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER, -1.0F);
         this.setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.FIRE, -1.0F);
         
-        // Inicia todos os sentimentos zerados
         for (Feeling feeling : Feeling.values()) {
             this.feelings.put(feeling, 0.0f);
         }
@@ -122,10 +128,12 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         super.addAdditionalSaveData(output);
         output.putInt(NBT_COLOR, this.entityData.get(COLOR));
         output.putFloat(NBT_SCALE, this.baseScale);
-        output.putBoolean(NBT_IS_MALE, this.isMale);
+        output.putBoolean(NBT_IS_MALE, this.entityData.get(IS_MALE));
         output.putString(NBT_AGE_TIER, this.ageTier.name());
         output.putFloat(NBT_AFFINITY, this.humanAffinity);
         output.putFloat(NBT_GENETIC_MULTIPLIER, this.geneticStatMultiplier);
+        output.putInt("GrowthTicks", this.growthTicks);
+        output.putFloat("AccumulatedSaturation", this.accumulatedSaturation);
         for (Trait trait : Trait.values()) {
             output.putFloat("Trait_" + trait.name(), this.traits.getOrDefault(trait, 0.0f));
         }
@@ -139,7 +147,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         super.readAdditionalSaveData(input);
 
         this.entityData.set(COLOR, input.getIntOr(NBT_COLOR, 0xFFFFFFFF));
-        this.isMale = input.getBooleanOr(NBT_IS_MALE, true);
+        this.entityData.set(IS_MALE, input.getBooleanOr(NBT_IS_MALE, true));
         this.humanAffinity = input.getFloatOr(NBT_AFFINITY, 0.5f);
         this.geneticStatMultiplier = input.getFloatOr(NBT_GENETIC_MULTIPLIER, 1.0f);
 
@@ -148,6 +156,9 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
 
         boolean hasCustomScale = !Float.isNaN(scaleFromNbt);
         boolean hasCustomAgeTier = !ageTierFromNbt.isBlank();
+
+        this.growthTicks = input.getIntOr("GrowthTicks", 0);
+        this.accumulatedSaturation = input.getFloatOr("AccumulatedSaturation", 0.0f);
 
         if (hasCustomScale) {
             this.baseScale = scaleFromNbt;
@@ -310,46 +321,83 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         }
     }
 
+    public void feedSaturation(ItemStack foodStack, boolean isHuntBonus) {
+        if (foodStack.has(DataComponents.FOOD)) {
+            FoodProperties food = foodStack.get(DataComponents.FOOD);
+            float value = food.nutrition();
+            
+            if (isHuntBonus) {
+                value *= 2.0f;
+                this.heal(value); 
+            }
+            
+            this.accumulatedSaturation += value;
+            
+            float currentHunger = this.getFeeling(Feeling.HUNGER);
+            this.setFeeling(Feeling.HUNGER, Math.max(0, currentHunger - (value / 50.0f)));
+        }
+    }
+
+    @Override
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
+        boolean result = super.doHurtTarget(level, target);
+
+        if (result && target instanceof net.minecraft.world.entity.LivingEntity livingTarget && livingTarget.isDeadOrDying()) {
+            
+            ItemStack simulatedMeat = switch (livingTarget) {
+                case net.minecraft.world.entity.animal.cow.Cow cow -> new ItemStack(net.minecraft.world.item.Items.BEEF);
+                case net.minecraft.world.entity.animal.pig.Pig pig -> new ItemStack(net.minecraft.world.item.Items.PORKCHOP);
+                case net.minecraft.world.entity.animal.sheep.Sheep sheep -> new ItemStack(net.minecraft.world.item.Items.MUTTON);
+                case net.minecraft.world.entity.animal.chicken.Chicken chicken -> new ItemStack(net.minecraft.world.item.Items.CHICKEN);
+                case net.minecraft.world.entity.player.Player player -> new ItemStack(net.minecraft.world.item.Items.BEEF); 
+                case com.lucas.arch.entity.AllosaurusEntity allo -> new ItemStack(com.lucas.arch.registry.ModItems.MEAT_CLUSTER); 
+                default -> new ItemStack(net.minecraft.world.item.Items.ROTTEN_FLESH);
+            };
+
+            if (simulatedMeat.has(net.minecraft.core.component.DataComponents.FOOD)) {
+                this.feedSaturation(simulatedMeat, true);
+            }
+        }
+        return result;
+    }
+
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
 
-        if (this.isTame()) {
+        if (this.isTame() && !itemStack.is(ModTags.Items.CARNIVORE_FOOD)) {
             return super.mobInteract(player, hand);
         }
 
         if (itemStack.is(ModTags.Items.CARNIVORE_FOOD)) {
+            if (!this.level().isClientSide()) {
+                this.feedSaturation(itemStack, false);
+
+                if (!this.isTame()) {
+                    AgeTier age = this.getAgeTier();
+                    boolean isYoung = (age == AgeTier.BABY || age == AgeTier.CHILD);
+                    float baseChance = isYoung ? 0.50f : 0.10f;
+                    float traitBonus = (this.getTrait(Trait.CURIOSITY) * 0.10f) +
+                                       (this.getTrait(Trait.GLUTTONY) * 0.10f) -
+                                       (this.getTrait(Trait.AGGRESSIVENESS) * 0.10f) -
+                                       (this.getTrait(Trait.COWARDICE) * 0.10f);
+
+                    float finalChance = Math.max(0.01f, baseChance + traitBonus);
+
+                    if (this.random.nextFloat() < finalChance) {
+                        this.tame(player);
+                        this.setTarget(null);
+                        this.level().broadcastEntityEvent(this, (byte)7);
+                    } else {
+                        this.level().broadcastEntityEvent(this, (byte)6);
+                    }
+                }
+            }
             if (!player.getAbilities().instabuild) {
                 itemStack.shrink(1);
             }
-
-            if (!this.level().isClientSide()) {
-                AgeTier age = this.getAgeTier();
-                boolean isYoung = (age == AgeTier.BABY || age == AgeTier.CHILD);
-                
-                float baseChance = isYoung ? 0.50f : 0.10f;
-                
-                float traitBonus = (this.getTrait(Trait.CURIOSITY) * 0.10f) + 
-                                   (this.getTrait(Trait.GLUTTONY) * 0.10f) - 
-                                   (this.getTrait(Trait.AGGRESSIVENESS) * 0.10f) - 
-                                   (this.getTrait(Trait.COWARDICE) * 0.10f);
-                
-                float finalChance = Math.max(0.01f, baseChance + traitBonus);
-                
-                // TODO: Adicionar +0.10f (10% flat) se a entidade estiver sob o efeito do Dardo Tranquilizante
-                
-                if (this.random.nextFloat() < finalChance) {
-                    this.tame(player);
-                    this.setTarget(null);
-                    this.level().broadcastEntityEvent(this, (byte)7);
-                } else {
-                    this.level().broadcastEntityEvent(this, (byte)6);
-                }
-            }
-            
             return InteractionResult.SUCCESS;
         }
-
         return super.mobInteract(player, hand);
     }
 
@@ -440,7 +488,6 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     @Override
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
-
         if (!this.isAlive()) return;
 
         for (Feeling feeling : Feeling.values()) {
@@ -450,7 +497,8 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
                 
                 int decayInterval = (int) (1200 * Math.max(0.2f, traitValue));
                 
-                if (decayInterval > 0 && this.tickCount % decayInterval == 0) {
+                // CORREÇÃO: A fome não pode decair sozinha pelo tempo!
+                if (feeling != Feeling.HUNGER && decayInterval > 0 && this.tickCount % decayInterval == 0) {
                     this.setFeeling(feeling, currentValue - 0.1f);
                 }
             }
@@ -461,8 +509,48 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
             float hungerIncrease = 0.05f + (gluttony * 0.05f); 
             this.setFeeling(Feeling.HUNGER, this.getFeeling(Feeling.HUNGER) + hungerIncrease);
         }
-
+        
         this.updateDominantState();
+
+        if (this.getAgeTier() != AgeTier.ADULT) {
+            this.growthTicks++;
+            
+            if (this.growthTicks >= TICKS_TO_GROW) {
+                if (this.accumulatedSaturation >= SATURATION_TO_GROW) {
+                    this.growUp(level);
+                } else {
+                    this.applyStuntedGrowthDebuff();
+                }
+            }
+        }
+    }
+
+    private void growUp(ServerLevel level) {
+        int nextOrdinal = this.getAgeTier().ordinal() + 1;
+        if (nextOrdinal < AgeTier.values().length) {
+            
+            this.setAgeTier(AgeTier.values()[nextOrdinal]); 
+            
+            this.growthTicks = 0;
+            this.accumulatedSaturation = 0.0f;
+            
+            level.broadcastEntityEvent(this, (byte) 14); 
+        }
+    }
+
+    private void applyStuntedGrowthDebuff() {
+        int overTicks = this.growthTicks - TICKS_TO_GROW;
+        
+        if (this.tickCount % 600 == 0) {
+            int severity = Math.min(2, overTicks / 12000); 
+            
+            this.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 800, severity, false, true));
+            
+            if (severity > 0) {
+                this.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 800, severity - 1, false, true));
+                this.setFeeling(Feeling.ANGER, this.getFeeling(Feeling.ANGER) + 0.05f); 
+            }
+        }
     }
 
     public float getVisualScale() {
@@ -473,23 +561,30 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         return this.entityData.get(SCALE);
     }
 
+    public int getGrowthPercent() {
+        if (this.getAgeTier() == AgeTier.ADULT) {
+            return 100;
+        }
+        
+        float timeProgress = Math.min(1.0f, (float) this.growthTicks / TICKS_TO_GROW);
+        float saturationProgress = Math.min(1.0f, this.accumulatedSaturation / SATURATION_TO_GROW);
+        
+        return (int) (((timeProgress + saturationProgress) / 2.0f) * 100.0f);
+    }
+
     @Override
     protected void registerGoals() {
         super.registerGoals();
         
         this.goalSelector.addGoal(1, new FuzzyFleeGoal(this));
         this.goalSelector.addGoal(2, new FuzzyAggressiveGoal(this));
-        this.goalSelector.addGoal(3, new FuzzyHungerGoal(this));
+        this.goalSelector.addGoal(3, new DinosaurTemptGoal(this, 1.1D, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
+        this.goalSelector.addGoal(4, new SeekDroppedFoodGoal(this, 1.2D, 16.0D)); 
+        this.goalSelector.addGoal(5, new FuzzyHungerGoal(this));
         
-        this.goalSelector.addGoal(4, new SeekDroppedFoodGoal(this, 1.2D, 10.0D));
-        
-        this.goalSelector.addGoal(5, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
-        
-        this.goalSelector.addGoal(6, new TemptGoal(this, 1.1D, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
-        
-        this.goalSelector.addGoal(7, new FuzzyCuriosityGoal(this));
-        
-        this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(7, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
+        this.goalSelector.addGoal(8, new FuzzyCuriosityGoal(this));
+        this.goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(10, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
     }
 }
