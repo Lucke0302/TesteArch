@@ -1,6 +1,3 @@
-#### Renderização Avançada de Pele (Grayscale + Overlay)
-- [ ] Implementar a *Render Layer* de proteção no AllosaurusRenderer para garantir que olhos, garras e dentes não sejam tingidos pelo filtro de cor da pele.
-
 # Archeology Reimagined — Documento de Design & Status de Features
 
 Um mod de arqueologia e biotecnologia pré-histórica focado em escavação, engenharia genética, catálise biológica, botânica e ressuscitação de criaturas da era mesozoica.
@@ -38,7 +35,7 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
   * *Ovo de Tartaruga:* +15% bônus.
   * *Ovo de Sniffer:* +30% bônus.
 * **Resultado:**
-  * *Sucesso:* Gera um **Ovo de Dinossauro chocável** (ex: `ALLOSAURUS_EGG`) herdando a qualidade final.
+  * *Sucesso:* Gera um **Ovo de Dinossauro chocável** (`archeology_reimagined:allosaurus_egg_block`), pronto para ser plantado no mundo, herdando a qualidade final.
   * *Falha:* O ovo se rompe e produz de 3 a 6 unidades de *Aglomerado de Carne*.
 
 ### 1.5 Catálise Biológica & Utilitários (Biocatalisador)
@@ -63,6 +60,24 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
 * **Inteligência Alimentar (`SeekDroppedFoodGoal`):** A entidade detecta e persegue itens de comida dropados no chão marcados com a tag `#archeology_reimagined:carnivore_food` (carnes vanilla + `meat_cluster`).
 * **Atração (`TemptGoal`):** Jogadores segurando itens da tag de carnívoros atraem a atenção do dinossauro.
 * **Animações (GeckoLib 5):** Animações de `idle` e `walk` gerenciadas continuamente, com suporte a trigger de `attack`.
+
+### 2.3 Incubação do Ovo
+
+O `Allosaurus Egg` produzido pelo Fusor é plantável no mundo. A eclosão depende de **calor constante** nos
+6 blocos adjacentes:
+
+| Fontes de calor adjacentes | Taxa de progresso |
+|---|---|
+| 0 | Pausado (não avança nem regride) |
+| 1 | 1% a cada 200 ticks (~10s) |
+| 5+ (saturação) | 1% a cada 50 ticks (~2.5s) |
+
+Escala linearmente entre 1 e 5 fontes. Fontes reconhecidas: lava, magma block, fogueiras (normal/alma),
+tochas (normal/alma/redstone, incluindo variantes de parede) e fogo.
+
+Ao atingir 100%, o bloco é substituído por um Allossauro recém-nascido (`AgeTier.BABY`), herdando a
+qualidade genética do DNA original processado no Fusor. Com o mod **Jade** instalado, a porcentagem de
+eclosão é exibida no tooltip ao mirar no ovo.
 
 ---
 
@@ -105,15 +120,17 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
 - [x] Gerador procedural 3D da Sequóia Gigante via farinha de osso na muda.
 - [x] Estrutura da planta Cica com ciclo de colheita e efeito nocivo no consumo do fruto.
 - [x] Livro Guia com 8 páginas ilustradas.
+- [x] Mecânica de incubação do Ovo de Allossauro: bloco plantável, progresso dependente de fontes de calor adjacentes, nascimento automático do filhote ao atingir 100%.
+- [x] Integração com Jade exibindo progresso de eclosão do ovo em tempo real.
 
 ---
 
 ### Parcialmente Implementado / Requer Ajustes
-- [ ] **Mecanismo de Chocamento de Ovos:** O item `ALLOSAURUS_EGG` existe, mas ainda não é possível posicioná-lo no mundo para chocar o Allossauro automaticamente.
 - [ ] **Placeholders de Botânica:**
   * A Sequóia e a Cica usam blocos vanilla (`OAK_LOG`, `OAK_LEAVES`, `OAK_SLAB`) como placeholder visual. Falta adicionar texturas e modelos próprios.
   * A Semente de Cica (`CYCAD_SEED`) existe como item, mas ainda não possui lógica/bloco para ser plantada no chão.
-- [ ] **Geração Natural de Sequóias:** O gerador da Sequóia funciona via farinha de osso na muda, mas a árvore ainda não spawna naturally nos biomas via worldgen.
+  * O bloco do Ovo de Allossauro também está sem textura própria (usa modelo cross como placeholder).
+- [ ] **Geração Natural de Sequóias:** O gerador da Sequóia funciona via farinha de osso na muda, mas a árvore ainda não spawna naturalmente nos biomas via worldgen.
 
 ---
 

@@ -3,8 +3,7 @@
 > **Objetivo:** Mapa de onde cada feature vive no código, para navegação rápida
 > do projeto. Atualize sempre que classes/pacotes forem criados ou removidos.
 >
-> Última atualização: 2026-07-25
-
+> Última atualização: 2026-07-25 (adicionado sistema de ovo/incubação + compat Jade)
 ---
 
 ## 1. Estrutura geral de pacotes
@@ -20,6 +19,8 @@
     ├── client/
     │   ├── model/                         → GeoModel (GeckoLib)
     │   └── renderer/                      → GeoEntityRenderer
+    ├── compat/
+    │   └── jade/                          → integração com Jade (tooltips in-world)
     ├── config/                            → ModConfig + enums
     ├── entity/                            → entidades vivas
     │   └── ai/                            → goals customizadas
@@ -59,6 +60,7 @@ Todas usam `ContainerData` para sincronização de progresso/combustível.
 | Assets | `assets/.../geckolib/models/allosaurus.geo.json`, `.../animations/allosaurus.animation.json` |
 | Texturas | `assets/.../textures/entity/allosaurus_baby.png`, `_male.png`, `_female.png` |
 | Tags | `data/archeology_reimagined/tags/item/carnivore_food.json` |
+| Ovo (bloco) | `block/AllosaurusEggBlock.java` + `block/entity/AllosaurusEggBlockEntity.java` + `item/AllosaurusEggBlockItem.java` (ver seção 2.11) |
 
 **Detalhes importantes:**
 - Ao spawnar, sorteia cor (`COLORS[]`, fixo em 3 opções) e escala visual (2.7-3.5).
@@ -133,6 +135,50 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 
 `ArcheologyReimagined.createGuideBook()` — 8 páginas. Receita: `recipe/GuideBookRecipe.java`.
 
+### 2.11 Ovo do Allossauro (Incubação)
+
+| Peça | Arquivo |
+|---|---|
+| Bloco | `block/AllosaurusEggBlock.java` — `EntityBlock`, sem colisão, ticker server-side |
+| BlockEntity | `block/entity/AllosaurusEggBlockEntity.java` — lógica de eclosão |
+| BlockItem | `item/AllosaurusEggBlockItem.java` — transfere `DNA_QUALITY` do item pro BlockEntity ao plantar |
+| Tag de calor | `data/archeology_reimagined/tags/block/egg_heat_sources.json` → registrada em `ModTags.Blocks.EGG_HEAT_SOURCES` |
+| Registro | `registry/ModBlocks.java` (`ALLOSAURUS_EGG_BLOCK`), `registry/ModBlockEntities.java` (`ALLOSAURUS_EGG_BE`) |
+
+**Mecânica:**
+- Progresso 0-100%, avança 1% a cada N ticks conforme fontes de calor nos 6 vizinhos:
+  - 0 fontes → progresso pausado (não regride).
+  - 1 fonte → 200 ticks/%.
+  - 5+ fontes (saturação) → 50 ticks/%.
+  - Escala linear entre 1 e 5 fontes.
+- Fontes reconhecidas: lava, magma_block, campfire, soul_campfire, torch/wall_torch (normal/soul/redstone), `#minecraft:fire`.
+- Ao chegar em 100%: remove o bloco, spawna `AllosaurusEntity` (`EntitySpawnReason.BREEDING`, nasce `AgeTier.BABY`), toca som + partículas.
+- `DNA_QUALITY` do ovo é herdado do embrião no momento do Fusor (ver 2.1 do README), carregado junto no `ItemStack` do bloco.
+
+**Origem do item:** `FuserBlockEntity.fuseEgg()` dropa `new ItemStack(ModBlocks.ALLOSAURUS_EGG_BLOCK)` diretamente
+no sucesso do processo — **não existe mais** um item `ALLOSAURUS_EGG` separado (removido de `ModItems`, era um
+`DnaItem` solto e não-plantável, obsoleto).
+
+**Registro em ModBlocks:** usa o overload de `registerBlock` que aceita `BiFunction<Block, Item.Properties, Item>`
+em vez do overload padrão (designer/programmer), permitindo plugar `AllosaurusEggBlockItem` em vez de `ArchBlockItem`.
+
+### 2.12 Integração Jade (compat/jade)
+
+| Peça | Arquivo |
+|---|---|
+| Server provider | `compat/jade/AllosaurusEggServerProvider.java` — `IServerDataProvider<BlockAccessor>` |
+| Client provider | `compat/jade/AllosaurusEggClientProvider.java` — `IBlockComponentProvider` |
+| Plugin | `compat/jade/ArchJadePlugin.java` — `@WailaPlugin`, registra os dois acima |
+
+**Notas técnicas:**
+- Desde MC 1.21.6, Jade **proíbe** a mesma classe implementar `IServerDataProvider` e `IComponentProvider`
+  simultaneamente — por isso são duas classes separadas em vez de um enum único.
+- Entrypoint `jade` declarado em `fabric.mod.json`.
+- Requer chave `config.jade.plugin_archeology_reimagined.allosaurus_egg` nos 3 lang files, senão a tela de
+  config do Jade crasha (`AssertionError: Missing config translation`).
+- Dependência no `build.gradle`: **precisa** ser `modImplementation "maven.modrinth:jade:${project.jade_version}"`
+  — `runtimeOnly` não expõe a API pro compilador (`snownee.jade.api` não resolve).
+
 ---
 
 ## 3. Registries (`com.lucas.arch.registry`)
@@ -146,7 +192,7 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 | `ModMenuTypes.java` | MenuTypes das 4 máquinas |
 | `ModRecipeSerializers.java` | `GUIDE_BOOK_RECIPE` |
 | `ModDataComponentTypes.java` | `DNA_QUALITY` |
-| `ModTags.java` | `Items.CARNIVORE_FOOD` |
+| `ModTags.java` | `Items.CARNIVORE_FOOD`, `Blocks.EGG_HEAT_SOURCES` |
 
 ---
 
@@ -172,3 +218,4 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 - GeckoLib 5 (Fabric)
 - Sodium, Lithium, Ferrite Core, Jade, Spark, Mod Menu (runtime)
 - Java 25 / Minecraft 1.21+
+- Jade requer `implementation` no build.gradle (não `runtimeOnly`) para expor a API de compat em `compat/jade/`.

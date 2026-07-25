@@ -81,8 +81,6 @@ public class ModItems {
         p -> new ArchItem(p, "EduGuter", "Lucke0302")); 
 
     // --- Ovos e Embriões ---
-    public static final Item ALLOSAURUS_EGG = registerItem("allosaurus_egg",
-        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302")); 
     public static final Item ALLOSAURUS_EMBRYO = registerItem("allosaurus_embryo",
         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A, Lucke0302", "Lucke0302"));
 
@@ -161,7 +159,6 @@ public class ModItems {
             output.accept(MEDIUM_ORGANIC_FUEL);
             output.accept(ADVANCED_ORGANIC_FUEL);
             output.accept(MEAT_CLUSTER);
-            output.accept(ALLOSAURUS_EGG);
             output.accept(ALLOSAURUS_EMBRYO);
             output.accept(AMBER);
             output.accept(MOSQUITO_IN_AMBER);

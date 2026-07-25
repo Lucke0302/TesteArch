@@ -1,6 +1,7 @@
 package com.lucas.arch.registry;
 
 import com.lucas.arch.ArcheologyReimagined;
+import com.lucas.arch.block.AllosaurusEggBlock;
 import com.lucas.arch.block.ArchBrushableBlock;
 import com.lucas.arch.block.BiocatalyzerBlock;
 import com.lucas.arch.block.BitterBerryBushBlock;
@@ -10,6 +11,7 @@ import com.lucas.arch.block.CycadSaplingBlock;
 import com.lucas.arch.block.FuserBlock;
 import com.lucas.arch.block.SequoiaSaplingBlock;
 import com.lucas.arch.block.SynthesizerBlock;
+import com.lucas.arch.item.AllosaurusEggBlockItem;
 import com.lucas.arch.item.ArchBlockItem;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
@@ -23,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.block.SoundType;
 
 import java.util.function.Function;
 
@@ -97,20 +100,29 @@ public class ModBlocks {
                                         .noOcclusion()), 
         "Lucke0302", "Lucke0302");
 
-    // --- Adição no ModBlocks ---
     public static final Block BIOCATALYZER = registerBlock("biocatalyzer",
         properties -> new BiocatalyzerBlock(properties.mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops()),
         "Lucke0302", "Lucke0302");
 
+    public static final Block ALLOSAURUS_EGG_BLOCK = registerBlock("allosaurus_egg_block",
+        properties -> new AllosaurusEggBlock(properties.mapColor(MapColor.SAND)
+            .noCollision().strength(0.0f).sound(SoundType.BONE_BLOCK).noOcclusion()),
+        (block, itemProps) -> new AllosaurusEggBlockItem(block, itemProps, "Lucke0302", "Lucke0302"));
+
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function, String designer, String programmer) {
+        return registerBlock(name, function,
+            (block, itemProps) -> new ArchBlockItem(block, itemProps, designer, programmer));
+    }
+
+    private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> blockFunction,
+                                        java.util.function.BiFunction<Block, Item.Properties, Item> itemFunction) {
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, name));
-        Block block = Registry.register(BuiltInRegistries.BLOCK, blockKey, function.apply(BlockBehaviour.Properties.of().setId(blockKey)));
-        
+        Block block = Registry.register(BuiltInRegistries.BLOCK, blockKey, blockFunction.apply(BlockBehaviour.Properties.of().setId(blockKey)));
+
         ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, name));
-        
-        Item blockItem = new ArchBlockItem(block, new Item.Properties().setId(itemKey), designer, programmer);
+        Item blockItem = itemFunction.apply(block, new Item.Properties().setId(itemKey));
         Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
-        
+
         return block;
     }
 
@@ -124,6 +136,7 @@ public class ModBlocks {
             output.accept(AMBER_ORE);
             output.accept(CYCAD_LOG);
             output.accept(BIOCATALYZER);
+            output.accept(ALLOSAURUS_EGG_BLOCK);
         });
     }
 }

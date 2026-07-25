@@ -23,6 +23,9 @@
 		],
 		"fabric-datagen": [
 			"com.lucas.arch.ArcheologyReimaginedDataGenerator"
+		],
+		"jade": [
+			"com.lucas.arch.compat.jade.ArchJadePlugin"
 		]
 	},
 	"mixins": [

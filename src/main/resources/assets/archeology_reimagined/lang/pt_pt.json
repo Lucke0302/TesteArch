@@ -31,7 +31,8 @@
 
   "block.archeology_reimagined.fuser": "Fusor",
   "item.archeology_reimagined.fuser": "Fusor",
-  "item.archeology_reimagined.allosaurus_egg": "Ovo de Allossauro",
+  "item.archeology_reimagined.allosaurus_egg_block": "Ovo de Allossauro",
+  "block.archeology_reimagined.allosaurus_egg_block": "Ovo de Allossauro",
 
   "block.archeology_reimagined.fossil": "Fóssil",
   "block.archeology_reimagined.amber_ore": "Minério de Âmbar",
@@ -55,5 +56,7 @@
 
   "item.archeology_reimagined.bitter_berry_jar": "Frasco de Bagas Amargas",
   "block.archeology_reimagined.biocatalyzer": "Biocatalisador",
-  "item.archeology_reimagined.biocatalyzer": "Biocatalisador"
+  "item.archeology_reimagined.biocatalyzer": "Biocatalisador",
+  
+  "config.jade.plugin_archeology_reimagined.allosaurus_egg": "Progresso de Eclosão do ovo de Alossauro"
 }

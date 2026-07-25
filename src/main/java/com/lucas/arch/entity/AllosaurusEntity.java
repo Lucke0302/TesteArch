@@ -49,7 +49,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     public static final EntityDataAccessor<Byte> DOMINANT_STATE = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.BYTE);
 
     public static final EntityDataAccessor<Boolean> IS_MALE = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<String> AGE_TIER_SYNC = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.STRING);
+    public static final EntityDataAccessor<Byte> AGE_TIER_SYNC = SynchedEntityData.defineId(AllosaurusEntity.class, EntityDataSerializers.BYTE);
 
     // --- NBT KEYS ---
     private static final String NBT_COLOR = "AllosaurusColor";
@@ -105,7 +105,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         builder.define(SCALE, 3.1f); 
         builder.define(DOMINANT_STATE, (byte) 0);
         builder.define(IS_MALE, true);
-        builder.define(AGE_TIER_SYNC, AgeTier.BABY.name());
+        builder.define(AGE_TIER_SYNC, (byte) AgeTier.BABY.ordinal());
     }
 
     @Override
@@ -142,7 +142,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         }
         if (hasCustomAgeTier) {
             this.ageTier = AgeTier.valueOf(ageTierFromNbt);
-            this.entityData.set(AGE_TIER_SYNC, this.ageTier.name());
+            this.entityData.set(AGE_TIER_SYNC, (byte) this.ageTier.ordinal());
         }
 
         for (Trait trait : Trait.values()) {
@@ -280,15 +280,16 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     }
 
     public AgeTier getAgeTier() {
-        return AgeTier.valueOf(this.entityData.get(AGE_TIER_SYNC));
+        return AgeTier.values()[this.entityData.get(AGE_TIER_SYNC)];
     }
 
     public void setAgeTier(AgeTier tier) {
-        this.ageTier = tier; 
-        this.entityData.set(AGE_TIER_SYNC, tier.name());
+        this.ageTier = tier;
+        this.entityData.set(AGE_TIER_SYNC, (byte) tier.ordinal());
         this.updateStats();
         this.refreshDimensions();
     }
+
 
     public float getTrait(Trait trait) { return this.traits.getOrDefault(trait, 0.0f); }
     public float getFeeling(Feeling feeling) { return this.feelings.getOrDefault(feeling, 0.0f); }

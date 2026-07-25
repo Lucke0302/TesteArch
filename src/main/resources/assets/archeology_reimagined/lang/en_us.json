@@ -31,7 +31,8 @@
 
   "block.archeology_reimagined.fuser": "Fuser",
   "item.archeology_reimagined.fuser": "Fuser",
-  "item.archeology_reimagined.allosaurus_egg": "Allosaurus Egg",
+  "block.archeology_reimagined.allosaurus_egg_block": "Allosaurus Egg",
+  "item.archeology_reimagined.allosaurus_egg_block": "Allosaurus Egg",
 
   "block.archeology_reimagined.fossil": "Fossil",
   "block.archeology_reimagined.amber_ore": "Amber Ore",
@@ -55,5 +56,7 @@
 
   "item.archeology_reimagined.bitter_berry_jar": "Bitter Berry Jar",
   "block.archeology_reimagined.biocatalyzer": "Biocatalyzer",
-  "item.archeology_reimagined.biocatalyzer": "Biocatalyzer"
+  "item.archeology_reimagined.biocatalyzer": "Biocatalyzer",
+
+  "config.jade.plugin_archeology_reimagined.allosaurus_egg": "Allosaurus Egg Hatch Progress"
 }

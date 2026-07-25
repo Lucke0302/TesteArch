@@ -146,13 +146,13 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
         }
 
         int finalQuality = Math.max(1, Math.min(100, baseQuality + bonus));
-        
+
         float roll = level.getRandom().nextFloat() * 100f;
         boolean success = roll <= finalQuality;
 
         ItemStack result;
         if (success) {
-            result = new ItemStack(ModItems.ALLOSAURUS_EGG);
+            result = new ItemStack(com.lucas.arch.registry.ModBlocks.ALLOSAURUS_EGG_BLOCK);
             result.set(ModDataComponentTypes.DNA_QUALITY, finalQuality);
         } else {
             int amount = 3 + level.getRandom().nextInt(4);
