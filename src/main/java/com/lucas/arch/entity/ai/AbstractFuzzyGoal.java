@@ -9,6 +9,7 @@ public abstract class AbstractFuzzyGoal extends Goal {
     protected final AllosaurusEntity dino;
     protected final Feeling feeling;
     protected final Trait associatedTrait;
+
     private int checkCooldown = 0;
 
     public AbstractFuzzyGoal(AllosaurusEntity dino, Feeling feeling, Trait trait) {
@@ -24,7 +25,10 @@ public abstract class AbstractFuzzyGoal extends Goal {
             return false;
         }
         this.checkCooldown = 20 + this.dino.getRandom().nextInt(20);
-        if (this.dino.getFeeling(this.feeling) >= 0.75f) {
+
+        float activationThreshold = this.feeling == Feeling.HUNGER ? 0.3f : 0.75f;
+
+        if (this.dino.getFeeling(this.feeling) >= activationThreshold) {
             if (this.dino.getDominantState() == this.feeling.ordinal() + 1) {
                 return canFuzzyActivate();
             }
@@ -34,9 +38,11 @@ public abstract class AbstractFuzzyGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return this.dino.getFeeling(this.feeling) >= 0.65f 
-             && this.dino.getDominantState() == this.feeling.ordinal() + 1
-             && canFuzzyContinue();
+        float continueThreshold = this.feeling == Feeling.HUNGER ? 0.15f : 0.65f;
+
+        return this.dino.getFeeling(this.feeling) >= continueThreshold
+              && this.dino.getDominantState() == this.feeling.ordinal() + 1
+              && canFuzzyContinue();
     }
 
     @Override
@@ -52,6 +58,7 @@ public abstract class AbstractFuzzyGoal extends Goal {
     }
 
     protected void onFuzzyStop() {}
+
     protected abstract boolean canFuzzyActivate();
     protected abstract boolean canFuzzyContinue();
 }

@@ -30,16 +30,17 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import com.lucas.arch.registry.ModTags;
 
-import com.lucas.arch.entity.ai.FuzzyHungerGoal;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import com.lucas.arch.entity.ai.FuzzyFleeGoal;
-import com.lucas.arch.entity.ai.FuzzyAggressiveGoal;
-import com.lucas.arch.entity.ai.FuzzyCuriosityGoal;
+
+import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
 import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
 import com.lucas.arch.entity.ai.DinosaurTemptGoal;
-import com.lucas.arch.entity.ai.SeekDroppedFoodGoal;
+import com.lucas.arch.entity.ai.FearBehaviorGoal;
+import com.lucas.arch.entity.ai.HungerBehaviorGoal;
+import com.lucas.arch.entity.ai.AngerBehaviorGoal;
+
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.component.DataComponents;
@@ -82,6 +83,11 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     private float geneticStatMultiplier = 1.0f;
     private int growthTicks = 0;
     private float accumulatedSaturation = 0.0f;
+    
+    /* Configurações de crescimento oficiais, ativar quando terminar os testes
+    private static final int TICKS_TO_GROW = 120000;
+    private static final float SATURATION_TO_GROW = 400.0f;
+    */
 
     private static final int TICKS_TO_GROW = 1200;
     private static final float SATURATION_TO_GROW = 4.0f;
@@ -496,8 +502,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
                 float traitValue = this.getTrait(getAssociatedTrait(feeling));
                 
                 int decayInterval = (int) (1200 * Math.max(0.2f, traitValue));
-                
-                // CORREÇÃO: A fome não pode decair sozinha pelo tempo!
+        
                 if (feeling != Feeling.HUNGER && decayInterval > 0 && this.tickCount % decayInterval == 0) {
                     this.setFeeling(feeling, currentValue - 0.1f);
                 }
@@ -509,7 +514,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
             float hungerIncrease = 0.05f + (gluttony * 0.05f); 
             this.setFeeling(Feeling.HUNGER, this.getFeeling(Feeling.HUNGER) + hungerIncrease);
         }
-        
+
         this.updateDominantState();
 
         if (this.getAgeTier() != AgeTier.ADULT) {
@@ -575,15 +580,14 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        
-        this.goalSelector.addGoal(1, new FuzzyFleeGoal(this));
-        this.goalSelector.addGoal(2, new FuzzyAggressiveGoal(this));
-        this.goalSelector.addGoal(3, new DinosaurTemptGoal(this, 1.1D, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
-        this.goalSelector.addGoal(4, new SeekDroppedFoodGoal(this, 1.2D, 16.0D)); 
-        this.goalSelector.addGoal(5, new FuzzyHungerGoal(this));
-        
+
+        this.goalSelector.addGoal(1, new FearBehaviorGoal(this));
+        this.goalSelector.addGoal(2, new AngerBehaviorGoal(this));
+        this.goalSelector.addGoal(3, new DinosaurTemptGoal(this, 1.1D,
+                Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
+        this.goalSelector.addGoal(4, new HungerBehaviorGoal(this));
         this.goalSelector.addGoal(7, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
-        this.goalSelector.addGoal(8, new FuzzyCuriosityGoal(this));
+        this.goalSelector.addGoal(8, new CuriosityBehaviorGoal(this));
         this.goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(10, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
     }

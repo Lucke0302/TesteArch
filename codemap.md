@@ -3,7 +3,7 @@
 > **Objetivo:** Mapa de onde cada feature vive no código, para navegação rápida
 > do projeto. Atualize sempre que classes/pacotes forem criados ou removidos.
 >
-> Última atualização: 2026-07-25 (adicionado sistema IA Fuzzy, Goals, e Taming)
+> Última atualização: 2026-07-25 (substituído sistema Fuzzy Goals por BehaviorResolver + *BehaviorGoal)
 ---
 
 ## 1. Estrutura geral de pacotes
@@ -23,7 +23,7 @@
     │   └── jade/                          → integração com Jade (tooltips in-world)
     ├── config/                            → ModConfig + enums
     ├── entity/                            → entidades vivas
-    │   └── ai/                            → goals customizadas
+    │   └── ai/                            → goals customizadas + BehaviorResolver
     ├── item/                              → itens customizados
     ├── mixin/                             → mixins
     ├── recipe/                            → receitas customizadas
@@ -52,8 +52,8 @@ Todas usam `ContainerData` para sincronização de progresso/combustível.
 | Peça | Arquivo |
 |---|---|
 | Entidade | `entity/AllosaurusEntity.java` — extends `TamableAnimal`, implementa `GeoEntity` |
-| IA (Goals) | `entity/ai/SeekDroppedFoodGoal.java`, `entity/ai/DinosaurFollowOwnerGoal.java`, `entity/ai/DinosaurTemptGoal.java`, `entity/ai/AllosaurusHuntPreyGoal.java` |
-| IA (Fuzzy) | `entity/ai/AbstractFuzzyGoal.java`, `entity/ai/FuzzyHungerGoal.java`, `entity/ai/FuzzyAggressiveGoal.java`, `entity/ai/FuzzyFleeGoal.java`, `entity/ai/FuzzyCuriosityGoal.java` |
+| IA (Goals estruturais) | `entity/ai/DinosaurFollowOwnerGoal.java`, `entity/ai/DinosaurTemptGoal.java` |
+| IA (Resolução de comportamento por Feeling) | `entity/ai/AbstractFuzzyGoal.java`, `entity/ai/BehaviorResolver.java`, `entity/ai/HungerBehaviorGoal.java`, `entity/ai/FearBehaviorGoal.java`, `entity/ai/AngerBehaviorGoal.java`, `entity/ai/CuriosityBehaviorGoal.java` |
 | Enums | `entity/Trait.java`, `entity/AgeTier.java`, `entity/Feeling.java` |
 | Registro | `registry/ModEntities.java` |
 | Modelo (cliente) | `client/model/AllosaurusModel.java` — `getTextureResource()` retorna `null`; textura definida pelo renderer |
@@ -62,6 +62,40 @@ Todas usam `ContainerData` para sincronização de progresso/combustível.
 | Texturas | `assets/.../textures/entity/allosaurus_baby.png`, `_male.png`, `_female.png` |
 | Tags | `data/archeology_reimagined/tags/item/carnivore_food.json` |
 | Ovo (bloco) | `block/AllosaurusEggBlock.java` + `block/entity/AllosaurusEggBlockEntity.java` + `item/AllosaurusEggBlockItem.java` |
+
+#### 2.2.1 Sistema de IA — `com.lucas.arch.entity.ai`
+
+A partir da migração de 2026-07-25, o sistema de "Fuzzy Goals" (uma goal por Feeling, competindo por
+prioridade fixa no `GoalSelector`) foi **substituído** por um sistema de resolução determinística por
+Trait, para eliminar o ciclo de indecisão que ocorria quando múltiplas goals do mesmo Feeling disputavam
+ativação a cada avaliação do vanilla `GoalSelector`.
+
+**Removidas** (não existem mais no código): `FuzzyHungerGoal`, `FuzzyFleeGoal`, `FuzzyAggressiveGoal`,
+`FuzzyCuriosityGoal`, `SeekDroppedFoodGoal`, `AllosaurusHuntPreyGoal`.
+
+| Classe | Papel |
+|---|---|
+| `AbstractFuzzyGoal.java` | Base abstrata: gerencia cooldown de checagem, threshold de ativação (`DOMINANT_STATE_THRESHOLD`-like via `>= 0.75f` pra ativar / `>= 0.65f` pra continuar) e decaimento de Feeling ao parar (`stop()`). Mantida como base de todas as `*BehaviorGoal`. |
+| `BehaviorResolver.java` | Classe utilitária **estática e sem estado** (não extends `Goal`). Para um `Feeling` dominante, identifica as duas `Trait`s de maior valor do dino e resolve, via tabela de confronto par-a-par explícita por Feeling (não-transitiva — ver `resolveCuriosity`), qual Trait "vence". Mapeia o vencedor pra um `Behavior` enum: `HUNT_ATTACK`, `FLEE`, `SEEK_GROUND_FOOD`, `BEG_OWNER`, `FOLLOW_PLAYER`, `FOLLOW_OWNER_OR_NEAREST`, `DO_NOTHING`. Chamado **uma vez** dentro de `canFuzzyActivate()` de cada goal — nunca por tick, o modo fica fixo até a goal terminar. |
+| `HungerBehaviorGoal.java` | Goal única pro `Feeling.HUNGER` (substitui `FuzzyHungerGoal` + `SeekDroppedFoodGoal`). `HUNT_ATTACK` persegue fauna (vaca/porco/ovelha/galinha) ou jogador com item de `ModTags.Items.CARNIVORE_FOOD` na mão; `SEEK_GROUND_FOOD` busca `ItemEntity` da mesma tag no chão; `BEG_OWNER` (trait GLUTTONY dominante) tenta comida no chão primeiro e cai pra caça se não achar. |
+| `FearBehaviorGoal.java` | Goal única pro `Feeling.FEAR` (substitui `FuzzyFleeGoal`). Resolve entre `FLEE` (foge da ameaça mais próxima via `DefaultRandomPos.getPosAway`) e `HUNT_ATTACK` (trait AGGRESSIVENESS dominante vira confronto em vez de fuga). |
+| `AngerBehaviorGoal.java` | Goal única pro `Feeling.ANGER` (substitui `FuzzyAggressiveGoal`). Resolve entre `HUNT_ATTACK` e `FLEE` (trait COWARDICE dominante foge mesmo irritado). |
+| `CuriosityBehaviorGoal.java` | Goal única pro `Feeling.CURIOSITY` (substitui `FuzzyCuriosityGoal`). Resolve entre `FOLLOW_PLAYER` (segue jogador mais próximo), `FOLLOW_OWNER_OR_NEAREST` (segue dono se domado e a até 16 blocos, senão jogador mais próximo) e `DO_NOTHING` (trait COWARDICE dominante — não faz nada). |
+| `DinosaurFollowOwnerGoal.java` | Inalterada — "coleira invisível" sem teleporte, independente de Feeling. |
+| `DinosaurTemptGoal.java` | Inalterada — extends `TemptGoal` vanilla, restrita ao dono se domado. |
+
+**`AllosaurusEntity.registerGoals()`** usa prioridades **fixas** no `GoalSelector` (não são recalculadas
+em runtime — a variação de comportamento vem inteiramente do `BehaviorResolver`, não de reordenar
+prioridade):
+
+    1 → FearBehaviorGoal
+    2 → AngerBehaviorGoal
+    3 → DinosaurTemptGoal
+    4 → HungerBehaviorGoal
+    7 → DinosaurFollowOwnerGoal
+    8 → CuriosityBehaviorGoal
+    9 → WaterAvoidingRandomStrollGoal (vanilla)
+    10 → RandomLookAroundGoal (vanilla)
 
 ### 2.3 Escavação / Pincelamento
 

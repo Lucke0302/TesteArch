@@ -56,13 +56,18 @@ public enum AllosaurusClientProvider implements IEntityComponentProvider {
             tooltip.add(traitsComp.withStyle(ChatFormatting.GOLD));
         });
 
-        // Estado Emocional Dominante
+        // Estado Emocional Dominante + Porcentagem
         data.getByte("DominantState").ifPresent(stateId -> {
             MutableComponent stateComponent;
             
             if (stateId > 0 && stateId <= Feeling.values().length) {
                 Feeling dominantFeeling = Feeling.values()[stateId - 1];
                 stateComponent = Component.translatable("feeling.archeology_reimagined." + dominantFeeling.name().toLowerCase());
+                
+                data.getFloat("DominantStateValue").ifPresent(val -> {
+                    int percent = Math.round(val * 100f);
+                    stateComponent.append(Component.literal(" " + percent + "%"));
+                });
                 
                 switch (dominantFeeling) {
                     case ANGER -> stateComponent.withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD);

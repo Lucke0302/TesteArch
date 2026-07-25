@@ -56,14 +56,71 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
 * **Hitbox Dinâmica:** A dimensão física (`getDefaultDimensions`) escala proporcionalmente à escala visual elevada à potência de `0.9`.
 * **Atributos Individuais:** No spawn (`finalizeSpawn`), HP Máximo e Dano de Ataque variam em **±20%** por indivíduo.
 
-### 2.2 Comportamento & Motor Emocional (Fuzzy AI)
-* **Sistema de Sentimentos:** A entidade acumula Raiva, Medo, Fome e Curiosidade com base em eventos do mundo (levar dano, tempo ocioso). O sentimento com maior peso ativo se torna o **Estado Dominante**.
-* **Behavior Tree (Fuzzy Goals):** As decisões da entidade não são estáticas. Elas dependem dos limiares de emoção:
-  * *FuzzyHungerGoal:* Caça outros animais ou ataca jogadores agressivamente se a Fome for alta. Se dócil/curioso, apenas rodeia o jogador esperando ser alimentado.
-  * *FuzzyAggressiveGoal:* Em picos de Raiva, aumenta o raio de detecção e a velocidade para atacar alvos ignorando a própria espécie.
-  * *FuzzyFleeGoal:* Em picos de Medo (amplificado pela Covardia), usa o pathfinder para fugir ativamente de ameaças maiores.
-  * *FuzzyCuriosityGoal:* Rodeia passivamente o jogador, drenando a curiosidade.
-* **Coleira Invisível (`DinosaurFollowOwnerGoal`):** Dinossauros domados possuem uma mecânica de seguir o dono organicamente (caminhando em direção ao dono se afastados mais de 24 blocos), sem utilizar o teleporte quebra-imersão do Vanilla.
+### 2.2 Comportamento & Motor Emocional
+
+* **Sistema de Sentimentos:** A entidade acumula Raiva (`ANGER`), Medo (`FEAR`), Fome (`HUNGER`) e
+  Curiosidade (`CURIOSITY`) com base em eventos do mundo (levar dano, tempo ocioso, saturação). O
+  sentimento com maior peso ativo, ponderado pelas Traits (`updateDominantState`), se torna o **Estado
+  Dominante** (`DOMINANT_STATE`, sincronizado e exibido no Jade).
+
+* **Resolução de Comportamento por Traits (`com.lucas.arch.entity.ai.BehaviorResolver`):** Para cada
+  Feeling dominante existe **uma única Goal responsável** (`*BehaviorGoal`), evitando que múltiplas goals
+  do mesmo Feeling disputem prioridade e gerem indecisão. Ao ativar, a goal pergunta ao
+  `BehaviorResolver` qual das duas Traits mais fortes do dino "vence" para aquele Feeling, através de uma
+  tabela de confronto **par-a-par** (não é uma ordem de ranking global — a tabela de `CURIOSITY` é
+  intencionalmente não-transitiva). O comportamento resultante fica fixo durante toda a execução da goal,
+  só sendo reavaliado na próxima ativação.
+
+  **Faminto (`HUNGER` → `HungerBehaviorGoal`):**
+
+  | Dominante × | Agressivo | Covarde | Curioso | Guloso |
+  |---|---|---|---|---|
+  | **Agressivo** | — | Agressivo | Agressivo | Agressivo |
+  | **Covarde** | | — | Covarde | Guloso |
+  | **Curioso** | | | — | Guloso |
+  | **Guloso** | | | | — |
+
+  Resultado por trait vencedor: *Agressivo* → caça/ataca jogadores com carne na mão; *Covarde/Curioso* →
+  busca comida no chão; *Guloso* → tenta comida no chão primeiro, cai para caça se não encontrar.
+
+  **Amedrontado (`FEAR` → `FearBehaviorGoal`):**
+
+  | Dominante × | Agressivo | Covarde | Curioso | Guloso |
+  |---|---|---|---|---|
+  | **Agressivo** | — | Covarde | Agressivo | Agressivo |
+  | **Covarde** | | — | Covarde | Covarde |
+  | **Curioso** | | | — | *(empate)* |
+  | **Guloso** | | | | — |
+
+  *Agressivo* → ataca a ameaça em vez de fugir; *Covarde/Curioso/Guloso* → foge ativamente via
+  pathfinder (`DefaultRandomPos`).
+
+  **Irritado (`ANGER` → `AngerBehaviorGoal`):**
+
+  | Dominante × | Agressivo | Covarde | Curioso | Guloso |
+  |---|---|---|---|---|
+  | **Agressivo** | — | Agressivo | Agressivo | Agressivo |
+  | **Covarde** | | — | Curioso | Guloso |
+  | **Curioso** | | | — | Guloso |
+  | **Guloso** | | | | — |
+
+  *Agressivo/Curioso/Guloso* → ataca o alvo mais próximo; *Covarde* → foge mesmo irritado.
+
+  **Curioso (`CURIOSITY` → `CuriosityBehaviorGoal`):**
+
+  | Dominante × | Agressivo | Covarde | Curioso | Guloso |
+  |---|---|---|---|---|
+  | **Agressivo** | — | Covarde | Curioso | *(empate)* |
+  | **Covarde** | | — | Curioso | Guloso |
+  | **Curioso** | | | — | Curioso |
+  | **Guloso** | | | | — |
+
+  *Agressivo/Guloso* → segue o jogador mais próximo; *Covarde* → não faz nada; *Curioso* → segue o dono
+  se estiver domado e a até 16 blocos, senão segue o jogador mais próximo.
+
+* **Coleira Invisível (`DinosaurFollowOwnerGoal`):** Dinossauros domados possuem uma mecânica de seguir o
+  dono organicamente (caminhando em direção ao dono se afastados mais de 24 blocos), sem utilizar o
+  teleporte quebra-imersão do Vanilla. Independente do sistema de Feelings.
 
 ### 2.3 Incubação do Ovo
 
@@ -85,12 +142,17 @@ eclosão é exibida no tooltip ao mirar no ovo.
 
 * **Mecânica de Taming:** Filhotes possuem 50% de chance base de doma usando comidas carnívoras (`#archeology_reimagined:carnivore_food`), enquanto adultos possuem 10%. A chance flutua de acordo com a genética (Gula e Curiosidade aumentam a chance; Agressividade e Covardia diminuem).
 
-### 2.4 Mecânica de Caça & Simulação de Alimentação (`AllosaurusHuntPreyGoal` / `doHurtTarget`)
-* **Gatilho de Caça:** Ativado via algoritmo de desejo de caça:
-  $$\text{Desejo} = (\text{Fome} \times 2.0) + \text{Gula} + (\text{Agressividade} \times 0.5)$$
-* **Alvos Selecionados:** Galinhas, Porcos, Ovelhas e Vacas num raio de 32 blocos.
-* **Consumo Dinâmico & Nutrição:** Ao abater uma presa em combate (`doHurtTarget`), o Allossauro simula o consumo imediato da carne correspondente ao mob (ex: Vaca $\rightarrow$ Beef, Ovelha $\rightarrow$ Mutton, Allossauro $\rightarrow$ Meat Cluster). 
-* **Bônus de Abate:** Abates diretos garantem **2x mais nutrição** em saturação do que itens caídos do chão e aplicam cura imediata equivalente aos pontos de nutrição da carne.
+### 2.4 Mecânica de Caça & Simulação de Alimentação
+
+* **Caça Integrada ao `HungerBehaviorGoal`:** A caça ativa não é mais uma goal separada — ela é o
+  sub-comportamento `HUNT_ATTACK` resolvido pelo `BehaviorResolver` dentro do estado de Fome (ver tabela
+  em 2.2). Persegue Vacas, Porcos, Ovelhas e Galinhas num raio de 16 blocos, priorizando fauna sobre
+  jogadores com carne na mão.
+* **Consumo Dinâmico & Nutrição:** Ao abater uma presa em combate (`doHurtTarget`), o Allossauro simula o
+  consumo imediato da carne correspondente ao mob (ex: Vaca $\rightarrow$ Beef, Ovelha $\rightarrow$
+  Mutton, Allossauro $\rightarrow$ Meat Cluster).
+* **Bônus de Abate:** Abates diretos garantem **2x mais nutrição** em saturação do que itens caídos do
+  chão e aplicam cura imediata equivalente aos pontos de nutrição da carne.
 
 ### 2.5 Sistema de Atrofia por Desnutrição (`applyStuntedGrowthDebuff`)
 * **Ciclo de Crescimento:** Requer **120.000 ticks** (~100 minutos) e acúmulo de **400.0 pontos de saturação** para progredir entre os estágios (`BABY` $\rightarrow$ `CHILD` $\rightarrow$ `JUVENILE` $\rightarrow$ `ADULT`).
@@ -142,7 +204,8 @@ eclosão é exibida no tooltip ao mirar no ovo.
 - [x] Receitas de compactação 3x3 de pós para blocos maciços.
 - [x] Base da entidade Allossauro com GeckoLib 5 (RNG de escala 2.7-3.5x, paleta de cores, variação de atributos ±20%).
 - [x] Sistema de Sentimentos & Personalidades: Genética de Traits (Agressividade, Covardia, Gula, Curiosidade) influenciando passivamente o Estado Dominante da entidade e sendo exibidos no Jade.
-- [x] Fuzzy Behavior Tree: Motor emocional gerenciando Fome, Fuga, Raiva e Curiosidade, incluindo `DinosaurFollowOwnerGoal` (Coleira Invisível sem teleporte).
+- [x] **Resolução de Comportamento por Traits (`BehaviorResolver`):** motor determinístico que resolve, para cada Feeling dominante, qual sub-comportamento executar via tabela de confronto par-a-par entre as duas Traits mais fortes do dino — substitui o antigo sistema de "Fuzzy Goals" concorrentes, eliminando o ciclo de indecisão em caça/fuga/ataque. Inclui `DinosaurFollowOwnerGoal` (Coleira Invisível sem teleporte) como goal independente de Feeling.
+- [x] Caça ativa integrada ao `HungerBehaviorGoal` (sub-comportamento `HUNT_ATTACK`), com nutrição regenerativa de combate e bônus de cura por abate.
 - [x] Sistema de Domesticação (Taming): Matemática de doma via comida carnívora influenciada diretamente pelas Traits genéticas da entidade.
 - [x] Arbusto de Bagas Amargas com dano, debuff e geração configurável por bioma via JSON.
 - [x] Gerador procedural 3D da Sequóia Gigante via farinha de osso na muda.
@@ -152,7 +215,6 @@ eclosão é exibida no tooltip ao mirar no ovo.
 - [x] Integração com Jade exibindo progresso de eclosão do ovo em tempo real.
 - [x] Modelo 3D customizado em Blockbench para o Ovo de Allossauro (`allosaurus_egg_block.json`) montado em elementos geométricos.
 - [x] Modelo 3D customizado com espinhos laterais para o Tronco de Cica (`CYCAD_LOG` / `cycad_log.json`).
-- [x] Caça ativa a mobs passivos (`AllosaurusHuntPreyGoal`) com nutrição regenerativa de combate e bônus de cura por abate.
 - [x] Mecânica de atrofia muscular e debuffs em filhotes com fome estagnada.
 - [x] Framework de autoria (`ArchItem`/`ArchBlockItem`) atribuindo designer e programador nos tooltips de todos os itens do mod.
 - [x] Sistema de cores dinâmicas no tooltip para frascos e amostras de DNA baseado na qualidade genômica.
