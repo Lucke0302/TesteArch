@@ -117,7 +117,6 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         output.putString(NBT_AGE_TIER, this.ageTier.name());
         output.putFloat(NBT_AFFINITY, this.humanAffinity);
         output.putFloat(NBT_GENETIC_MULTIPLIER, this.geneticStatMultiplier);
-
         for (Trait trait : Trait.values()) {
             output.putFloat("Trait_" + trait.name(), this.traits.getOrDefault(trait, 0.0f));
         }
@@ -143,6 +142,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
         }
         if (hasCustomAgeTier) {
             this.ageTier = AgeTier.valueOf(ageTierFromNbt);
+            this.entityData.set(AGE_TIER_SYNC, this.ageTier.name());
         }
 
         for (Trait trait : Trait.values()) {
@@ -284,7 +284,7 @@ public class AllosaurusEntity extends TamableAnimal implements GeoEntity{ // Mud
     }
 
     public void setAgeTier(AgeTier tier) {
-        if (this.getAgeTier() == tier) return;
+        this.ageTier = tier; 
         this.entityData.set(AGE_TIER_SYNC, tier.name());
         this.updateStats();
         this.refreshDimensions();

@@ -18,6 +18,9 @@ public class AllosaurusRenderer<R extends LivingEntityRenderState & GeoRenderSta
     public static final RenderStateDataKey<Boolean> IS_MALE_KEY = 
         RenderStateDataKey.create(() -> "allosaurus_is_male");
 
+    public static final RenderStateDataKey<Boolean> IS_BABY_KEY = 
+        RenderStateDataKey.create(() -> "allosaurus_is_baby");
+
     private static final Identifier TEXTURE_BABY = ArcheologyReimagined.id("textures/entity/allosaurus_baby.png");
     private static final Identifier TEXTURE_MALE = ArcheologyReimagined.id("textures/entity/allosaurus_male.png");
     private static final Identifier TEXTURE_FEMALE = ArcheologyReimagined.id("textures/entity/allosaurus_female.png");
@@ -30,15 +33,18 @@ public class AllosaurusRenderer<R extends LivingEntityRenderState & GeoRenderSta
     @Override
     public void extractRenderState(AllosaurusEntity entity, R state, float partialTick) {
         super.extractRenderState(entity, state, partialTick);
-
-        state.isBaby = entity.getAgeTier() == AgeTier.BABY || entity.getAgeTier() == AgeTier.CHILD;
-
+        
+        AgeTier age = entity.getAgeTier();
+        boolean isBaby = age == AgeTier.BABY || age == AgeTier.CHILD;
+        
+        state.setData(IS_BABY_KEY, isBaby);  
         state.setData(IS_MALE_KEY, entity.isMale());
     }
 
     @Override
     public Identifier getTextureLocation(R state) {
-        if (state.isBaby) {
+        Boolean isBaby = state.getData(IS_BABY_KEY);
+        if (isBaby != null && isBaby) {
             return TEXTURE_BABY;
         }
         
