@@ -57,5 +57,6 @@ public class ModEntities {
         FabricDefaultAttributeRegistry.register(ALLOSAURUS, AllosaurusEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PACHYCEPHALOSAURUS, PachycephalosaurusEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(SPINOSAURUS, SpinosaurusEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(PARASAUROLOPHUS, ParasaurolophusEntity.createAttributes());
     }
 }

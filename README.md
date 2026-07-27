@@ -194,6 +194,13 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 * **Abate:** Ao abater uma presa, o Spinosaurus simula o consumo imediato garantindo cura e saturação baseada em Bacalhau (`Items.COD`).
 * **Design Ofensivo:** Maior hitbox (Max Scale 3.0), Base HP 90 e Dano 16.
 
+## Entidades Vivas — Parasaurolophus (`ParasaurolophusEntity`)
+
+### 2.11 Comportamento de Manada e Comunicação
+*   **Herbívoro Social:** Compartilha a estrutura de dieta herbívora (`HERBIVORE_FOOD`) e conversão de `grass_block` do Pachycephalosaurus.
+*   **Animações Específicas:** Possui um rig de animação avançado incluindo `speak` (chamados vocais usando a crista), `sit` (descanso passivo) e `sleep_adult` para transições de ciclo diário ou efeito de Dardos Tranquilizantes.
+*   **Dimorfismo e Crescimento:** Texturas independentes para filhotes (`baby`), machos (`male`) e fêmeas (`female`), além do sistema genético padrão de variação de escala (Scale Modifier).
+
 ## Botânica Pré-Histórica
 
 * **Bagas Amargas (`BitterBerryBushBlock`):**

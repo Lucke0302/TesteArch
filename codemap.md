@@ -125,7 +125,20 @@ prioridade):
 | Assets | Animações mapeadas: `walk`, `idle`, `attack`, `eat`, `swim_underwater`. |
 | Ovo (bloco) | `block/SpinosaurusEggBlock.java` + `block/entity/SpinosaurusEggBlockEntity.java` + `item/SpinosaurusEggBlockItem.java` |
 
-### 2.5 Escavação / Pincelamento
+### 2.5 Entidade Parasaurolophus (Herbívoro)
+
+| Peça | Arquivo |
+|---|---|
+| Entidade | `entity/ParasaurolophusEntity.java` — extends `AbstractDinosaurEntity`, implementa `GeoEntity` e `FeelingDrivenEntity`. |
+| IA (Compartilhada) | Utiliza a mesma infraestrutura de Herbívoros baseada no Pachycephalosaurus, incluindo busca por `HERBIVORE_FOOD` e o motor `BehaviorResolver`. |
+| Registro | `registry/ModEntities.java`, `registry/ModBlocks.java`, `registry/ModBlockEntities.java`. |
+| Modelo (cliente) | `client/model/ParasaurolophusModel.java` apontando para `parasaurolophus.geo.json`. |
+| Renderer (cliente) | `client/renderer/ParasaurolophusRenderer.java`. |
+| Assets (Animações) | Animações mapeadas em `parasaurolophus.animation.json`: `attack`, `eat`, `!eat`, `idle`, `run`, `sit`, `sleep_adult`, `speak`, `swim`, `walk`. |
+| Assets (Texturas) | `entity/parasaurolophus_baby.png`, `_female.png`, `_male.png`. |
+| Ovo (bloco) | `block/ParasaurolophusEggBlock.java` + `block/entity/ParasaurolophusEggBlockEntity.java` + `item/ParasaurolophusEggBlockItem.java`. |
+
+### 2.6 Escavação / Pincelamento
 
 | Peça | Arquivo |
 |---|---|
@@ -137,11 +150,11 @@ prioridade):
 
 Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa pó.
 
-### 2.6 Compactação de pós
+### 2.7 Compactação de pós
 - Itens: `SAND_POWDER`, `GRAVEL_POWDER`, `TUFF_POWDER` (`registry/ModItems.java`)
 - Receitas 3x3 → bloco original em `data/.../recipe/sand_from_powder.json`, etc.
 
-### 2.7 Botânica — Cica
+### 2.8 Botânica — Cica
 
 | Peça | Arquivo |
 |---|---|
@@ -153,7 +166,7 @@ Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa p�
 
 **Faltando:** bloco para plantar a semente; texturas próprias (ainda usa `OAK_SLAB` placeholder).
 
-### 2.8 Botânica — Sequóia Gigante
+### 2.9 Botânica — Sequóia Gigante
 
 | Peça | Arquivo |
 |---|---|
@@ -162,7 +175,7 @@ Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa p�
 
 Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem worldgen natural).
 
-### 2.9 Bagas Amargas
+### 2.10 Bagas Amargas
 
 | Peça | Arquivo |
 |---|---|
@@ -172,18 +185,18 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | Receita do frasco | `data/.../recipe/bitter_berry_jar.json` |
 | Worldgen | `data/.../worldgen/...`, config dinâmica via `ModConfig` |
 
-### 2.10 Fósseis, Âmbar, DNA e Mapeamento
+### 2.11 Fósseis, Âmbar, DNA e Mapeamento
 
 | Peça | Arquivo | Propósito |
 |---|---|---|
 | Itens Base | `registry/ModItems.java` | Instancia Fósseis, Âmbar, Mosquitos e Frascos genéricos. |
 | Itens de DNA | `item/DnaItem.java` | Classe base que colore a % de viabilidade no tooltip dinamicamente. |
-| Espécies Suportadas | `registry/ModItems.java` | `ALLOSAURUS_DNA`, `SPINOSAURUS_DNA`, `PACHYCEPHALOSAURUS_DNA`. |
+| Espécies Suportadas | `registry/ModItems.java` | `ALLOSAURUS_DNA`, `SPINOSAURUS_DNA`, `PACHYCEPHALOSAURUS_DNA`, `PARASAUROLOPHUS_DNA`. |
 | Sorteio | `recipe/ModCleansingRecipes.java` | `rollReptileDna()` distribui as chances da Mesa de Limpeza extrair DNAs de espécies específicas. |
 | Mapeamento de Embrião | `block/entity/SynthesizerBlockEntity.java` | `synthesizeEmbryo()` mapeia o DNA inserido para o `EMBRYO` da espécie correspondente. |
 | Mixin de Queda | `mixin/FallingBlockEntityMixin.java` | Drop de fósseis desestruturados em quedas de blocos. |
 
-### 2.11 Utilitários químicos / Catálise
+### 2.12 Utilitários químicos / Catálise
 
 | Peça | Arquivo |
 |---|---|
@@ -192,11 +205,11 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | Item de Sangue (Planejado) | `item/BloodSyringeItem.java` (A ser criado, gerenciará o Data Component de espécie). |
 | Componente de Espécie | `registry/ModDataComponentTypes.java` (A ser registrado: `SYRINGE_SPECIES`). |
 
-### 2.12 Guia Arqueológico
+### 2.13 Guia Arqueológico
 
 `ArcheologyReimagined.createGuideBook()` — 8 páginas. Receita: `recipe/GuideBookRecipe.java`.
 
-### 2.13 Ovo do Allossauro (Incubação)
+### 2.14 Ovo do Allossauro (Incubação)
 
 | Peça | Arquivo |
 |---|---|
@@ -206,7 +219,7 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | Tag de calor | `data/archeology_reimagined/tags/block/egg_heat_sources.json` → registrada em `ModTags.Blocks.EGG_HEAT_SOURCES` |
 | Registro | `registry/ModBlocks.java` (`ALLOSAURUS_EGG_BLOCK`), `registry/ModBlockEntities.java` (`ALLOSAURUS_EGG_BE`) |
 
-### 2.14 Integração Jade (compat/jade)
+### 2.15 Integração Jade (compat/jade)
 
 | Peça | Arquivo |
 |---|---|
@@ -216,7 +229,7 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | Client provider (Entities)| `compat/jade/AllosaurusClientProvider.java` |
 | Plugin | `compat/jade/ArchJadePlugin.java` — `@WailaPlugin` (Registra provedores para Allosaurus e Pachycephalosaurus) |
 
-### 2.15 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
+### 2.16 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
 
 | Classe | Propósito |
 |---|---|
@@ -226,7 +239,7 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | `DnaItem.java` | Exibe tooltip dinâmico de `DNA_QUALITY` formatado em cores conforme a porcentagem (Vermelho, Amarelo, Verde, Aqua). |
 | `EncyclopediaItem.java` | Item de enciclopédia interativa (placeholder via mensagem de sistema ao usar botão direito). |
 
-### 2.16 Worldgen & Injeção de Loot Tables (`com.lucas.arch.world`)
+### 2.17 Worldgen & Injeção de Loot Tables (`com.lucas.arch.world`)
 
 | Arquivo | Propósito |
 |---|---|

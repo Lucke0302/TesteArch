@@ -13,13 +13,13 @@ import com.geckolib.renderer.base.GeoRenderState;
 
 public class ParasaurolophusRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<ParasaurolophusEntity, R> {
     
-    public static final RenderStateDataKey<Boolean> IS_MALE_KEY = RenderStateDataKey.create(() -> "pachy_is_male");
-    public static final RenderStateDataKey<Boolean> IS_BABY_KEY = RenderStateDataKey.create(() -> "pachy_is_baby");
+    public static final RenderStateDataKey<Boolean> IS_MALE_KEY = RenderStateDataKey.create(() -> "parasaurus_is_male");
+    public static final RenderStateDataKey<Boolean> IS_BABY_KEY = RenderStateDataKey.create(() -> "parasaurus_is_baby");
 
-    private static final Identifier TEXTURE_BABY = ArcheologyReimagined.id("textures/entity/pachycephalosaurus_baby.png");
-    private static final Identifier TEXTURE_CHILD= ArcheologyReimagined.id("textures/entity/pachycephalosaurus_child.png");
-    private static final Identifier TEXTURE_MALE = ArcheologyReimagined.id("textures/entity/pachycephalosaurus_male.png");
-    private static final Identifier TEXTURE_FEMALE = ArcheologyReimagined.id("textures/entity/pachycephalosaurus_female.png");
+    private static final Identifier TEXTURE_BABY = ArcheologyReimagined.id("textures/entity/parasaurolophus_baby.png");
+    private static final Identifier TEXTURE_CHILD= ArcheologyReimagined.id("textures/entity/parasaurolophus_child.png");
+    private static final Identifier TEXTURE_MALE = ArcheologyReimagined.id("textures/entity/parasaurolophus_male.png");
+    private static final Identifier TEXTURE_FEMALE = ArcheologyReimagined.id("textures/entity/parasaurolophus_female.png");
 
     public ParasaurolophusRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ParasaurolophusModel());

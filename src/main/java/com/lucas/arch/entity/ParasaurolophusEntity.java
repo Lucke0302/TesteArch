@@ -42,13 +42,13 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
     @Override protected float getHitboxScaleRatio() { return 1.5f; }
     @Override protected float getMaxSafeHitboxScale() { return 3.0f; }
     @Override protected int[] getColorPalette() { return COLORS; }
-    @Override protected float[] getSpawnScaleRange() { return new float[]{1.0f, 1.3f}; }
-    @Override protected float getAdultSpawnScale() { return 1.0f; }
+    @Override protected float[] getSpawnScaleRange() { return new float[]{1.6f, 1.8f}; }
+    @Override protected float getAdultSpawnScale() { return 1.8f; }
     @Override protected String getColorNbtKey() { return "ParasaurColor"; }
     @Override protected String getScaleNbtKey() { return "ParasaurScale"; }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return baseAttributes(60.0, 0.28, 6.0);
+        return baseAttributes(80.0, 0.28, 10.0);
     }
 
     public void feedSaturation(ItemStack foodStack) {
@@ -91,18 +91,16 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<PachycephalosaurusEntity>("main_controller", 5, state -> {
+        controllers.add(new AnimationController<ParasaurolophusEntity>("main_controller", 5, state -> {
             if (state.isMoving()) {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.pachycephalosaurus.walk"));
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.parasaurolophus.walk"));
             }
-            return state.setAndContinue(RawAnimation.begin().thenLoop("animation.pachycephalosaurus.idle"));
+            return state.setAndContinue(RawAnimation.begin().thenLoop("animation.parasaurolophus.idle"));
         }));
-        controllers.add(new AnimationController<PachycephalosaurusEntity>("attack_controller", 0, state -> PlayState.STOP)
-            .triggerableAnim("attack_1", RawAnimation.begin().thenPlay("animation.pachycephalosaurus.attack_1"))
-            .triggerableAnim("attack_2", RawAnimation.begin().thenPlay("animation.pachycephalosaurus.attack_2"))
-            .triggerableAnim("charge", RawAnimation.begin().thenPlay("animation.pachycephalosaurus.charge")));
-        controllers.add(new AnimationController<PachycephalosaurusEntity>("eat_controller", 0, state -> PlayState.STOP)
-            .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.pachycephalosaurus.eat")));
+        controllers.add(new AnimationController<ParasaurolophusEntity>("attack_controller", 0, state -> PlayState.STOP)
+            .triggerableAnim("attack_1", RawAnimation.begin().thenPlay("animation.parasaurolophus.attack")));
+        controllers.add(new AnimationController<ParasaurolophusEntity>("eat_controller", 0, state -> PlayState.STOP)
+            .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.parasaurolophus.eat")));
     }
 
     @Override
