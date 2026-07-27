@@ -1,7 +1,6 @@
 package com.lucas.arch.compat.jade;
 
 import com.lucas.arch.block.entity.AbstractDinosaurEggBlockEntity;
-import com.lucas.arch.block.entity.AllosaurusEggBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import snownee.jade.api.BlockAccessor;

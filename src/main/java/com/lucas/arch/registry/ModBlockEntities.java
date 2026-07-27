@@ -4,6 +4,7 @@ import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.block.entity.CleansingTableBlockEntity;
 import com.lucas.arch.block.entity.FuserBlockEntity;
 import com.lucas.arch.block.entity.PachycephalosaurusEggBlockEntity;
+import com.lucas.arch.block.entity.ParasaurolophusEggBlockEntity;
 import com.lucas.arch.block.entity.SynthesizerBlockEntity;
 import com.lucas.arch.block.entity.AllosaurusEggBlockEntity;
 import com.lucas.arch.block.entity.SpinosaurusEggBlockEntity;
@@ -73,6 +74,13 @@ public class ModBlockEntities {
         BuiltInRegistries.BLOCK_ENTITY_TYPE,
         Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "spinosaurus_egg_be"),
         FabricBlockEntityTypeBuilder.create(SpinosaurusEggBlockEntity::new, ModBlocks.SPINOSAURUS_EGG_BLOCK).build()
+    );
+
+    public static final BlockEntityType<ParasaurolophusEggBlockEntity> PARASAUROLOPHUS_EGG_BE =
+    Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "parasaurolophus_egg_be"),
+        FabricBlockEntityTypeBuilder.create(ParasaurolophusEggBlockEntity::new, ModBlocks.PARASAUROLOPHUS_EGG_BLOCK).build()
     );
 
     public static void registerBlockEntities() {

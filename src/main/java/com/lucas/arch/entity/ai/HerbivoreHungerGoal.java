@@ -1,10 +1,12 @@
 package com.lucas.arch.entity.ai;
 
 import com.lucas.arch.entity.Feeling;
-import com.lucas.arch.entity.PachycephalosaurusEntity;
+import com.lucas.arch.entity.FeelingDrivenEntity;
+import com.lucas.arch.entity.HerbivoreDiet;
 import com.lucas.arch.entity.Trait;
 import com.lucas.arch.registry.ModTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +23,7 @@ import java.util.List;
  *  1. Item do chão tageado HERBIVORE_FOOD (mais nutritivo, mais rápido).
  *  2. grass_block próximo -> vira dirt, concede grazeSaturation().
  */
-public class PachycephalosaurusHungerGoal extends AbstractFuzzyGoal<PachycephalosaurusEntity> {
+public class HerbivoreHungerGoal<T extends TamableAnimal & FeelingDrivenEntity & HerbivoreDiet> extends AbstractFuzzyGoal<T> {
 
     private static final double SEARCH_RADIUS = 16.0D;
     private static final double GROUND_FOOD_SPEED = 1.2D;
@@ -39,7 +41,7 @@ public class PachycephalosaurusHungerGoal extends AbstractFuzzyGoal<Pachycephalo
     private int eatCooldown = 0;
     private int grazeProgress = 0;
 
-    public PachycephalosaurusHungerGoal(PachycephalosaurusEntity dino) {
+    public HerbivoreHungerGoal(T dino) {
         super(dino, Feeling.HUNGER, Trait.GLUTTONY);
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }

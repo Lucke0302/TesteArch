@@ -2,6 +2,7 @@ package com.lucas.arch.registry;
 
 import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.PachycephalosaurusEntity;
+import com.lucas.arch.entity.ParasaurolophusEntity;
 import com.lucas.arch.entity.SpinosaurusEntity;
 
 import net.minecraft.world.entity.EntityType;
@@ -36,6 +37,14 @@ public class ModEntities {
         BuiltInRegistries.ENTITY_TYPE,
         Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "spinosaurus"),
         EntityType.Builder.of(SpinosaurusEntity::new, MobCategory.CREATURE)
+                .sized(1.4f, 1.3f)
+                .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "spinosaurus")))
+    );
+
+    public static final EntityType<ParasaurolophusEntity> PARASAUROLOPHUS = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "parasaurolophus"),
+        EntityType.Builder.of(ParasaurolophusEntity::new, MobCategory.CREATURE)
                 .sized(1.4f, 1.3f)
                 .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "spinosaurus")))
     );

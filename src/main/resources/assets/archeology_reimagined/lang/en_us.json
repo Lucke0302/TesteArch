@@ -23,6 +23,7 @@
   "item.archeology_reimagined.allosaurus_embryo": "Allosaurus Embryo",
   "item.archeology_reimagined.spinosaurus_embryo": "Spinosaurus Embryo",
   "item.archeology_reimagined.pachycephalosaurus_embryo": "Pachycephalosaurus Embryo",
+  "item.archeology_reimagined.parasaurolophus_embryo": "Parasaurolophus Embryo",
 
   "tooltip.archeology_reimagined.dna_quality": "§7DNA Quality: %s",
   
@@ -54,6 +55,7 @@
   "item.archeology_reimagined.allosaurus_dna": "Allosaurus DNA",
   "item.archeology_reimagined.spinosaurus_dna": "Spinosaurus DNA",
   "item.archeology_reimagined.pachycephalosaurus_dna": "Pachycephalosaurus DNA",
+  "item.archeology_reimagined.parasaurolophus_dna": "Parasaurolophus DNA",
   "item.archeology_reimagined.bio_propellant": "Bio Propellant",
 
   "item.archeology_reimagined.sand_powder": "Sand Powder",
@@ -93,5 +95,9 @@
 
   "entity.archeology_reimagined.spinosaurus": "Spinosaurus",
   "block.archeology_reimagined.spinosaurus_egg_block": "Spinosaurus Egg",
-  "item.archeology_reimagined.spinosaurus_egg_block": "Spinosaurus Egg "
+  "item.archeology_reimagined.spinosaurus_egg_block": "Spinosaurus Egg ",
+
+  "entity.archeology_reimagined.parasaurolophus": "Parasaurolophus",
+  "block.archeology_reimagined.parasaurolophus_egg_block": "Parasaurolophus Egg",
+  "item.archeology_reimagined.parasaurolophus_egg_block": "Parasaurolophus Egg "
 }

@@ -9,6 +9,7 @@
   "item.archeology_reimagined.allosaurus_dna": "DNA de Alossauro",
   "item.archeology_reimagined.spinosaurus_dna": "DNA de Espinossauro",
   "item.archeology_reimagined.pachycephalosaurus_dna": "DNA de Paquicefalossauro",
+  "item.archeology_reimagined.parasaurolophus_dna": "DNA de Parassaurolofo",
   "item.archeology_reimagined.default_fish_dna": "DNA de Peixe",
   "item.archeology_reimagined.default_mammal_dna": "DNA de Mamífero",
   
@@ -26,6 +27,7 @@
   "item.archeology_reimagined.allosaurus_embryo": "Embrião de Alossauro",
   "item.archeology_reimagined.spinosaurus_embryo": "Embrião de Espinossauro",
   "item.archeology_reimagined.pachycephalosaurus_embryo": "Embrião de Paquicefalossauro",
+  "item.archeology_reimagined.parasaurolophus_embryo": "Embrião de Parassaurolofo",
 
   "tooltip.archeology_reimagined.dna_quality": "§7Qualidade do DNA: %s",
   
@@ -93,5 +95,10 @@
 
   "entity.archeology_reimagined.spinosaurus": "Espinossauro",
   "block.archeology_reimagined.spinosaurus_egg_block": "Ovo de Espinossauro",
-  "item.archeology_reimagined.spinosaurus_egg_block": "Ovo de Espinossauro"
+  "item.archeology_reimagined.spinosaurus_egg_block": "Ovo de Espinossauro",
+
+  "entity.archeology_reimagined.parasaurolophus": "Parassaurolofo",
+  "block.archeology_reimagined.parasaurolophus_egg_block": "Ovo de Parassaurolofo",
+  "item.archeology_reimagined.parasaurolophus_egg_block": "Ovo de Parassaurolofo"
+
 }

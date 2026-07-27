@@ -26,26 +26,26 @@ import com.lucas.arch.entity.ai.FearBehaviorGoal;
 import com.lucas.arch.entity.ai.HerbivoreHungerGoal;
 import com.lucas.arch.registry.ModTags;
 
-public class PachycephalosaurusEntity extends AbstractDinosaurEntity implements HerbivoreDiet {
+public class ParasaurolophusEntity extends AbstractDinosaurEntity implements HerbivoreDiet {
 
     /** Multiplicador de saturação: compensa a ausência do bônus de caça do carnívoro. */
     public static final float HERBIVORE_SATURATION_MULTIPLIER = 2.0f;
 
     private static final int[] COLORS = { 0xFF8B7355, 0xFF6B6B4A, 0xFFA0826D };
 
-    public PachycephalosaurusEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
+    public ParasaurolophusEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
 
-    @Override protected float getBaseHealth() { return 60.0f; }
-    @Override protected float getBaseAttackDamage() { return 12.0f; }
+    @Override protected float getBaseHealth() { return 80.0f; }
+    @Override protected float getBaseAttackDamage() { return 10.0f; }
     @Override protected float getHitboxScaleRatio() { return 1.5f; }
     @Override protected float getMaxSafeHitboxScale() { return 3.0f; }
     @Override protected int[] getColorPalette() { return COLORS; }
     @Override protected float[] getSpawnScaleRange() { return new float[]{1.0f, 1.3f}; }
     @Override protected float getAdultSpawnScale() { return 1.0f; }
-    @Override protected String getColorNbtKey() { return "PachyColor"; }
-    @Override protected String getScaleNbtKey() { return "PachyScale"; }
+    @Override protected String getColorNbtKey() { return "ParasaurColor"; }
+    @Override protected String getScaleNbtKey() { return "ParasaurScale"; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(60.0, 0.28, 6.0);

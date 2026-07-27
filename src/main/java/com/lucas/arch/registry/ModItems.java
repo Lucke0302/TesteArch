@@ -66,6 +66,8 @@ public class ModItems {
           p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
     public static final Item PACHYCEPHALOSAURUS_DNA = registerItem("pachycephalosaurus_dna",
           p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+    public static final Item PARASAUROLOPHUS_DNA = registerItem("parasaurolophus_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
 
     public static final Item FRAGMENTED_DNA = registerItem("fragmented_dna",
           p -> new ArchItem(p, "F&A, Lucke0302", "Lucke0302"));
@@ -96,6 +98,8 @@ public class ModItems {
     public static final Item SPINOSAURUS_EMBRYO = registerItem("spinosaurus_embryo",
         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
     public static final Item PACHYCEPHALOSAURUS_EMBRYO = registerItem("pachycephalosaurus_embryo",
+        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
+    public static final Item PARASAUROLOPHUS_EMBRYO = registerItem("parasaurolophus_embryo",
         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
 
 
@@ -169,6 +173,7 @@ public class ModItems {
             output.accept(ALLOSAURUS_DNA);
             output.accept(SPINOSAURUS_DNA);
             output.accept(PACHYCEPHALOSAURUS_DNA);
+            output.accept(PARASAUROLOPHUS_DNA);
             output.accept(ENCYCLOPEDIA);
             output.accept(PROCESSING_BOARD);
             output.accept(THERMAL_MODULE);
@@ -180,7 +185,7 @@ public class ModItems {
             output.accept(ALLOSAURUS_EMBRYO);
             output.accept(SPINOSAURUS_EMBRYO);
             output.accept(PACHYCEPHALOSAURUS_EMBRYO);
-            output.accept(ALLOSAURUS_EMBRYO);
+            output.accept(PARASAUROLOPHUS_EMBRYO);
             output.accept(AMBER);
             output.accept(MOSQUITO_IN_AMBER);
             output.accept(EMPTY_SYRINGE);
