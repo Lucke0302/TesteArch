@@ -118,6 +118,9 @@ public class ModItems {
     public static final Item FULL_SYRINGE = registerItem("full_syringe",
          p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
 
+    public static final Item BLOOD_SYRINGE = registerItem("blood_syringe",
+         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+
     public static final Item BIO_PROPELLANT = registerItem("bio_propellant",
          p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
 

@@ -113,6 +113,7 @@ public class SpinosaurusEntity extends AbstractDinosaurEntity implements Carnivo
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
         this.goalSelector.addGoal(1, new FearBehaviorGoal<>(this));
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this));
         this.goalSelector.addGoal(3, new DinosaurTemptGoal<>(this, 1.1D,

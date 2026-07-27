@@ -298,7 +298,7 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
     * *Dinossauro do Dono:* Aceita a extração pacificamente.
     * *Dinossauro Selvagem/Alheio:* Reage à picada. Aumenta a Raiva (`ANGER`) do dinossauro na fórmula: `10% * (Trait de Agressividade * 10)`. Se a agressividade for alta, ele atacará o jogador imediatamente.
   * **Resultado:** 50% de chance de sucesso para obter uma **Seringa com Sangue**.
-- [ ] **Novo Item: Seringa com Sangue (`BLOOD_SYRINGE` ou Item Único com NBT):**
+- [ ] **Novo Item: Seringa com Sangue (`BLOOD_SYRINGE` - Item Único com NBT):**
   * Usa a mesma textura da Seringa com Aditivo (temporariamente).
   * **Unstackable (Max Count 1):** Para proteger o Data Component.
   * **Data Component (`SPECIES`):** Armazena a espécie exata de onde o sangue foi retirado.

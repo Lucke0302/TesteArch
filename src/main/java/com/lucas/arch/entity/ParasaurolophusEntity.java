@@ -27,6 +27,7 @@ import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
 import com.lucas.arch.entity.ai.DinosaurTemptGoal;
 import com.lucas.arch.entity.ai.FearBehaviorGoal;
 import com.lucas.arch.entity.ai.HerbivoreHungerGoal;
+import com.lucas.arch.entity.ai.SleepBehaviorGoal;
 import com.lucas.arch.registry.ModTags;
 
 public class ParasaurolophusEntity extends AbstractDinosaurEntity implements HerbivoreDiet {
@@ -157,7 +158,7 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
     @Override
     protected void registerGoals() {
         super.registerGoals();
-
+        this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
         this.goalSelector.addGoal(1, new FearBehaviorGoal<>(this));
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this, "attack_1"));
         this.goalSelector.addGoal(3, new DinosaurTemptGoal<>(this, 1.1D,

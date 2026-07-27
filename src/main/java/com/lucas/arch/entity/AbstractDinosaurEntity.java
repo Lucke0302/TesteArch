@@ -64,6 +64,9 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     protected float geneticStatMultiplier = 1.0f;
     protected int growthTicks = 0;
     protected float accumulatedSaturation = 0.0f;
+    private int attachedDarts = 0;
+    private int tranquilizerTicks = 0;
+    private boolean isSleeping = false;
 
     protected AbstractDinosaurEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
@@ -345,6 +348,40 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
             this.growthTicks = 0;
             this.accumulatedSaturation = 0.0f;
             level.broadcastEntityEvent(this, (byte) 14);
+        }
+    }
+
+    public void addDartDose() {
+        this.attachedDarts++;
+    }
+
+    public boolean isSleeping() {
+        return this.isSleeping;
+    }
+
+    protected void tickTranquilizer() {
+        int requiredDoses = (int) Math.ceil(this.getBbHeight()); 
+        
+        if (this.attachedDarts >= requiredDoses) {
+            this.tranquilizerTicks++;
+            
+            if (this.tranquilizerTicks == 300) {
+                this.isSleeping = true;
+                this.getNavigation().stop();
+                this.setTarget(null);
+                this.triggerAnim("controller", "sleep"); 
+            }
+            
+            if (this.tranquilizerTicks > 12300) { 
+                this.isSleeping = false;
+                this.attachedDarts = 0;
+                this.tranquilizerTicks = 0;
+                this.triggerAnim("controller", "idle");
+            }
+        } else {
+            if (this.attachedDarts > 0 && this.tickCount % 600 == 0) {
+                this.attachedDarts--;
+            }
         }
     }
 
