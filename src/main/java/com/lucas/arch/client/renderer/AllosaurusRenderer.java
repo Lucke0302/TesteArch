@@ -27,7 +27,7 @@ public class AllosaurusRenderer<R extends LivingEntityRenderState & GeoRenderSta
 
     public AllosaurusRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new AllosaurusModel());
-        this.shadowRadius = 0.8f; 
+        this.shadowRadius = 0.6f;
     }
 
     @Override

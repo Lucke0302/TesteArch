@@ -1,10 +1,11 @@
 package com.lucas.arch.entity.ai;
 
-import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.Feeling;
+import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.Trait;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -14,7 +15,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import java.util.EnumSet;
 import java.util.List;
 
-public class FearBehaviorGoal extends AbstractFuzzyGoal {
+public class FearBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> extends AbstractFuzzyGoal<T> {
     private final double searchRadius = 16.0D;
     private final double fleeSpeed = 1.5D;
     private final double attackSpeed = 1.3D;
@@ -24,7 +25,7 @@ public class FearBehaviorGoal extends AbstractFuzzyGoal {
     private double runX, runY, runZ;
     private int attackCooldown = 0;
 
-    public FearBehaviorGoal(AllosaurusEntity dino) {
+    public FearBehaviorGoal(T dino) {
         super(dino, Feeling.FEAR, Trait.COWARDICE);
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }

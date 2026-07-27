@@ -169,6 +169,23 @@ eclosão é exibida no tooltip ao mirar no ovo.
 
 ---
 
+## Entidades Vivas — Pachycephalosaurus (`PachycephalosaurusEntity`)
+
+O Pachycephalosaurus atua como a fundação arquitetural para os dinossauros herbívoros do mod. Ele reutiliza integralmente o Motor Emocional e a resolução de Traits do Allossauro, mas diverge no comportamento alimentar e atributos de combate.
+
+### 2.7 Combate e Atributos
+* **Design Defensivo:** Base HP 60 e Dano 6 (escalonável pela genética e idade). Ele não caça. A `AngerBehaviorGoal` utiliza uma animação de cabeçada (`attack_1`, `attack_2` ou `charge`) apenas para autodefesa.
+* **Taming:** Utiliza a tag `#archeology_reimagined:herbivore_food`.
+
+### 2.8 Dieta Herbívora e `PachycephalosaurusHungerGoal`
+Diferente dos carnívoros, o Pachy não ataca outras entidades quando faminto. O `BehaviorResolver` foi projetado para ignorar `HUNT_ATTACK` neste contexto. 
+A aquisição de nutrição segue uma ordem de prioridade estrita:
+1. **Itens no chão:** Busca ativa por itens tageados como `HERBIVORE_FOOD` num raio de 16 blocos.
+2. **Pastagem (Grazing):** Se não houver itens, ele procura blocos de grama (`grass_block`) próximos. Após 40 ticks de animação de comer (`eat`), converte o bloco em Terra (`dirt`) e concede um valor base de 3.0 de nutrição.
+
+### 2.9 Motor Metábolico (`HERBIVORE_SATURATION_MULTIPLIER`)
+Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros possuem, o Pachycephalosaurus compensa isso aplicando um multiplicador global de **2.0x** (`HERBIVORE_SATURATION_MULTIPLIER`) para qualquer ganho de saturação (seja via item ou pastagem). O decréscimo da barra de `HUNGER` é escalonado com o mesmo multiplicador.
+
 ## Botânica Pré-Histórica
 
 * **Bagas Amargas (`BitterBerryBushBlock`):**
@@ -219,6 +236,9 @@ eclosão é exibida no tooltip ao mirar no ovo.
 - [x] Framework de autoria (`ArchItem`/`ArchBlockItem`) atribuindo designer e programador nos tooltips de todos os itens do mod.
 - [x] Sistema de cores dinâmicas no tooltip para frascos e amostras de DNA baseado na qualidade genômica.
 - [x] Biblioteca completa de animações GeckoLib 5 para o Allossauro no arquivo `allosaurus.animation.json` (`walk`, `run`, `idle`, `attack`, `eat`, `drink`, `sit`, `sleep`, `speak`, `swim`, `jump/fall`).
+- [x] Entidade Pachycephalosaurus completa e conectada ao cliente (Model e Renderer em GeckoLib 5), operando com a IA de herbívoro baseada no Motor Emocional.
+- [x] Casca física do Ovo de Pachycephalosaurus implementada (`Block`, `BlockEntity`, `BlockItem`), permitindo o plantio e a integração ao sistema de termodinâmica para incubação.
+- [x] Refatoração dos provedores do mod Jade (`AllosaurusServerProvider` e `AllosaurusEggServerProvider`), atualizados para utilizar Pattern Matching e suportar genericamente as interfaces `FeelingDrivenEntity` e `AbstractDinosaurEggBlockEntity`.
 
 ---
 

@@ -1,8 +1,9 @@
 package com.lucas.arch.entity.ai;
 
-import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.Feeling;
+import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.Trait;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -10,14 +11,14 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import java.util.EnumSet;
 import java.util.List;
 
-public class CuriosityBehaviorGoal extends AbstractFuzzyGoal {
+public class CuriosityBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> extends AbstractFuzzyGoal<T> {
     private final double searchRadius = 16.0D;
     private final double speed = 1.0D;
 
     private BehaviorResolver.Behavior activeMode;
     private Player targetPlayer;
 
-    public CuriosityBehaviorGoal(AllosaurusEntity dino) {
+    public CuriosityBehaviorGoal(T dino) {
         super(dino, Feeling.CURIOSITY, Trait.CURIOSITY);
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }

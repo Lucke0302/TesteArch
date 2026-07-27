@@ -91,13 +91,28 @@ prioridade):
     1 → FearBehaviorGoal
     2 → AngerBehaviorGoal
     3 → DinosaurTemptGoal
-    4 → HungerBehaviorGoal
+    4 → AllosaurusHungerGoal
     7 → DinosaurFollowOwnerGoal
     8 → CuriosityBehaviorGoal
     9 → WaterAvoidingRandomStrollGoal (vanilla)
     10 → RandomLookAroundGoal (vanilla)
 
-### 2.3 Escavação / Pincelamento
+### 2.3 Entidade Pachycephalosaurus (Herbívoro)
+
+| Peça | Arquivo |
+|---|---|
+| Entidade | `entity/PachycephalosaurusEntity.java` — extends `TamableAnimal`, implementa `GeoEntity` e `FeelingDrivenEntity`. |
+| IA (Fome/Pastagem) | `entity/ai/PachycephalosaurusHungerGoal.java` — IA exclusiva de herbívoro; busca itens ou transforma `grass_block` em `dirt`. |
+| IA (Compartilhada) | Reutiliza as mesmas goals de Feeling do Allossauro: `FearBehaviorGoal`, `AngerBehaviorGoal`, `CuriosityBehaviorGoal` e a estática `BehaviorResolver`. |
+| Enums | Compartilha `Trait`, `AgeTier`, `Feeling`. |
+| Registro | `registry/ModEntities.java`, `registry/ModBlocks.java`, `registry/ModBlockEntities.java` |
+| Modelo (cliente) | `client/model/PachycephalosaurusModel.java` |
+| Renderer (cliente) | `client/renderer/PachycephalosaurusRenderer.java` |
+| Assets | Animações mapeadas: `walk`, `idle`, `attack_1`, `attack_2`, `charge`, `eat`. |
+| Tags | `data/archeology_reimagined/tags/item/herbivore_food.json` |
+| Ovo (bloco) | `block/PachycephalosaurusEggBlock.java` + `block/entity/PachycephalosaurusEggBlockEntity.java` + `item/PachycephalosaurusEggBlockItem.java` |
+
+### 2.4 Escavação / Pincelamento
 
 | Peça | Arquivo |
 |---|---|
@@ -109,11 +124,11 @@ prioridade):
 
 Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa pó.
 
-### 2.4 Compactação de pós
+### 2.5 Compactação de pós
 - Itens: `SAND_POWDER`, `GRAVEL_POWDER`, `TUFF_POWDER` (`registry/ModItems.java`)
 - Receitas 3x3 → bloco original em `data/.../recipe/sand_from_powder.json`, etc.
 
-### 2.5 Botânica — Cica
+### 2.6 Botânica — Cica
 
 | Peça | Arquivo |
 |---|---|
@@ -125,7 +140,7 @@ Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa p�
 
 **Faltando:** bloco para plantar a semente; texturas próprias (ainda usa `OAK_SLAB` placeholder).
 
-### 2.6 Botânica — Sequóia Gigante
+### 2.7 Botânica — Sequóia Gigante
 
 | Peça | Arquivo |
 |---|---|
@@ -134,7 +149,7 @@ Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa p�
 
 Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem worldgen natural).
 
-### 2.7 Bagas Amargas
+### 2.8 Bagas Amargas
 
 | Peça | Arquivo |
 |---|---|
@@ -144,22 +159,22 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | Receita do frasco | `data/.../recipe/bitter_berry_jar.json` |
 | Worldgen | `data/.../worldgen/...`, config dinâmica via `ModConfig` |
 
-### 2.8 Fósseis, Âmbar, DNA
+### 2.9 Fósseis, Âmbar, DNA
 
 Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixin.java`.
 
-### 2.9 Utilitários químicos / Catálise
+### 2.10 Utilitários químicos / Catálise
 
 | Peça | Arquivo |
 |---|---|
 | Processamento | `block/entity/BiocatalyzerBlockEntity.java` |
 | Itens | `EMPTY_SYRINGE`, `FULL_SYRINGE`, `BIO_PROPELLANT`, `EMPTY_DART`, `FULL_DART`, `BITTER_BERRY_JAR` em `registry/ModItems.java` |
 
-### 2.10 Guia Arqueológico
+### 2.11 Guia Arqueológico
 
 `ArcheologyReimagined.createGuideBook()` — 8 páginas. Receita: `recipe/GuideBookRecipe.java`.
 
-### 2.11 Ovo do Allossauro (Incubação)
+### 2.12 Ovo do Allossauro (Incubação)
 
 | Peça | Arquivo |
 |---|---|
@@ -169,17 +184,17 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 | Tag de calor | `data/archeology_reimagined/tags/block/egg_heat_sources.json` → registrada em `ModTags.Blocks.EGG_HEAT_SOURCES` |
 | Registro | `registry/ModBlocks.java` (`ALLOSAURUS_EGG_BLOCK`), `registry/ModBlockEntities.java` (`ALLOSAURUS_EGG_BE`) |
 
-### 2.12 Integração Jade (compat/jade)
+### 2.13 Integração Jade (compat/jade)
 
 | Peça | Arquivo |
 |---|---|
-| Server provider (Blocks) | `compat/jade/AllosaurusEggServerProvider.java` |
+| Server provider (Blocks) | `compat/jade/AllosaurusEggServerProvider.java` — (Refatorado para suportar `AbstractDinosaurEggBlockEntity` genericamente) |
 | Client provider (Blocks) | `compat/jade/AllosaurusEggClientProvider.java` |
-| Server provider (Entities)| `compat/jade/AllosaurusServerProvider.java` |
+| Server provider (Entities)| `compat/jade/AllosaurusServerProvider.java` — (Refatorado para extrair dados genéricos de `FeelingDrivenEntity` e `TamableAnimal`) |
 | Client provider (Entities)| `compat/jade/AllosaurusClientProvider.java` |
-| Plugin | `compat/jade/ArchJadePlugin.java` — `@WailaPlugin` |
+| Plugin | `compat/jade/ArchJadePlugin.java` — `@WailaPlugin` (Registra provedores para Allosaurus e Pachycephalosaurus) |
 
-### 2.13 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
+### 2.14 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
 
 | Classe | Propósito |
 |---|---|
@@ -189,7 +204,7 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 | `DnaItem.java` | Exibe tooltip dinâmico de `DNA_QUALITY` formatado em cores conforme a porcentagem (Vermelho, Amarelo, Verde, Aqua). |
 | `EncyclopediaItem.java` | Item de enciclopédia interativa (placeholder via mensagem de sistema ao usar botão direito). |
 
-### 2.14 Worldgen & Injeção de Loot Tables (`com.lucas.arch.world`)
+### 2.15 Worldgen & Injeção de Loot Tables (`com.lucas.arch.world`)
 
 | Arquivo | Propósito |
 |---|---|

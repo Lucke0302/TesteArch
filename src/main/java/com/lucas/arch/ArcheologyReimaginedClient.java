@@ -9,6 +9,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import com.lucas.arch.client.renderer.AllosaurusRenderer;
+import com.lucas.arch.client.renderer.PachycephalosaurusRenderer;
 import com.lucas.arch.registry.ModEntities;
 
 public class ArcheologyReimaginedClient implements ClientModInitializer {
@@ -23,6 +24,8 @@ public class ArcheologyReimaginedClient implements ClientModInitializer {
         EntityRenderers.register(ModEntities.ALLOSAURUS, AllosaurusRenderer::new);
 
         MenuScreens.register(ModMenuTypes.BIOCATALYZER_MENU, BiocatalyzerScreen::new);
+
+        EntityRenderers.register(ModEntities.PACHYCEPHALOSAURUS, PachycephalosaurusRenderer::new);
 
     }
 }

@@ -80,5 +80,9 @@
   "agetier.archeology_reimagined.adult": "Adulto",
   "tooltip.archeology_reimagined.gender": "Sexo: ",
   "gender.archeology_reimagined.male": "Macho",
-  "gender.archeology_reimagined.female": "Fêmea"
+  "gender.archeology_reimagined.female": "Fêmea",
+
+  "entity.archeology_reimagined.pachycephalosaurus": "Paquicefalossauro",
+  "block.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro",
+  "item.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro"
 }

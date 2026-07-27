@@ -1,10 +1,11 @@
 package com.lucas.arch.entity.ai;
 
-import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.Feeling;
+import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.Trait;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +24,7 @@ import java.util.List;
  *  - AGGRESSIVENESS, CURIOSITY e GLUTTONY dominantes -> ataca.
  *  - COWARDICE dominante -> foge.
  */
-public class AngerBehaviorGoal extends AbstractFuzzyGoal {
+public class AngerBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> extends AbstractFuzzyGoal<T> {
     private final double searchRadius = 24.0D;
     private final double attackSpeed = 1.4D;
     private final double fleeSpeed = 1.5D;
@@ -36,8 +37,19 @@ public class AngerBehaviorGoal extends AbstractFuzzyGoal {
     private int recalcTimer = 0;
     private int attackCooldown = 0;
 
-    public AngerBehaviorGoal(AllosaurusEntity dino) {
+    private final String attackAnimName;
+
+    public AngerBehaviorGoal(T dino) {
+        this(dino, "attack");
+    }
+
+    /**
+     * @param attackAnimName nome do triggerableAnim registrado no "attack_controller" da
+     *                        entidade (ex: "attack" pro Allosaurus, "attack_1" pro Pachy).
+     */
+    public AngerBehaviorGoal(T dino, String attackAnimName) {
         super(dino, Feeling.ANGER, Trait.AGGRESSIVENESS);
+        this.attackAnimName = attackAnimName;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
@@ -105,7 +117,7 @@ public class AngerBehaviorGoal extends AbstractFuzzyGoal {
     @Override
     public void tick() {
         if (this.activeMode != BehaviorResolver.Behavior.HUNT_ATTACK) {
-            return; 
+            return;
         }
 
         this.dino.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
@@ -126,7 +138,7 @@ public class AngerBehaviorGoal extends AbstractFuzzyGoal {
                     this.dino.doHurtTarget(serverLevel, this.target);
                 }
                 if (this.dino instanceof com.geckolib.animatable.GeoEntity geoEntity) {
-                    geoEntity.triggerAnim("attack_controller", "attack");
+                    geoEntity.triggerAnim("attack_controller", this.attackAnimName);
                 }
                 this.attackCooldown = 20;
             }

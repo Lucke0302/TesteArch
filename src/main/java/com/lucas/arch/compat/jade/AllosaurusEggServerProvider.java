@@ -1,5 +1,6 @@
 package com.lucas.arch.compat.jade;
 
+import com.lucas.arch.block.entity.AbstractDinosaurEggBlockEntity;
 import com.lucas.arch.block.entity.AllosaurusEggBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -14,11 +15,10 @@ public enum AllosaurusEggServerProvider implements IServerDataProvider<BlockAcce
 
     @Override
     public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-        if (accessor.getBlockEntity() instanceof AllosaurusEggBlockEntity eggBE) {
+        if (accessor.getBlockEntity() instanceof AbstractDinosaurEggBlockEntity<?> eggBE) {
             data.putInt("HatchProgress", eggBE.getHatchProgress());
         }
     }
-
     @Override
     public Identifier getUid() {
         return ID;

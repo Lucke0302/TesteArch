@@ -1,18 +1,19 @@
 package com.lucas.arch.entity.ai;
 
-import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.Feeling;
+import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.Trait;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 
-public abstract class AbstractFuzzyGoal extends Goal {
-    protected final AllosaurusEntity dino;
+public abstract class AbstractFuzzyGoal<T extends TamableAnimal & FeelingDrivenEntity> extends Goal {
+    protected final T dino;
     protected final Feeling feeling;
     protected final Trait associatedTrait;
 
     private int checkCooldown = 0;
 
-    public AbstractFuzzyGoal(AllosaurusEntity dino, Feeling feeling, Trait trait) {
+    public AbstractFuzzyGoal(T dino, Feeling feeling, Trait trait) {
         this.dino = dino;
         this.feeling = feeling;
         this.associatedTrait = trait;

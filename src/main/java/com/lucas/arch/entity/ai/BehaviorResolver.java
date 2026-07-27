@@ -1,14 +1,20 @@
 package com.lucas.arch.entity.ai;
 
-import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.Feeling;
+import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.Trait;
+import net.minecraft.world.entity.TamableAnimal;
 
 /**
  * Resolve qual comportamento vence dentro de um Feeling dominante, comparando
  * as duas traits de maior valor no dino via tabela de confronto par-a-par.
  * NÃO é uma ordem global (a tabela de CURIOSITY não é transitiva por design),
  * então a resolução é sempre par-a-par, nunca por ranking acumulado.
+ *
+ * Generificado para qualquer T que seja TamableAnimal + FeelingDrivenEntity — a tabela
+ * de confronto (traits) é a mesma para todas as espécies; o que muda por espécie é
+ * como cada Behavior resultante é EXECUTADO (isso fica nas goals concretas de cada bicho,
+ * ex: HUNT_ATTACK vira caça pro Allosaurus e "sem efeito -> cai pra pastagem" pro Pachy).
  */
 public final class BehaviorResolver {
 
@@ -24,11 +30,11 @@ public final class BehaviorResolver {
 
     private BehaviorResolver() {}
 
-    public static Behavior resolve(AllosaurusEntity dino, Feeling feeling) {
+    public static <T extends TamableAnimal & FeelingDrivenEntity> Behavior resolve(T dino, Feeling feeling) {
         return mapTraitToBehavior(feeling, resolveDominantTrait(dino, feeling));
     }
 
-    private static Trait resolveDominantTrait(AllosaurusEntity dino, Feeling feeling) {
+    private static <T extends TamableAnimal & FeelingDrivenEntity> Trait resolveDominantTrait(T dino, Feeling feeling) {
         Trait[] all = Trait.values();
         Trait first = all[0];
         Trait second = all[1];
@@ -43,7 +49,7 @@ public final class BehaviorResolver {
         return resolvePair(dino, feeling, first, second);
     }
 
-    private static Trait resolvePair(AllosaurusEntity dino, Feeling feeling, Trait a, Trait b) {
+    private static <T extends TamableAnimal & FeelingDrivenEntity> Trait resolvePair(T dino, Feeling feeling, Trait a, Trait b) {
         if (a == b) return a;
         Trait winner = switch (feeling) {
             case HUNGER -> resolveHunger(a, b);

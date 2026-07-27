@@ -9,10 +9,13 @@ import com.lucas.arch.block.CleansingTableBlock;
 import com.lucas.arch.block.CycadCenterBlock;
 import com.lucas.arch.block.CycadSaplingBlock;
 import com.lucas.arch.block.FuserBlock;
+import com.lucas.arch.block.PachycephalosaurusEggBlock;
 import com.lucas.arch.block.SequoiaSaplingBlock;
 import com.lucas.arch.block.SynthesizerBlock;
 import com.lucas.arch.item.AllosaurusEggBlockItem;
 import com.lucas.arch.item.ArchBlockItem;
+import com.lucas.arch.item.PachycephalosaurusEggBlockItem;
+
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -109,6 +112,11 @@ public class ModBlocks {
             .noCollision().strength(0.0f).sound(SoundType.BONE_BLOCK).noOcclusion()),
         (block, itemProps) -> new AllosaurusEggBlockItem(block, itemProps, "Lucke0302", "Lucke0302"));
 
+    public static final Block PACHYCEPHALOSAURUS_EGG_BLOCK = registerBlock("pachycephalosaurus_egg_block",
+        properties -> new PachycephalosaurusEggBlock(properties.mapColor(MapColor.SAND)
+            .noCollision().strength(0.0f).sound(SoundType.BONE_BLOCK).noOcclusion()),
+        (block, itemProps) -> new PachycephalosaurusEggBlockItem(block, itemProps, "Lucke0302", "Lucke0302"));
+
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function, String designer, String programmer) {
         return registerBlock(name, function,
             (block, itemProps) -> new ArchBlockItem(block, itemProps, designer, programmer));
@@ -137,6 +145,7 @@ public class ModBlocks {
             output.accept(CYCAD_LOG);
             output.accept(BIOCATALYZER);
             output.accept(ALLOSAURUS_EGG_BLOCK);
+            output.accept(PACHYCEPHALOSAURUS_EGG_BLOCK);
         });
     }
 }

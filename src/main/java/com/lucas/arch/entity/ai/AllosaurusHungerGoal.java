@@ -16,7 +16,14 @@ import net.minecraft.world.item.ItemStack;
 import java.util.EnumSet;
 import java.util.List;
 
-public class HungerBehaviorGoal extends AbstractFuzzyGoal {
+/**
+ * Renomeado de HungerBehaviorGoal -> AllosaurusHungerGoal. Diferente das outras fuzzy goals
+ * (Fear/Anger/Curiosity), a fome NÃO foi generificada em cima de AbstractFuzzyGoal&lt;T&gt; porque
+ * a mecânica de aquisição de comida é radicalmente diferente por dieta: carnívoro caça
+ * LivingEntity, herbívoro pasta em bloco/pega item do chão (ver PachycephalosaurusHungerGoal).
+ * Forçar as duas num mesmo template só pioraria a legibilidade.
+ */
+public class AllosaurusHungerGoal extends AbstractFuzzyGoal<AllosaurusEntity> {
 
     private final double searchRadius = 16.0D;
     private final double huntSpeed = 1.3D;
@@ -31,7 +38,7 @@ public class HungerBehaviorGoal extends AbstractFuzzyGoal {
     private int attackCooldown = 0;
     private int eatCooldown = 0;
 
-    public HungerBehaviorGoal(AllosaurusEntity dino) {
+    public AllosaurusHungerGoal(AllosaurusEntity dino) {
         super(dino, Feeling.HUNGER, Trait.GLUTTONY);
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
@@ -104,7 +111,7 @@ public class HungerBehaviorGoal extends AbstractFuzzyGoal {
             if (!valid) continue;
 
             double dist = this.dino.distanceToSqr(e);
-            if (e instanceof Animal) dist -= 4000.0D; 
+            if (e instanceof Animal) dist -= 4000.0D;
 
             if (dist < closest) {
                 closest = dist;
@@ -199,7 +206,7 @@ public class HungerBehaviorGoal extends AbstractFuzzyGoal {
 
             if (this.eatCooldown <= 0) {
                 ItemStack foodStack = this.groundFoodTarget.getItem();
-                
+
                 this.dino.feedSaturation(foodStack, false);
 
                 if (this.dino instanceof com.geckolib.animatable.GeoEntity geo) {
@@ -207,15 +214,15 @@ public class HungerBehaviorGoal extends AbstractFuzzyGoal {
                 }
 
                 foodStack.shrink(1);
-                
+
                 if (foodStack.isEmpty()) {
                     this.groundFoodTarget.discard();
-                    this.groundFoodTarget = null; 
+                    this.groundFoodTarget = null;
                 } else {
                     this.groundFoodTarget.setItem(foodStack);
                 }
-                
-                this.eatCooldown = 15; 
+
+                this.eatCooldown = 15;
             }
             return;
         }

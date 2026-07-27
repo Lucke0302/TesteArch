@@ -12,6 +12,11 @@ public class ModTags {
                 Registries.ITEM, 
                 Identifier.fromNamespaceAndPath("archeology_reimagined", "carnivore_food")
         );
+
+        public static final TagKey<Item> HERBIVORE_FOOD = TagKey.create(
+                Registries.ITEM,
+                Identifier.fromNamespaceAndPath("archeology_reimagined", "herbivore_food")
+        );
     }
 
     public static class Blocks {
@@ -19,5 +24,5 @@ public class ModTags {
             Registries.BLOCK,
             Identifier.fromNamespaceAndPath("archeology_reimagined", "egg_heat_sources")
         );
-}
+    }
 }
