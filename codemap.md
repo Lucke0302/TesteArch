@@ -58,7 +58,8 @@ Todas usam `ContainerData` para sincronização de progresso/combustível.
 | Registro | `registry/ModEntities.java` |
 | Modelo (cliente) | `client/model/AllosaurusModel.java` — `getTextureResource()` retorna `null`; textura definida pelo renderer |
 | Renderer (cliente) | `client/renderer/AllosaurusRenderer.java` |
-| Assets | `assets/.../geckolib/models/allosaurus.geo.json`, `.../animations/allosaurus.animation.json` (Animações: `walk`, `run`, `idle`, `attack`, `eat`, `drink`, `sit`, `sleep`, `speak`, `swim`, `jump/fall`) |
+| Assets | `assets/.../geckolib/models/allosaurus.geo.json`, `.../animations/allosaurus.animation.json` (Animações mapeadas) |
+| Áudio  | `assets/archeology_reimagined/sounds.json` (Índice de áudio) e arquivos `.ogg` em `assets/.../sounds/entity/` |
 | Texturas | `assets/.../textures/entity/allosaurus_baby.png`, `_male.png`, `_female.png` |
 | Tags | `data/archeology_reimagined/tags/item/carnivore_food.json` |
 | Ovo (bloco) | `block/AllosaurusEggBlock.java` + `block/entity/AllosaurusEggBlockEntity.java` + `item/AllosaurusEggBlockItem.java` |
@@ -263,6 +264,7 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | `ModBlocks.java` | Blocos + BlockItems |
 | `ModBlockEntities.java` | BlockEntities das máquinas + brushable |
 | `ModEntities.java` | EntityType + atributos |
+| `ModSounds.java` | Eventos de som (SoundEvents), incluindo Vanilla hooks e GeckoLib Keyframes |
 | `ModMenuTypes.java` | MenuTypes das 4 máquinas |
 | `ModRecipeSerializers.java` | `GUIDE_BOOK_RECIPE` |
 | `ModDataComponentTypes.java` | `DNA_QUALITY` |

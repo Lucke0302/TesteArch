@@ -1,0 +1,21 @@
+{
+  "entity.allosaurus.ambient": {
+    "category": "hostile",
+    "sounds": [
+      "archeology_reimagined:entity/allosaurus/ambient1",
+      "archeology_reimagined:entity/allosaurus/ambient2",
+      "archeology_reimagined:entity/allosaurus/ambient3"
+    ]
+  },
+  "entity.allosaurus.hurt": {
+    "category": "hostile",
+    "sounds": [ 
+        "archeology_reimagined:entity/allosaurus/hurt1",
+        "archeology_reimagined:entity/allosaurus/hurt2"
+    ]
+  },
+  "entity.allosaurus.death": {
+    "category": "hostile",
+    "sounds": [ "archeology_reimagined:entity/allosaurus/death" ]
+  }
+}

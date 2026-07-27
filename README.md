@@ -122,7 +122,12 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
   dono organicamente (caminhando em direção ao dono se afastados mais de 24 blocos), sem utilizar o
   teleporte quebra-imersão do Vanilla. Independente do sistema de Feelings.
 
-### 2.3 Incubação do Ovo
+### 2.3 Sistema de Áudio e Sincronia Animada (GeckoLib)
+*   **Vanilla Hooks:** As entidades substituem os métodos nativos `getAmbientSound()`, `getHurtSound()` e `getDeathSound()` utilizando eventos registrados centralmente em `ModSounds.java`.
+*   **SoundKeyframeHandler:** Efeitos incidentais complexos (ex: sons de passos pesados ou mastigação) não dependem de *ticks* no servidor. Eles são amarrados diretamente aos arquivos `.animation.json` criados no Blockbench através de strings de evento (`"effect": "eat"`), lidos e reproduzidos pelo controlador do GeckoLib via `setSoundKeyframeHandler`.
+*   **Segurança de Thread (Desync Bounds Check):** Devido ao delay de sincronização do `EntityDataAccessor` entre o Servidor e a Thread de Renderização do Cliente (GeckoLib), a decodificação do estado emocional (Enum `Feeling`) possui um fallback de segurança (*bounds check*) que impede crashes (`IndexOutOfBoundsException`) ao carregar entidades recém-spawnadas.
+
+### 2.4 Incubação do Ovo
 
 O `Allosaurus Egg` produzido pelo Fusor é plantável no mundo. A eclosão depende de **calor constante** nos
 6 blocos adjacentes:
@@ -142,7 +147,7 @@ eclosão é exibida no tooltip ao mirar no ovo.
 
 * **Mecânica de Taming:** Filhotes possuem 50% de chance base de doma usando comidas carnívoras (`#archeology_reimagined:carnivore_food`), enquanto adultos possuem 10%. A chance flutua de acordo com a genética (Gula e Curiosidade aumentam a chance; Agressividade e Covardia diminuem).
 
-### 2.4 Mecânica de Caça & Simulação de Alimentação
+### 2.5 Mecânica de Caça & Simulação de Alimentação
 
 * **Caça Integrada ao `HungerBehaviorGoal`:** A caça ativa não é mais uma goal separada — ela é o
   sub-comportamento `HUNT_ATTACK` resolvido pelo `BehaviorResolver` dentro do estado de Fome (ver tabela
@@ -154,13 +159,13 @@ eclosão é exibida no tooltip ao mirar no ovo.
 * **Bônus de Abate:** Abates diretos garantem **2x mais nutrição** em saturação do que itens caídos do
   chão e aplicam cura imediata equivalente aos pontos de nutrição da carne.
 
-### 2.5 Sistema de Atrofia por Desnutrição (`applyStuntedGrowthDebuff`)
+### 2.6 Sistema de Atrofia por Desnutrição (`applyStuntedGrowthDebuff`)
 * **Ciclo de Crescimento:** Requer **120.000 ticks** (~100 minutos) e acúmulo de **400.0 pontos de saturação** para progredir entre os estágios (`BABY` $\rightarrow$ `CHILD` $\rightarrow$ `JUVENILE` $\rightarrow$ `ADULT`).
 * **Debuff de Atrofia:** Se atingir os 120.000 ticks sem a saturação necessária, a entidade passa a sofrer atrofia contínua:
   * A cada 600 ticks, recebe efeitos morais de `WEAKNESS` e `SLOWNESS` proporcionais ao tempo de atraso.
   * O estresse metabólico aumenta o sentimento de `ANGER` em +0.05 periodicamente.
 
-### 2.6 Sistema Visual de Qualidade de DNA & Tooltips
+### 2.7 Sistema Visual de Qualidade de DNA & Tooltips
 * **Identificação Visual (`DnaItem`):** A qualidade do DNA codificada nos `DataComponents.DNA_QUALITY` altera dinamicamente a cor exibida no tooltip do item:
   * **< 55%:** Vermelho (`DARK_RED` / `RED`)
   * **55% - 69%:** Amarelo (`YELLOW`)
@@ -173,22 +178,22 @@ eclosão é exibida no tooltip ao mirar no ovo.
 
 O Pachycephalosaurus atua como a fundação arquitetural para os dinossauros herbívoros do mod. Ele reutiliza integralmente o Motor Emocional e a resolução de Traits do Allossauro, mas diverge no comportamento alimentar e atributos de combate.
 
-### 2.7 Combate e Atributos
+### 2.8 Combate e Atributos
 * **Design Defensivo:** Base HP 60 e Dano 6 (escalonável pela genética e idade). Ele não caça. A `AngerBehaviorGoal` utiliza uma animação de cabeçada (`attack_1`, `attack_2` ou `charge`) apenas para autodefesa.
 * **Taming:** Utiliza a tag `#archeology_reimagined:herbivore_food`.
 
-### 2.8 Dieta Herbívora e `PachycephalosaurusHungerGoal`
+### 2.9 Dieta Herbívora e `PachycephalosaurusHungerGoal`
 Diferente dos carnívoros, o Pachy não ataca outras entidades quando faminto. O `BehaviorResolver` foi projetado para ignorar `HUNT_ATTACK` neste contexto. 
 A aquisição de nutrição segue uma ordem de prioridade estrita:
 1. **Itens no chão:** Busca ativa por itens tageados como `HERBIVORE_FOOD` num raio de 16 blocos.
 2. **Pastagem (Grazing):** Se não houver itens, ele procura blocos de grama (`grass_block`) próximos. Após 40 ticks de animação de comer (`eat`), converte o bloco em Terra (`dirt`) e concede um valor base de 3.0 de nutrição.
 
-### 2.9 Motor Metábolico (`HERBIVORE_SATURATION_MULTIPLIER`)
+### 2.10 Motor Metábolico (`HERBIVORE_SATURATION_MULTIPLIER`)
 Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros possuem, o Pachycephalosaurus compensa isso aplicando um multiplicador global de **2.0x** (`HERBIVORE_SATURATION_MULTIPLIER`) para qualquer ganho de saturação (seja via item ou pastagem). O decréscimo da barra de `HUNGER` é escalonado com o mesmo multiplicador.
 
 ## Entidades Vivas — Spinosaurus (`SpinosaurusEntity`)
 
-### 2.10 Combate, Dieta e Natação
+### 2.11 Combate, Dieta e Natação
 * **Predador Semi-Aquático:** O Spinosaurus possui animações próprias de natação (`swim_underwater`) e se move de forma eficiente na água.
 * **Caça e Nutrição:** Herda o comportamento carnívoro via `CarnivoreDiet` e `CarnivoreHungerGoal`. Sua lista de presas ativas inclui primariamente Peixes (`AbstractFish`), além de Ovelhas, Porcos e Galinhas. 
 * **Abate:** Ao abater uma presa, o Spinosaurus simula o consumo imediato garantindo cura e saturação baseada em Bacalhau (`Items.COD`).
@@ -196,7 +201,7 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 
 ## Entidades Vivas — Parasaurolophus (`ParasaurolophusEntity`)
 
-### 2.11 Comportamento de Manada e Comunicação
+### 2.12 Comportamento de Manada e Comunicação
 *   **Herbívoro Social:** Compartilha a estrutura de dieta herbívora (`HERBIVORE_FOOD`) e conversão de `grass_block` do Pachycephalosaurus.
 *   **Animações Específicas:** Possui um rig de animação avançado incluindo `speak` (chamados vocais usando a crista), `sit` (descanso passivo) e `sleep_adult` para transições de ciclo diário ou efeito de Dardos Tranquilizantes.
 *   **Dimorfismo e Crescimento:** Texturas independentes para filhotes (`baby`), machos (`male`) e fêmeas (`female`), além do sistema genético padrão de variação de escala (Scale Modifier).
@@ -258,6 +263,9 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 - [x] Casca física do Ovo de Spinosaurus implementada (`Block`, `BlockEntity`, `BlockItem`), com integração funcional à termodinâmica.
 - [x] Expansão do pool de processamento da Mesa de Limpeza para distribuir DNAs de espécies de répteis designadas em vez de utilizar apenas placeholders de DNA padrão.
 - [x] Lógica responsiva do Sintetizador implementada (reconhece `SPINOSAURUS_DNA` vs `ALLOSAURUS_DNA` e gera o embrião respectivo de cada árvore genética).
+- [x] Estrutura completa de áudio implementada (`ModSounds.java`, `sounds.json` e arquivos `.ogg` indexados por entidade).
+- [x] Sincronização de efeitos sonoros com animações do Blockbench através do `SoundKeyframeHandler` do GeckoLib 5 (ex: som de mastigação amarrado ao frame exato da animação).
+- [x] Implementação de Bounds Check e Fallback state no `GeoRenderer`/`AnimationController` para evitar crashes por dessincronização de rede (Desync) entre o Client e o Server na leitura de variáveis de I.A. (`DOMINANT_STATE`).
 
 ---
 

@@ -1,5 +1,6 @@
 package com.lucas.arch.entity;
 
+import net.minecraft.client.renderer.texture.SpriteContents.AnimationState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,6 +18,8 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.state.AnimationPoint;
+import com.geckolib.animation.state.AnimationTest;
 
 import com.lucas.arch.entity.ai.AngerBehaviorGoal;
 import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
@@ -46,6 +49,7 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
     @Override protected float getAdultSpawnScale() { return 1.8f; }
     @Override protected String getColorNbtKey() { return "ParasaurColor"; }
     @Override protected String getScaleNbtKey() { return "ParasaurScale"; }
+    private boolean wasStanding = false;
 
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(80.0, 0.28, 10.0);
@@ -91,16 +95,63 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<ParasaurolophusEntity>("main_controller", 5, state -> {
-            if (state.isMoving()) {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.parasaurolophus.walk"));
-            }
-            return state.setAndContinue(RawAnimation.begin().thenLoop("animation.parasaurolophus.idle"));
-        }));
-        controllers.add(new AnimationController<ParasaurolophusEntity>("attack_controller", 0, state -> PlayState.STOP)
+        controllers.add(new AnimationController<>("main_controller", 5, this::movementPredicate));
+        
+        controllers.add(new AnimationController<>("attack_controller", 0, test -> PlayState.STOP)
             .triggerableAnim("attack_1", RawAnimation.begin().thenPlay("animation.parasaurolophus.attack")));
-        controllers.add(new AnimationController<ParasaurolophusEntity>("eat_controller", 0, state -> PlayState.STOP)
+            
+        controllers.add(new AnimationController<>("eat_controller", 0, test -> PlayState.STOP)
             .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.parasaurolophus.eat")));
+    }
+
+    private PlayState movementPredicate(AnimationTest<ParasaurolophusEntity> event) {
+        boolean isMoving = event.isMoving();
+        
+        byte dominantStateByte = this.getDominantState();
+        Feeling[] feelings = Feeling.values();
+        
+        Feeling dominantFeeling;
+        if (dominantStateByte >= 0 && dominantStateByte < feelings.length) {
+            dominantFeeling = feelings[dominantStateByte];
+        } else {
+            dominantFeeling = feelings[0]; 
+        }
+
+        if (dominantFeeling == Feeling.FEAR && isMoving) {
+            this.wasStanding = true;
+            return event.setAndContinue(RawAnimation.begin()
+                .thenPlay("animation.parasaurolophus.stand_up")
+                .thenLoop("animation.parasaurolophus.run"));
+        }
+
+        if (dominantFeeling == Feeling.HUNGER && !isMoving) {
+            this.wasStanding = true;
+            return event.setAndContinue(RawAnimation.begin()
+                .thenPlay("animation.parasaurolophus.stand_up")
+                .thenLoop("animation.parasaurolophus.stand"));
+        }
+
+        if (isMoving) {
+            if (this.wasStanding) {
+                this.wasStanding = false;
+                return event.setAndContinue(RawAnimation.begin()
+                    .thenPlay("animation.parasaurolophus.stand_down")
+                    .thenLoop("animation.parasaurolophus.walk"));
+            } else {
+                // Caminhada normal
+                return event.setAndContinue(RawAnimation.begin()
+                    .thenLoop("animation.parasaurolophus.walk"));
+            }
+        }
+
+        if (this.wasStanding) {
+            this.wasStanding = false;
+            return event.setAndContinue(RawAnimation.begin()
+                .thenPlay("animation.parasaurolophus.stand_down")
+                .thenLoop("animation.parasaurolophus.idle"));
+        }
+
+        return event.setAndContinue(RawAnimation.begin().thenLoop("animation.parasaurolophus.idle"));
     }
 
     @Override

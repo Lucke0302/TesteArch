@@ -46,7 +46,7 @@ public class ModEntities {
         Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "parasaurolophus"),
         EntityType.Builder.of(ParasaurolophusEntity::new, MobCategory.CREATURE)
                 .sized(1.4f, 1.3f)
-                .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "spinosaurus")))
+                .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "parasaurolophus")))
     );
 
     public static void registerEntities() {

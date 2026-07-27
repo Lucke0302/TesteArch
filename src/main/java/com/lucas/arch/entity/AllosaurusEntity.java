@@ -30,6 +30,10 @@ import com.lucas.arch.entity.ai.DinosaurTemptGoal;
 import com.lucas.arch.entity.ai.FearBehaviorGoal;
 import com.lucas.arch.registry.ModTags;
 
+import com.lucas.arch.registry.ModSounds;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+
 public class AllosaurusEntity extends AbstractDinosaurEntity implements CarnivoreDiet {
 
     private static final int[] COLORS = { 0xFFD97C3A, 0xFF8B5A2B, 0xFF6B8E23 };
@@ -51,6 +55,21 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
 
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(100.0, 0.3, 10.0);
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return ModSounds.ALLO_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return ModSounds.ALLO_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return ModSounds.ALLO_DEATH;
     }
 
     // --- CarnivoreDiet ---
