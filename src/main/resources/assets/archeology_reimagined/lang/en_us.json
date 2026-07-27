@@ -21,6 +21,8 @@
   
   "item.archeology_reimagined.meat_cluster": "Meat Cluster",
   "item.archeology_reimagined.allosaurus_embryo": "Allosaurus Embryo",
+  "item.archeology_reimagined.spinosaurus_embryo": "Spinosaurus Embryo",
+  "item.archeology_reimagined.pachycephalosaurus_embryo": "Pachycephalosaurus Embryo",
 
   "tooltip.archeology_reimagined.dna_quality": "§7DNA Quality: %s",
   
@@ -49,6 +51,9 @@
 
   "item.archeology_reimagined.bitter_berries": "Bitter Berries",
   "item.archeology_reimagined.fragmented_dna": "Fragmented DNA",
+  "item.archeology_reimagined.allosaurus_dna": "Allosaurus DNA",
+  "item.archeology_reimagined.spinosaurus_dna": "Spinosaurus DNA",
+  "item.archeology_reimagined.pachycephalosaurus_dna": "Pachycephalosaurus DNA",
   "item.archeology_reimagined.bio_propellant": "Bio Propellant",
 
   "item.archeology_reimagined.sand_powder": "Sand Powder",
@@ -84,5 +89,9 @@
 
   "entity.archeology_reimagined.pachycephalosaurus": "Pachycephalosaurus",
   "block.archeology_reimagined.pachycephalosaurus_egg_block": "Pachycephalosaurus Egg",
-  "item.archeology_reimagined.pachycephalosaurus_egg_block": "Pachycephalosaurus Egg "
+  "item.archeology_reimagined.pachycephalosaurus_egg_block": "Pachycephalosaurus Egg ",
+
+  "entity.archeology_reimagined.spinosaurus": "Spinosaurus",
+  "block.archeology_reimagined.spinosaurus_egg_block": "Spinosaurus Egg",
+  "item.archeology_reimagined.spinosaurus_egg_block": "Spinosaurus Egg "
 }

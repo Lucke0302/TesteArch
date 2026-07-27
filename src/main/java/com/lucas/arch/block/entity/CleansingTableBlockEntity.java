@@ -195,12 +195,11 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         if (inputStack.is(ModItems.MOSQUITO_IN_AMBER)) {
             ItemStack amber = new ItemStack(ModItems.AMBER);
             
-            Item dnaType = level.getRandom().nextBoolean() ? ModItems.DEFAULT_MAMMAL_DNA : ModItems.DEFAULT_REPTILE_DNA;
+            Item dnaType = level.getRandom().nextBoolean() ? ModItems.DEFAULT_MAMMAL_DNA : ModCleansingRecipes.rollReptileDna(level.getRandom());
             ItemStack dna = new ItemStack(dnaType);
             
             dna.set(ModDataComponentTypes.DNA_QUALITY, 85 + level.getRandom().nextInt(16));
-
-            if (!canInsert(amber) || !canInsert(dna)) return false; 
+            if (!canInsert(amber) || !canInsert(dna)) return false;
 
             insertIntoOutput(amber);
             insertIntoOutput(dna);
@@ -219,7 +218,8 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
             if (level.getRandom().nextFloat() < 0.20f) {
                 resultItem = ModItems.FRAGMENTED_DNA;
             } else {
-                resultItem = recipe.successOutput();
+                Item baseOutput = recipe.successOutput();
+                resultItem = (baseOutput == ModItems.DEFAULT_REPTILE_DNA) ? ModCleansingRecipes.rollReptileDna(level.getRandom()) : baseOutput;
             }
         } else {
             resultItem = ModCleansingRecipes.rollFailureItem(recipe, level.getRandom());
@@ -229,7 +229,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
         ItemStack resultStack = new ItemStack(resultItem);
 
         if (success && resultItem != ModItems.FRAGMENTED_DNA) {
-            int quality = 40 + level.getRandom().nextInt(46);
+            int quality = 20 + level.getRandom().nextInt(66);
             resultStack.set(ModDataComponentTypes.DNA_QUALITY, quality);
         }
 

@@ -6,6 +6,9 @@
   
   "item.archeology_reimagined.default_plant_dna": "DNA de Planta",
   "item.archeology_reimagined.default_reptile_dna": "DNA de Réptil",
+  "item.archeology_reimagined.allosaurus_dna": "DNA de Alossauro",
+  "item.archeology_reimagined.spinosaurus_dna": "DNA de Espinossauro",
+  "item.archeology_reimagined.pachycephalosaurus_dna": "DNA de Paquicefalossauro",
   "item.archeology_reimagined.default_fish_dna": "DNA de Peixe",
   "item.archeology_reimagined.default_mammal_dna": "DNA de Mamífero",
   
@@ -21,6 +24,8 @@
   
   "item.archeology_reimagined.meat_cluster": "Aglomerado de Carne",
   "item.archeology_reimagined.allosaurus_embryo": "Embrião de Alossauro",
+  "item.archeology_reimagined.spinosaurus_embryo": "Embrião de Espinossauro",
+  "item.archeology_reimagined.pachycephalosaurus_embryo": "Embrião de Paquicefalossauro",
 
   "tooltip.archeology_reimagined.dna_quality": "§7Qualidade do DNA: %s",
   
@@ -84,5 +89,9 @@
 
   "entity.archeology_reimagined.pachycephalosaurus": "Paquicefalossauro",
   "block.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro",
-  "item.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro"
+  "item.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro",
+
+  "entity.archeology_reimagined.spinosaurus": "Espinossauro",
+  "block.archeology_reimagined.spinosaurus_egg_block": "Ovo de Espinossauro",
+  "item.archeology_reimagined.spinosaurus_egg_block": "Ovo de Espinossauro"
 }

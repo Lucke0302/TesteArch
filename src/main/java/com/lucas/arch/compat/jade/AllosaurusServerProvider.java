@@ -1,10 +1,9 @@
 package com.lucas.arch.compat.jade;
 
+import com.lucas.arch.entity.AbstractDinosaurEntity;
 import com.lucas.arch.entity.AgeTier;
-import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.Feeling;
 import com.lucas.arch.entity.FeelingDrivenEntity;
-import com.lucas.arch.entity.PachycephalosaurusEntity;
 import com.lucas.arch.entity.Trait;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -39,15 +38,12 @@ public enum AllosaurusServerProvider implements IServerDataProvider<EntityAccess
                 data.putFloat("DominantStateValue", feelingDino.getFeeling(dominantFeeling));
             }
 
-            // Recupera especificidades biológicas 
-            if (tamable instanceof AllosaurusEntity allo) {
-                data.putString("AgeTier", allo.getAgeTier().name());
-                data.putBoolean("IsMale", allo.isMale());
-                if (allo.getAgeTier() != AgeTier.ADULT) data.putInt("GrowthPercent", allo.getGrowthPercent());
-            } else if (tamable instanceof PachycephalosaurusEntity pachy) {
-                data.putString("AgeTier", pachy.getAgeTier().name());
-                data.putBoolean("IsMale", pachy.isMale());
-                if (pachy.getAgeTier() != AgeTier.ADULT) data.putInt("GrowthPercent", pachy.getGrowthPercent());
+            if (tamable instanceof AbstractDinosaurEntity dino) {
+                data.putString("AgeTier", dino.getAgeTier().name());
+                data.putBoolean("IsMale", dino.isMale());
+                if (dino.getAgeTier() != AgeTier.ADULT) {
+                    data.putInt("GrowthPercent", dino.getGrowthPercent());
+                }
             }
         }
     }

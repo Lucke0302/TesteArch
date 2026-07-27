@@ -75,7 +75,12 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
 
     @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
-        if (index == 0) return stack.is(ModItems.ALLOSAURUS_EMBRYO) && stack.has(ModDataComponentTypes.DNA_QUALITY);
+        if (index == 0) {
+            boolean isEmbryo = stack.is(ModItems.ALLOSAURUS_EMBRYO) || 
+                               stack.is(ModItems.SPINOSAURUS_EMBRYO) || 
+                               stack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO);
+            return isEmbryo && stack.has(ModDataComponentTypes.DNA_QUALITY);
+        }
         if (index == 1) return stack.is(Items.EGG) || stack.is(Items.TURTLE_EGG) || stack.is(Items.SNIFFER_EGG);
         return false;
     }
@@ -123,8 +128,14 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
     private boolean hasValidInputs() {
         ItemStack embryo = this.inventory.get(0);
         ItemStack egg = this.inventory.get(1);
-        boolean hasEmbryo = !embryo.isEmpty() && embryo.is(ModItems.ALLOSAURUS_EMBRYO) && embryo.has(ModDataComponentTypes.DNA_QUALITY);
+        
+        boolean isEmbryo = embryo.is(ModItems.ALLOSAURUS_EMBRYO) || 
+                           embryo.is(ModItems.SPINOSAURUS_EMBRYO) || 
+                           embryo.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO);
+                           
+        boolean hasEmbryo = !embryo.isEmpty() && isEmbryo && embryo.has(ModDataComponentTypes.DNA_QUALITY);
         boolean hasEgg = !egg.isEmpty() && (egg.is(Items.EGG) || egg.is(Items.TURTLE_EGG) || egg.is(Items.SNIFFER_EGG));
+        
         return hasEmbryo && hasEgg;
     }
 
@@ -135,30 +146,35 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
     private void fuseEgg(Level level) {
         ItemStack embryoStack = this.inventory.get(0);
         ItemStack eggStack = this.inventory.get(1);
-
         int baseQuality = embryoStack.getOrDefault(ModDataComponentTypes.DNA_QUALITY, 50);
+        
         int bonus = 0;
-
         if (eggStack.is(Items.TURTLE_EGG)) {
             bonus = 15;
         } else if (eggStack.is(Items.SNIFFER_EGG)) {
             bonus = 30;
         }
-
+        
         int finalQuality = Math.max(1, Math.min(100, baseQuality + bonus));
-
         float roll = level.getRandom().nextFloat() * 100f;
         boolean success = roll <= finalQuality;
-
+        
         ItemStack result;
         if (success) {
-            result = new ItemStack(com.lucas.arch.registry.ModBlocks.ALLOSAURUS_EGG_BLOCK);
+            if (embryoStack.is(ModItems.SPINOSAURUS_EMBRYO)) {
+                result = new ItemStack(com.lucas.arch.registry.ModBlocks.SPINOSAURUS_EGG_BLOCK);
+            } else if (embryoStack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO)) {
+                result = new ItemStack(com.lucas.arch.registry.ModBlocks.PACHYCEPHALOSAURUS_EGG_BLOCK);
+            } else {
+                result = new ItemStack(com.lucas.arch.registry.ModBlocks.ALLOSAURUS_EGG_BLOCK);
+            }
+            
             result.set(ModDataComponentTypes.DNA_QUALITY, finalQuality);
         } else {
             int amount = 3 + level.getRandom().nextInt(4);
             result = new ItemStack(ModItems.MEAT_CLUSTER, amount);
         }
-
+        
         embryoStack.shrink(1);
         eggStack.shrink(1);
         this.inventory.set(2, result);

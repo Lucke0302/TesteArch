@@ -49,16 +49,26 @@ public class ModItems {
          p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
 
     // --- DNAs ---
-    public static final Item DEFAULT_PLANT_DNA = registerItem("default_plant_dna", 
-         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));             
-    public static final Item DEFAULT_REPTILE_DNA = registerItem("default_reptile_dna", 
-         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
-    public static final Item DEFAULT_MAMMAL_DNA = registerItem("default_mammal_dna", 
-         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));             
-    public static final Item DEFAULT_FISH_DNA = registerItem("default_fish_dna", 
-         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));   
+    // --- DNAs ---
+    public static final Item DEFAULT_PLANT_DNA = registerItem("default_plant_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+    public static final Item DEFAULT_REPTILE_DNA = registerItem("default_reptile_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+    public static final Item DEFAULT_MAMMAL_DNA = registerItem("default_mammal_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+    public static final Item DEFAULT_FISH_DNA = registerItem("default_fish_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+          
+    // Novos DNAs Específicos
+    public static final Item ALLOSAURUS_DNA = registerItem("allosaurus_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+    public static final Item SPINOSAURUS_DNA = registerItem("spinosaurus_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+    public static final Item PACHYCEPHALOSAURUS_DNA = registerItem("pachycephalosaurus_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+
     public static final Item FRAGMENTED_DNA = registerItem("fragmented_dna",
-         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+          p -> new ArchItem(p, "F&A, Lucke0302", "Lucke0302"));
 
     // --- Itens Exclusivos / Novos Designs ---
     public static final Item ENCYCLOPEDIA = registerItem("encyclopedia", 
@@ -82,7 +92,12 @@ public class ModItems {
 
     // --- Ovos e Embriões ---
     public static final Item ALLOSAURUS_EMBRYO = registerItem("allosaurus_embryo",
-        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A, Lucke0302", "Lucke0302"));
+        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
+    public static final Item SPINOSAURUS_EMBRYO = registerItem("spinosaurus_embryo",
+        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
+    public static final Item PACHYCEPHALOSAURUS_EMBRYO = registerItem("pachycephalosaurus_embryo",
+        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
+
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(
@@ -151,6 +166,9 @@ public class ModItems {
             output.accept(UNKNOWN_MAMMAL_FOSSIL);
             output.accept(DEFAULT_PLANT_DNA);
             output.accept(DEFAULT_REPTILE_DNA);
+            output.accept(ALLOSAURUS_DNA);
+            output.accept(SPINOSAURUS_DNA);
+            output.accept(PACHYCEPHALOSAURUS_DNA);
             output.accept(ENCYCLOPEDIA);
             output.accept(PROCESSING_BOARD);
             output.accept(THERMAL_MODULE);
@@ -159,6 +177,9 @@ public class ModItems {
             output.accept(MEDIUM_ORGANIC_FUEL);
             output.accept(ADVANCED_ORGANIC_FUEL);
             output.accept(MEAT_CLUSTER);
+            output.accept(ALLOSAURUS_EMBRYO);
+            output.accept(SPINOSAURUS_EMBRYO);
+            output.accept(PACHYCEPHALOSAURUS_EMBRYO);
             output.accept(ALLOSAURUS_EMBRYO);
             output.accept(AMBER);
             output.accept(MOSQUITO_IN_AMBER);

@@ -2,6 +2,7 @@ package com.lucas.arch.registry;
 
 import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.PachycephalosaurusEntity;
+import com.lucas.arch.entity.SpinosaurusEntity;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.resources.Identifier;
@@ -31,6 +32,14 @@ public class ModEntities {
                 .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "pachycephalosaurus")))
     );
 
+    public static final EntityType<SpinosaurusEntity> SPINOSAURUS = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "spinosaurus"),
+        EntityType.Builder.of(SpinosaurusEntity::new, MobCategory.CREATURE)
+                .sized(1.4f, 1.3f)
+                .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "spinosaurus")))
+    );
+
     public static void registerEntities() {
         ArcheologyReimagined.LOGGER.info("Registering entities for " + ArcheologyReimagined.MOD_ID);
     }
@@ -38,5 +47,6 @@ public class ModEntities {
     public static void registerAttributes() {
         FabricDefaultAttributeRegistry.register(ALLOSAURUS, AllosaurusEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PACHYCEPHALOSAURUS, PachycephalosaurusEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(SPINOSAURUS, SpinosaurusEntity.createAttributes());
     }
 }

@@ -1,29 +1,29 @@
 package com.lucas.arch.entity.ai;
 
-import com.lucas.arch.entity.AllosaurusEntity;
+import com.lucas.arch.entity.CarnivoreDiet;
 import com.lucas.arch.entity.Feeling;
+import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.Trait;
 import com.lucas.arch.registry.ModTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 import java.util.EnumSet;
 import java.util.List;
 
 /**
- * Renomeado de HungerBehaviorGoal -> AllosaurusHungerGoal. Diferente das outras fuzzy goals
- * (Fear/Anger/Curiosity), a fome NÃO foi generificada em cima de AbstractFuzzyGoal&lt;T&gt; porque
- * a mecânica de aquisição de comida é radicalmente diferente por dieta: carnívoro caça
- * LivingEntity, herbívoro pasta em bloco/pega item do chão (ver PachycephalosaurusHungerGoal).
- * Forçar as duas num mesmo template só pioraria a legibilidade.
+ * Generalizada a partir de AllosaurusHungerGoal. Serve qualquer carnívoro
+ * (T deve implementar TamableAnimal + FeelingDrivenEntity + CarnivoreDiet).
+ * Quem varia por espécie é a definição de presa válida (T#isValidPrey) e o
+ * bônus de saturação por caça (T#feedSaturation), delegados à instância.
  */
-public class AllosaurusHungerGoal extends AbstractFuzzyGoal<AllosaurusEntity> {
+public class CarnivoreHungerGoal<T extends TamableAnimal & FeelingDrivenEntity & CarnivoreDiet> extends AbstractFuzzyGoal<T> {
 
     private final double searchRadius = 16.0D;
     private final double huntSpeed = 1.3D;
@@ -38,8 +38,15 @@ public class AllosaurusHungerGoal extends AbstractFuzzyGoal<AllosaurusEntity> {
     private int attackCooldown = 0;
     private int eatCooldown = 0;
 
-    public AllosaurusHungerGoal(AllosaurusEntity dino) {
+    private final String attackAnimName;
+
+    public CarnivoreHungerGoal(T dino) {
+        this(dino, "attack");
+    }
+
+    public CarnivoreHungerGoal(T dino, String attackAnimName) {
         super(dino, Feeling.HUNGER, Trait.GLUTTONY);
+        this.attackAnimName = attackAnimName;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
@@ -95,21 +102,13 @@ public class AllosaurusHungerGoal extends AbstractFuzzyGoal<AllosaurusEntity> {
 
     private boolean acquireHuntTarget() {
         AABB box = this.dino.getBoundingBox().inflate(searchRadius);
-        List<LivingEntity> entities = this.dino.level().getEntitiesOfClass(LivingEntity.class, box, e -> e != this.dino && e.isAlive());
+        List<LivingEntity> entities = this.dino.level().getEntitiesOfClass(LivingEntity.class, box,
+                e -> e != this.dino && e.isAlive() && this.dino.isValidPrey(e));
 
         LivingEntity best = null;
         double closest = Double.MAX_VALUE;
 
         for (LivingEntity e : entities) {
-            boolean valid = (e instanceof net.minecraft.world.entity.animal.cow.Cow
-                    || e instanceof net.minecraft.world.entity.animal.pig.Pig
-                    || e instanceof net.minecraft.world.entity.animal.sheep.Sheep
-                    || e instanceof net.minecraft.world.entity.animal.chicken.Chicken)
-                    || (e instanceof Player p && !p.isCreative() && !p.isSpectator()
-                        && p.getMainHandItem().is(ModTags.Items.CARNIVORE_FOOD));
-
-            if (!valid) continue;
-
             double dist = this.dino.distanceToSqr(e);
             if (e instanceof Animal) dist -= 4000.0D;
 
@@ -181,7 +180,7 @@ public class AllosaurusHungerGoal extends AbstractFuzzyGoal<AllosaurusEntity> {
             if (this.attackCooldown <= 0 && this.dino.level() instanceof ServerLevel serverLevel) {
                 this.dino.doHurtTarget(serverLevel, this.huntTarget);
                 if (this.dino instanceof com.geckolib.animatable.GeoEntity geo) {
-                    geo.triggerAnim("attack_controller", "attack");
+                    geo.triggerAnim("attack_controller", this.attackAnimName);
                 }
                 this.attackCooldown = 20;
             }

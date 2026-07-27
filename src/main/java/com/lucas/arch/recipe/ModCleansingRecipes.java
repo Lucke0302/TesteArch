@@ -87,4 +87,14 @@ public class ModCleansingRecipes {
         }
         return pool.get(pool.size() - 1).item();
     }
+
+    public static Item rollReptileDna(net.minecraft.util.RandomSource random) {
+        int roll = random.nextInt(4);
+        return switch(roll) {
+            case 0 -> ModItems.ALLOSAURUS_DNA;
+            case 1 -> ModItems.SPINOSAURUS_DNA;
+            case 2 -> ModItems.PACHYCEPHALOSAURUS_DNA;
+            default -> ModItems.DEFAULT_REPTILE_DNA;
+        };
+    }
 }

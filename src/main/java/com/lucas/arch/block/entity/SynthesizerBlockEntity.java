@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.Item;
 
 import com.lucas.arch.ImplementedInventory;
 import com.lucas.arch.block.SynthesizerBlock;
@@ -163,7 +164,7 @@ public class SynthesizerBlockEntity extends BlockEntity implements ImplementedIn
         ItemStack dnaStack = this.inventory.get(0);
         ItemStack organicFuelStack = this.inventory.get(1);
 
-        int baseQuality = dnaStack.getOrDefault(ModDataComponentTypes.DNA_QUALITY, 50); //[cite: 1]
+        int baseQuality = dnaStack.getOrDefault(ModDataComponentTypes.DNA_QUALITY, 50); 
         int modifier = 0;
 
         if (organicFuelStack.is(ModItems.BASIC_ORGANIC_FUEL)) {
@@ -173,13 +174,17 @@ public class SynthesizerBlockEntity extends BlockEntity implements ImplementedIn
         }
 
         int finalQuality = Math.max(1, Math.min(100, baseQuality + modifier));
-
         float roll = level.getRandom().nextFloat() * 100f;
         boolean success = roll <= finalQuality;
 
         ItemStack result;
         if (success) {
-            result = new ItemStack(ModItems.ALLOSAURUS_EMBRYO);
+            Item embryoResult = ModItems.ALLOSAURUS_EMBRYO;
+            if (dnaStack.is(ModItems.SPINOSAURUS_DNA)) embryoResult = ModItems.SPINOSAURUS_EMBRYO;
+            else if (dnaStack.is(ModItems.PACHYCEPHALOSAURUS_DNA)) embryoResult = ModItems.PACHYCEPHALOSAURUS_EMBRYO;
+            else if (dnaStack.is(ModItems.ALLOSAURUS_DNA)) embryoResult = ModItems.ALLOSAURUS_EMBRYO;
+
+            result = new ItemStack(embryoResult);
             result.set(ModDataComponentTypes.DNA_QUALITY, finalQuality); 
         } else {
             result = new ItemStack(ModItems.MEAT_CLUSTER);

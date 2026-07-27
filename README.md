@@ -18,15 +18,15 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
 ### 1.2 Extração de DNA (Mesa de Limpeza)
 * **Requisitos:** Consome **Água** (tanque até 10 baldes) e **Calor/Combustível** (fornalha vanilla).
 * **Processamento:** Limpa Fósseis Desconhecidos e Mosquitos no Âmbar.
-* **Resultado:** Produz amostras de **DNA (Répteis, Mamíferos, Peixes, Plantas)** com um atributo dinâmico de **Qualidade de DNA** (`DNA_QUALITY`, 0-100%). Em caso de falha no processo, gera *DNA Fragmentado* ou itens secundários (Areia, Cascalho, Osso, Carvão Vegetal).
+* **Resultado:** Produz amostras de **DNA Específico (Allosaurus, Spinosaurus, Pachycephalosaurus)** ou genérico (Mamíferos, Peixes, Plantas) com um atributo dinâmico de **Qualidade de DNA** (`DNA_QUALITY`, 0-100%). Em caso de falha no processo, gera *DNA Fragmentado* ou itens secundários (Areia, Cascalho, Osso, Carvão Vegetal).
 
 ### 1.3 Síntese de Embrião (Sintetizador)
-* **Processamento:** Combina DNA puro com **Combustíveis Orgânicos**.
+* **Processamento:** Combina DNA específico (ex: `SPINOSAURUS_DNA`) com **Combustíveis Orgânicos**.
 * **Modificadores de Qualidade:**
   * *Combustível Básico:* -15% de Qualidade no embrião final.
   * *Combustível Médio:* 0% de variação.
   * *Combustível Avançado:* +15% de Qualidade.
-* **Resultado:** Em caso de sucesso, gera um Embrião (ex: `ALLOSAURUS_EMBRYO`). Em caso de falha na síntese, gera *Aglomerado de Carne* (`meat_cluster`).
+* **Resultado:** Em caso de sucesso, o maquinário lê a espécie do DNA e gera o Embrião correspondente (ex: `SPINOSAURUS_EMBRYO`). Em caso de falha na síntese, gera *Aglomerado de Carne* (`meat_cluster`).
 
 ### 1.4 Encapsulamento & Incubação (Fusor)
 * **Processamento:** Funde o Embrião com ovos vanilla para criar uma casca viável.
@@ -186,6 +186,14 @@ A aquisição de nutrição segue uma ordem de prioridade estrita:
 ### 2.9 Motor Metábolico (`HERBIVORE_SATURATION_MULTIPLIER`)
 Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros possuem, o Pachycephalosaurus compensa isso aplicando um multiplicador global de **2.0x** (`HERBIVORE_SATURATION_MULTIPLIER`) para qualquer ganho de saturação (seja via item ou pastagem). O decréscimo da barra de `HUNGER` é escalonado com o mesmo multiplicador.
 
+## Entidades Vivas — Spinosaurus (`SpinosaurusEntity`)
+
+### 2.10 Combate, Dieta e Natação
+* **Predador Semi-Aquático:** O Spinosaurus possui animações próprias de natação (`swim_underwater`) e se move de forma eficiente na água.
+* **Caça e Nutrição:** Herda o comportamento carnívoro via `CarnivoreDiet` e `CarnivoreHungerGoal`. Sua lista de presas ativas inclui primariamente Peixes (`AbstractFish`), além de Ovelhas, Porcos e Galinhas. 
+* **Abate:** Ao abater uma presa, o Spinosaurus simula o consumo imediato garantindo cura e saturação baseada em Bacalhau (`Items.COD`).
+* **Design Ofensivo:** Maior hitbox (Max Scale 3.0), Base HP 90 e Dano 16.
+
 ## Botânica Pré-Histórica
 
 * **Bagas Amargas (`BitterBerryBushBlock`):**
@@ -239,6 +247,10 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 - [x] Entidade Pachycephalosaurus completa e conectada ao cliente (Model e Renderer em GeckoLib 5), operando com a IA de herbívoro baseada no Motor Emocional.
 - [x] Casca física do Ovo de Pachycephalosaurus implementada (`Block`, `BlockEntity`, `BlockItem`), permitindo o plantio e a integração ao sistema de termodinâmica para incubação.
 - [x] Refatoração dos provedores do mod Jade (`AllosaurusServerProvider` e `AllosaurusEggServerProvider`), atualizados para utilizar Pattern Matching e suportar genericamente as interfaces `FeelingDrivenEntity` e `AbstractDinosaurEggBlockEntity`.
+- [x] Entidade Spinosaurus completa e conectada ao cliente (Model, Renderer em GeckoLib 5 e Animações aquáticas).
+- [x] Casca física do Ovo de Spinosaurus implementada (`Block`, `BlockEntity`, `BlockItem`), com integração funcional à termodinâmica.
+- [x] Expansão do pool de processamento da Mesa de Limpeza para distribuir DNAs de espécies de répteis designadas em vez de utilizar apenas placeholders de DNA padrão.
+- [x] Lógica responsiva do Sintetizador implementada (reconhece `SPINOSAURUS_DNA` vs `ALLOSAURUS_DNA` e gera o embrião respectivo de cada árvore genética).
 
 ---
 
@@ -263,3 +275,25 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 
 #### Renderização Avançada de Pele (Grayscale + Overlay)
 - [ ] Implementar a *Render Layer* de proteção no AllosaurusRenderer para garantir que olhos, garras e dentes não sejam tingidos pelo filtro de cor da pele.
+
+#### Utilitários Químicos & Contenção (Mecânicas de Uso em Entidades)
+- [ ] **Seringa Vazia & Extração de Sangue:**
+  * **Coleta (Botão Direito):** O jogador deve (clicar com o botão direito) um dinossauro segurando uma Seringa Vazia (`EMPTY_SYRINGE`).
+  * **Interação e Risco:**
+    * *Dinossauro do Dono:* Aceita a extração pacificamente.
+    * *Dinossauro Selvagem/Alheio:* Reage à picada. Aumenta a Raiva (`ANGER`) do dinossauro na fórmula: `10% * (Trait de Agressividade * 10)`. Se a agressividade for alta, ele atacará o jogador imediatamente.
+  * **Resultado:** 50% de chance de sucesso para obter uma **Seringa com Sangue**.
+- [ ] **Novo Item: Seringa com Sangue (`BLOOD_SYRINGE` ou Item Único com NBT):**
+  * Usa a mesma textura da Seringa com Aditivo (temporariamente).
+  * **Unstackable (Max Count 1):** Para proteger o Data Component.
+  * **Data Component (`SPECIES`):** Armazena a espécie exata de onde o sangue foi retirado.
+  * **Usos:**
+    1. *Purificação Perfeita:* Pode ser colocada na Mesa de Limpeza para extrair DNA da respectiva espécie com Qualidade Altíssima (garantido entre 85% e 100%).
+    2. *Melhoramento Específico:* Pode ser usada no lugar da Seringa com Aditivo para melhorar embriões (exige que o sangue seja da mesma espécie do embrião).
+- [ ] **Melhoramento de Embriões (Seringa com Aditivo):**
+  * Adicionar mecânica (provavelmente no Fusor ou numa nova interface/crafting) para consumir a `FULL_SYRINGE` e aumentar a % de qualidade de um embrião existente.
+- [ ] **Dardos Tranquilizantes (`FULL_DART`) e Modo de Sono:**
+  * **Aplicação (Botão Direito):** O jogador aplica o dardo diretamente no dinossauro.
+  * **Dosagem Física:** Requer 1 dardo para cada metro de altura da entidade (baseado no `getBbHeight()`).
+  * **Efeito Tardio:** Leva 15 segundos (300 ticks) após a dose completa para o sedativo fazer efeito.
+  * **Modo de Sono:** A entidade limpa sua IA de navegação, deita no chão (aciona a animação `sleep` via GeckoLib) e entra em dormência profunda por meio dia no jogo.

@@ -21,6 +21,8 @@
   
   "item.archeology_reimagined.meat_cluster": "Aglomerado de Carne",
   "item.archeology_reimagined.allosaurus_embryo": "Embrião de Alossauro",
+  "item.archeology_reimagined.spinosaurus_embryo": "Embrião de Espinossauro",
+  "item.archeology_reimagined.pachycephalosaurus_embryo": "Embrião de Paquicefalossauro",
 
   "tooltip.archeology_reimagined.dna_quality": "§7Qualidade do DNA: %s",
   
@@ -82,5 +84,9 @@
 
   "entity.archeology_reimagined.pachycephalosaurus": "Paquicefalossauro",
   "block.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro",
-  "item.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro"
+  "item.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro",
+
+  "entity.archeology_reimagined.spinosaurus": "Espinossauro",
+  "block.archeology_reimagined.spinosaurus_egg_block": "Ovo de Espinossauro",
+  "item.archeology_reimagined.spinosaurus_egg_block": "Ovo de Espinossauro"
 }

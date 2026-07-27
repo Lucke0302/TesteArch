@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import com.lucas.arch.client.renderer.AllosaurusRenderer;
 import com.lucas.arch.client.renderer.PachycephalosaurusRenderer;
+import com.lucas.arch.client.renderer.SpinosaurusRenderer;
 import com.lucas.arch.registry.ModEntities;
 
 public class ArcheologyReimaginedClient implements ClientModInitializer {
@@ -26,6 +27,8 @@ public class ArcheologyReimaginedClient implements ClientModInitializer {
         MenuScreens.register(ModMenuTypes.BIOCATALYZER_MENU, BiocatalyzerScreen::new);
 
         EntityRenderers.register(ModEntities.PACHYCEPHALOSAURUS, PachycephalosaurusRenderer::new);
+
+        EntityRenderers.register(ModEntities.SPINOSAURUS, SpinosaurusRenderer::new);
 
     }
 }

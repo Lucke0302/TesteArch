@@ -1,6 +1,13 @@
 package com.lucas.arch.entity;
 
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.PlayState;
+import com.lucas.arch.entity.ai.*;
+import com.lucas.arch.registry.ModTags;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,45 +22,29 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.registries.BuiltInRegistries;
 
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
+public class SpinosaurusEntity extends AbstractDinosaurEntity implements CarnivoreDiet {
 
-import com.lucas.arch.entity.ai.AngerBehaviorGoal;
-import com.lucas.arch.entity.ai.CarnivoreHungerGoal;
-import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
-import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
-import com.lucas.arch.entity.ai.DinosaurTemptGoal;
-import com.lucas.arch.entity.ai.FearBehaviorGoal;
-import com.lucas.arch.registry.ModTags;
+    private static final int[] COLORS = { 0xFF3F5F6B, 0xFF4A6741, 0xFF6B4A3F };
 
-public class AllosaurusEntity extends AbstractDinosaurEntity implements CarnivoreDiet {
-
-    private static final int[] COLORS = { 0xFFD97C3A, 0xFF8B5A2B, 0xFF6B8E23 };
-
-    public AllosaurusEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
+    public SpinosaurusEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
 
-    // --- Hooks de espécie ---
-    @Override protected float getBaseHealth() { return 100.0f; }
-    @Override protected float getBaseAttackDamage() { return 20.0f; }
-    @Override protected float getHitboxScaleRatio() { return 0.9f; }
+    @Override protected float getBaseHealth() { return 90.0f; }
+    @Override protected float getBaseAttackDamage() { return 16.0f; }
+    @Override protected float getHitboxScaleRatio() { return 1f; }
     @Override protected float getMaxSafeHitboxScale() { return 3.0f; }
     @Override protected int[] getColorPalette() { return COLORS; }
-    @Override protected float[] getSpawnScaleRange() { return new float[]{2.7f, 3.5f}; }
-    @Override protected float getAdultSpawnScale() { return 3.1f; }
-    @Override protected String getColorNbtKey() { return "AllosaurusColor"; }
-    @Override protected String getScaleNbtKey() { return "AllosaurusScale"; }
+    @Override protected float[] getSpawnScaleRange() { return new float[]{2.6f, 3.2f}; }
+    @Override protected float getAdultSpawnScale() { return 3.0f; }
+    @Override protected String getColorNbtKey() { return "SpinosaurusColor"; }
+    @Override protected String getScaleNbtKey() { return "SpinosaurusScale"; }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return baseAttributes(100.0, 0.3, 10.0);
+        return baseAttributes(90.0, 0.28, 16.0);
     }
 
-    // --- CarnivoreDiet ---
     @Override
     public void feedSaturation(ItemStack foodStack, boolean isHuntBonus) {
         if (!foodStack.has(DataComponents.FOOD)) return;
@@ -67,10 +58,10 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
 
     @Override
     public boolean isValidPrey(LivingEntity entity) {
-        return entity instanceof net.minecraft.world.entity.animal.cow.Cow
-            || entity instanceof net.minecraft.world.entity.animal.pig.Pig
-            || entity instanceof net.minecraft.world.entity.animal.sheep.Sheep
+        return entity instanceof net.minecraft.world.entity.animal.fish.AbstractFish
             || entity instanceof net.minecraft.world.entity.animal.chicken.Chicken
+            || entity instanceof net.minecraft.world.entity.animal.sheep.Sheep
+            || entity instanceof net.minecraft.world.entity.animal.pig.Pig
             || (entity instanceof Player p && !p.isCreative() && !p.isSpectator()
                 && p.getMainHandItem().is(ModTags.Items.CARNIVORE_FOOD));
     }
@@ -78,18 +69,9 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
     @Override
     public boolean doHurtTarget(ServerLevel level, Entity target) {
         boolean result = super.doHurtTarget(level, target);
-
         if (result && target instanceof LivingEntity livingTarget && livingTarget.isDeadOrDying()) {
-            ItemStack simulatedMeat = switch (livingTarget) {
-                case net.minecraft.world.entity.animal.cow.Cow cow -> new ItemStack(Items.BEEF);
-                case net.minecraft.world.entity.animal.pig.Pig pig -> new ItemStack(Items.PORKCHOP);
-                case net.minecraft.world.entity.animal.sheep.Sheep sheep -> new ItemStack(Items.MUTTON);
-                case net.minecraft.world.entity.animal.chicken.Chicken chicken -> new ItemStack(Items.CHICKEN);
-                case Player player -> new ItemStack(Items.BEEF);
-                case AllosaurusEntity allo -> new ItemStack(com.lucas.arch.registry.ModItems.MEAT_CLUSTER);
-                default -> new ItemStack(Items.ROTTEN_FLESH);
-            };
-            if (simulatedMeat.has(DataComponents.FOOD)) feedSaturation(simulatedMeat, true);
+            ItemStack simulatedFish = new ItemStack(Items.COD);
+            if (simulatedFish.has(DataComponents.FOOD)) feedSaturation(simulatedFish, true);
         }
         return result;
     }
@@ -97,11 +79,9 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-
         if (this.isTame() && !itemStack.is(ModTags.Items.CARNIVORE_FOOD)) {
             return super.mobInteract(player, hand);
         }
-
         if (itemStack.is(ModTags.Items.CARNIVORE_FOOD)) {
             if (!this.level().isClientSide()) {
                 feedSaturation(itemStack, false);
@@ -115,22 +95,24 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<AllosaurusEntity>("main_controller", 5, state -> {
-            if (state.isMoving()) {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.allosaurus.walk"));
+        controllers.add(new AnimationController<SpinosaurusEntity>("main_controller", 5, state -> {
+            if (state.isMoving() && this.isInWater()) {
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.spinosaurus.swim_underwater"));
             }
-            return state.setAndContinue(RawAnimation.begin().thenLoop("animation.allosaurus.idle"));
+            else if (state.isMoving()) {
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.spinosaurus.walk"));
+            }
+            return state.setAndContinue(RawAnimation.begin().thenLoop("animation.spinosaurus.idle"));
         }));
-        controllers.add(new AnimationController<AllosaurusEntity>("attack_controller", 0, state -> PlayState.STOP)
-            .triggerableAnim("attack", RawAnimation.begin().thenPlay("animation.allosaurus.attack")));
-        controllers.add(new AnimationController<AllosaurusEntity>("eat_controller", 0, state -> PlayState.STOP)
-            .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.allosaurus.eat")));
+        controllers.add(new AnimationController<SpinosaurusEntity>("attack_controller", 0, state -> PlayState.STOP)
+            .triggerableAnim("attack", RawAnimation.begin().thenPlay("animation.spinosaurus.attack")));
+        controllers.add(new AnimationController<SpinosaurusEntity>("eat_controller", 0, state -> PlayState.STOP)
+            .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.spinosaurus.eat")));
     }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-
         this.goalSelector.addGoal(1, new FearBehaviorGoal<>(this));
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this));
         this.goalSelector.addGoal(3, new DinosaurTemptGoal<>(this, 1.1D,

@@ -82,11 +82,13 @@ public class FuserMenu extends AbstractContainerMenu {
                 }
                 slot.onQuickCraft(originalStack, newStack);
             } else {
-                // Shift-Click: Embriões vão pro Slot 0
-                if (originalStack.is(ModItems.ALLOSAURUS_EMBRYO) && originalStack.has(ModDataComponentTypes.DNA_QUALITY)) {
+                boolean isEmbryo = originalStack.is(ModItems.ALLOSAURUS_EMBRYO) || 
+                                   originalStack.is(ModItems.SPINOSAURUS_EMBRYO) || 
+                                   originalStack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO);
+
+                if (isEmbryo && originalStack.has(ModDataComponentTypes.DNA_QUALITY)) {
                     if (!this.moveItemStackTo(originalStack, 0, 1, false)) return ItemStack.EMPTY;
                 } 
-                // Shift-Click: Ovos Vanilla vão pro Slot 1
                 else if (originalStack.is(Items.EGG) || originalStack.is(Items.TURTLE_EGG) || originalStack.is(Items.SNIFFER_EGG)) {
                     if (!this.moveItemStackTo(originalStack, 1, 2, false)) return ItemStack.EMPTY;
                 } else {

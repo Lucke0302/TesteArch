@@ -8,21 +8,21 @@
 
 ## 1. Estrutura geral de pacotes
 
-    com.lucas.arch
+com.lucas.arch
     ├── ArcheologyReimagined.java          → ModInitializer
     ├── ArcheologyReimaginedClient.java    → ClientModInitializer
     ├── ArcheologyReimaginedDataGenerator.java  → datagen (vazio)
     ├── ImplementedInventory.java          → interface para inventários
     │
     ├── block/                             → blocos customizados
-    │   └── entity/                        → BlockEntities
+    │   └── entity/                        → BlockEntities (inclui AbstractDinosaurEggBlockEntity)
     ├── client/
     │   ├── model/                         → GeoModel (GeckoLib)
     │   └── renderer/                      → GeoEntityRenderer
     ├── compat/
-    │   └── jade/                          → integração com Jade (tooltips in-world)
+    │   └── jade/                          → integração com Jade (tooltips in-world genéricos)
     ├── config/                            → ModConfig + enums
-    ├── entity/                            → entidades vivas
+    ├── entity/                            → entidades vivas (FeelingDrivenEntity)
     │   └── ai/                            → goals customizadas + BehaviorResolver
     ├── item/                              → itens customizados
     ├── mixin/                             → mixins
@@ -83,6 +83,7 @@ ativação a cada avaliação do vanilla `GoalSelector`.
 | `CuriosityBehaviorGoal.java` | Goal única pro `Feeling.CURIOSITY` (substitui `FuzzyCuriosityGoal`). Resolve entre `FOLLOW_PLAYER` (segue jogador mais próximo), `FOLLOW_OWNER_OR_NEAREST` (segue dono se domado e a até 16 blocos, senão jogador mais próximo) e `DO_NOTHING` (trait COWARDICE dominante — não faz nada). |
 | `DinosaurFollowOwnerGoal.java` | Inalterada — "coleira invisível" sem teleporte, independente de Feeling. |
 | `DinosaurTemptGoal.java` | Inalterada — extends `TemptGoal` vanilla, restrita ao dono se domado. |
+| `SleepBehaviorGoal.java` (Planejado) | Goal de altíssima prioridade (sobrepõe as Fuzzy Goals). Trava a navegação do dinossauro e força a animação de `sleep` enquanto a duração do tranquilizante estiver ativa na entidade. |
 
 **`AllosaurusEntity.registerGoals()`** usa prioridades **fixas** no `GoalSelector` (não são recalculadas
 em runtime — a variação de comportamento vem inteiramente do `BehaviorResolver`, não de reordenar
@@ -112,7 +113,19 @@ prioridade):
 | Tags | `data/archeology_reimagined/tags/item/herbivore_food.json` |
 | Ovo (bloco) | `block/PachycephalosaurusEggBlock.java` + `block/entity/PachycephalosaurusEggBlockEntity.java` + `item/PachycephalosaurusEggBlockItem.java` |
 
-### 2.4 Escavação / Pincelamento
+### 2.4 Entidade Spinosaurus (Carnívoro Semi-Aquático)
+
+| Peça | Arquivo |
+|---|---|
+| Entidade | `entity/SpinosaurusEntity.java` — extends `AbstractDinosaurEntity`, implementa `CarnivoreDiet`. |
+| IA (Compartilhada) | Usa as mesmas goals do Allosaurus: `FearBehaviorGoal`, `AngerBehaviorGoal`, `CuriosityBehaviorGoal`, `CarnivoreHungerGoal`. |
+| Registro | `registry/ModEntities.java`, `registry/ModBlocks.java`, `registry/ModBlockEntities.java` |
+| Modelo (cliente) | `client/model/SpinosaurusModel.java` |
+| Renderer (cliente) | `client/renderer/SpinosaurusRenderer.java` |
+| Assets | Animações mapeadas: `walk`, `idle`, `attack`, `eat`, `swim_underwater`. |
+| Ovo (bloco) | `block/SpinosaurusEggBlock.java` + `block/entity/SpinosaurusEggBlockEntity.java` + `item/SpinosaurusEggBlockItem.java` |
+
+### 2.5 Escavação / Pincelamento
 
 | Peça | Arquivo |
 |---|---|
@@ -124,11 +137,11 @@ prioridade):
 
 Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa pó.
 
-### 2.5 Compactação de pós
+### 2.6 Compactação de pós
 - Itens: `SAND_POWDER`, `GRAVEL_POWDER`, `TUFF_POWDER` (`registry/ModItems.java`)
 - Receitas 3x3 → bloco original em `data/.../recipe/sand_from_powder.json`, etc.
 
-### 2.6 Botânica — Cica
+### 2.7 Botânica — Cica
 
 | Peça | Arquivo |
 |---|---|
@@ -140,7 +153,7 @@ Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa p�
 
 **Faltando:** bloco para plantar a semente; texturas próprias (ainda usa `OAK_SLAB` placeholder).
 
-### 2.7 Botânica — Sequóia Gigante
+### 2.8 Botânica — Sequóia Gigante
 
 | Peça | Arquivo |
 |---|---|
@@ -149,7 +162,7 @@ Fluxo: escovar areia/cascalho/tufo → 7.5% chance de item raro, senão dropa p�
 
 Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem worldgen natural).
 
-### 2.8 Bagas Amargas
+### 2.9 Bagas Amargas
 
 | Peça | Arquivo |
 |---|---|
@@ -159,22 +172,31 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | Receita do frasco | `data/.../recipe/bitter_berry_jar.json` |
 | Worldgen | `data/.../worldgen/...`, config dinâmica via `ModConfig` |
 
-### 2.9 Fósseis, Âmbar, DNA
+### 2.10 Fósseis, Âmbar, DNA e Mapeamento
 
-Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixin.java`.
+| Peça | Arquivo | Propósito |
+|---|---|---|
+| Itens Base | `registry/ModItems.java` | Instancia Fósseis, Âmbar, Mosquitos e Frascos genéricos. |
+| Itens de DNA | `item/DnaItem.java` | Classe base que colore a % de viabilidade no tooltip dinamicamente. |
+| Espécies Suportadas | `registry/ModItems.java` | `ALLOSAURUS_DNA`, `SPINOSAURUS_DNA`, `PACHYCEPHALOSAURUS_DNA`. |
+| Sorteio | `recipe/ModCleansingRecipes.java` | `rollReptileDna()` distribui as chances da Mesa de Limpeza extrair DNAs de espécies específicas. |
+| Mapeamento de Embrião | `block/entity/SynthesizerBlockEntity.java` | `synthesizeEmbryo()` mapeia o DNA inserido para o `EMBRYO` da espécie correspondente. |
+| Mixin de Queda | `mixin/FallingBlockEntityMixin.java` | Drop de fósseis desestruturados em quedas de blocos. |
 
-### 2.10 Utilitários químicos / Catálise
+### 2.11 Utilitários químicos / Catálise
 
 | Peça | Arquivo |
 |---|---|
 | Processamento | `block/entity/BiocatalyzerBlockEntity.java` |
 | Itens | `EMPTY_SYRINGE`, `FULL_SYRINGE`, `BIO_PROPELLANT`, `EMPTY_DART`, `FULL_DART`, `BITTER_BERRY_JAR` em `registry/ModItems.java` |
+| Item de Sangue (Planejado) | `item/BloodSyringeItem.java` (A ser criado, gerenciará o Data Component de espécie). |
+| Componente de Espécie | `registry/ModDataComponentTypes.java` (A ser registrado: `SYRINGE_SPECIES`). |
 
-### 2.11 Guia Arqueológico
+### 2.12 Guia Arqueológico
 
 `ArcheologyReimagined.createGuideBook()` — 8 páginas. Receita: `recipe/GuideBookRecipe.java`.
 
-### 2.12 Ovo do Allossauro (Incubação)
+### 2.13 Ovo do Allossauro (Incubação)
 
 | Peça | Arquivo |
 |---|---|
@@ -184,7 +206,7 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 | Tag de calor | `data/archeology_reimagined/tags/block/egg_heat_sources.json` → registrada em `ModTags.Blocks.EGG_HEAT_SOURCES` |
 | Registro | `registry/ModBlocks.java` (`ALLOSAURUS_EGG_BLOCK`), `registry/ModBlockEntities.java` (`ALLOSAURUS_EGG_BE`) |
 
-### 2.13 Integração Jade (compat/jade)
+### 2.14 Integração Jade (compat/jade)
 
 | Peça | Arquivo |
 |---|---|
@@ -194,7 +216,7 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 | Client provider (Entities)| `compat/jade/AllosaurusClientProvider.java` |
 | Plugin | `compat/jade/ArchJadePlugin.java` — `@WailaPlugin` (Registra provedores para Allosaurus e Pachycephalosaurus) |
 
-### 2.14 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
+### 2.15 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
 
 | Classe | Propósito |
 |---|---|
@@ -204,7 +226,7 @@ Itens em `registry/ModItems.java`. Mixin de queda: `mixin/FallingBlockEntityMixi
 | `DnaItem.java` | Exibe tooltip dinâmico de `DNA_QUALITY` formatado em cores conforme a porcentagem (Vermelho, Amarelo, Verde, Aqua). |
 | `EncyclopediaItem.java` | Item de enciclopédia interativa (placeholder via mensagem de sistema ao usar botão direito). |
 
-### 2.15 Worldgen & Injeção de Loot Tables (`com.lucas.arch.world`)
+### 2.16 Worldgen & Injeção de Loot Tables (`com.lucas.arch.world`)
 
 | Arquivo | Propósito |
 |---|---|
