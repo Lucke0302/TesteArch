@@ -274,6 +274,8 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
   * **Aplicação (Botão Direito):** O jogador aplica o dardo diretamente no dinossauro.
   * **Dosagem Física:** Requer 1 dardo para cada metro de altura da entidade (baseado no `getBbHeight()`).
   * **Efeito Tardio:** Leva 15 segundos (300 ticks) após a dose completa para o sedativo fazer efeito.
+  * **Reação em Não-Donos:** Aplicar dardo em dinossauro que não é do jogador aumenta a raiva em `aggroTrait * 1.5` (1.5x o impacto da seringa). Se a agressividade for ≥ 0.5, o dino ataca o jogador.
+  * **Devolução do Dardo Vazio:** Após o uso, o `FULL_DART` é consumido e um `EMPTY_DART` é devolvido ao inventário do jogador (ou dropado se o inventário estiver cheio). Isso premia futura implementação de arma de dardos à distância.
   * **Modo de Sono:** A entidade limpa sua IA de navegação, deita no chão (aciona a animação `sleep` via GeckoLib) e entra em dormência profunda.
   * **Duração Máxima:** O sono dura **3600 ticks (3 minutos)** — o dino acorda automaticamente ao fim desse período.
   * **Wake-on-Damage:** Se o dinossauro sofrer qualquer dano durante o sono (`hurtServer`), ele acorda imediatamente (zera contagem de dardos, timer e retorna à animação `idle`).
