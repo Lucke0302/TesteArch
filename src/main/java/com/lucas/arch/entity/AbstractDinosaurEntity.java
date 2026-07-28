@@ -48,6 +48,14 @@ import net.minecraft.world.level.storage.ValueOutput;
  *  - feedSaturation(ItemStack, boolean bonus) — carnívoro tem hunt bonus, herbívoro não
  *  - registerControllers() (GeckoLib, animações específicas do modelo)
  *  - doHurtTarget()/hurtServer() extras se a espécie tiver efeito colateral de combate
+ *
+ * NOTA (correção 2026-07-28): isSleeping/isResting foram promovidos de campos Java simples
+ * para EntityDataAccessor<Boolean> sincronizados. Antes disso, tickTranquilizer() e
+ * NeutralBehaviorGoal#setResting() alteravam apenas a instância server-side da entidade —
+ * a instância client-side (a que o GeckoLib AnimationController realmente consulta em
+ * registerControllers()) nunca recebia a mudança, então a lógica de sono/descanso
+ * funcionava (navegação parava, etc.) mas a animação de "sleep" nunca era ativada.
+ * Ver README.md (seção "Sincronização de Estado Visual") e CODEMAP.md (2.2.1) para mais detalhes.
  */
 public abstract class AbstractDinosaurEntity extends TamableAnimal implements GeoEntity, FeelingDrivenEntity {
 
@@ -58,6 +66,9 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     public static final EntityDataAccessor<Byte> DOMINANT_STATE = SynchedEntityData.defineId(AbstractDinosaurEntity.class, EntityDataSerializers.BYTE);
     public static final EntityDataAccessor<Boolean> IS_MALE = SynchedEntityData.defineId(AbstractDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Byte> AGE_TIER_SYNC = SynchedEntityData.defineId(AbstractDinosaurEntity.class, EntityDataSerializers.BYTE);
+
+    public static final EntityDataAccessor<Boolean> IS_SLEEPING_SYNC = SynchedEntityData.defineId(AbstractDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> IS_RESTING_SYNC = SynchedEntityData.defineId(AbstractDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
 
     private static final float DOMINANT_STATE_THRESHOLD = 0.3f;
     protected static final int TICKS_TO_GROW = 1200;
@@ -73,8 +84,6 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     protected float accumulatedSaturation = 0.0f;
     private int attachedDarts = 0;
     private int tranquilizerTicks = 0;
-    private boolean isSleeping = false;
-    private boolean isResting = false;
 
     protected AbstractDinosaurEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
@@ -89,7 +98,6 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     protected abstract float getHitboxScaleRatio();
     protected abstract float getMaxSafeHitboxScale();
     protected abstract int[] getColorPalette();
-    /** [min, max) de variação do baseScale no spawn natural */
     protected abstract float[] getSpawnScaleRange();
     protected abstract float getAdultSpawnScale();
     protected abstract String getColorNbtKey();
@@ -113,6 +121,8 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         builder.define(DOMINANT_STATE, (byte) 0);
         builder.define(IS_MALE, true);
         builder.define(AGE_TIER_SYNC, (byte) AgeTier.BABY.ordinal());
+        builder.define(IS_SLEEPING_SYNC, false);
+        builder.define(IS_RESTING_SYNC, false);
     }
 
     @Override
@@ -154,6 +164,9 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
 
         for (Trait t : Trait.values()) this.traits.put(t, input.getFloatOr("Trait_" + t.name(), 0.0f));
         for (Feeling f : Feeling.values()) this.feelings.put(f, input.getFloatOr("Feeling_" + f.name(), 0.0f));
+
+        this.entityData.set(IS_SLEEPING_SYNC, false);
+        this.entityData.set(IS_RESTING_SYNC, false);
 
         if (hasCustomScale || hasCustomAgeTier) this.updateStats();
         else this.entityData.set(SCALE, this.getVisualScale());
@@ -309,14 +322,14 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (!this.isInvulnerableTo(level, source)) {
-            if (this.isSleeping) {
-                this.isSleeping = false;
+            if (this.isSleeping()) {
+                this.setSleeping(false);
                 this.attachedDarts = 0;
                 this.tranquilizerTicks = 0;
                 this.triggerAnim("main_controller", "idle");
             }
-            if (this.isResting) {
-                this.isResting = false;
+            if (this.isResting()) {
+                this.setResting(false);
                 this.triggerAnim("main_controller", "idle");
             }
         }
@@ -378,24 +391,33 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     }
 
     /**
-     * @return true se estiver dormindo por tranquilizante
+     * @return true se estiver dormindo por tranquilizante.
+     * Lê o valor sincronizado (EntityDataAccessor), então funciona corretamente
+     * tanto na instância server-side (lógica) quanto na client-side (GeckoLib).
      */
     public boolean isSleeping() {
-        return this.isSleeping;
+        return this.entityData.get(IS_SLEEPING_SYNC);
     }
 
     /**
-     * @return true se estiver descansando/deitado (comportamento passivo por trait)
+     * @return true se estiver descansando/deitado (comportamento passivo por trait).
+     * Também sincronizado — ver nota da classe.
      */
     public boolean isResting() {
-        return this.isResting;
+        return this.entityData.get(IS_RESTING_SYNC);
     }
 
     /**
      * Define se o dinossauro está descansando/deitado (comportamento passivo por trait).
+     * Chamado a partir de NeutralBehaviorGoal. Só deve ser chamado no lado servidor;
+     * o valor é replicado automaticamente para o cliente via SynchedEntityData.
      */
     public void setResting(boolean resting) {
-        this.isResting = resting;
+        this.entityData.set(IS_RESTING_SYNC, resting);
+    }
+
+    private void setSleeping(boolean sleeping) {
+        this.entityData.set(IS_SLEEPING_SYNC, sleeping);
     }
 
     protected void tickTranquilizer() {
@@ -405,14 +427,14 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
             this.tranquilizerTicks++;
             
             if (this.tranquilizerTicks == 300) {
-                this.isSleeping = true;
+                this.setSleeping(true);
                 this.getNavigation().stop();
                 this.setTarget(null);
                 this.triggerAnim("main_controller", "sleep"); 
             }
             
             if (this.tranquilizerTicks > 3600) { 
-                this.isSleeping = false;
+                this.setSleeping(false);
                 this.attachedDarts = 0;
                 this.tranquilizerTicks = 0;
                 this.triggerAnim("main_controller", "idle");

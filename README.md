@@ -128,6 +128,24 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
 *   **SoundKeyframeHandler:** Efeitos incidentais complexos (ex: sons de passos pesados ou mastigação) não dependem de *ticks* no servidor. Eles são amarrados diretamente aos arquivos `.animation.json` criados no Blockbench através de strings de evento (`"effect": "eat"`), lidos e reproduzidos pelo controlador do GeckoLib via `setSoundKeyframeHandler`.
 *   **Segurança de Thread (Desync Bounds Check):** Devido ao delay de sincronização do `EntityDataAccessor` entre o Servidor e a Thread de Renderização do Cliente (GeckoLib), a decodificação do estado emocional (Enum `Feeling`) possui um fallback de segurança (*bounds check*) que impede crashes (`IndexOutOfBoundsException`) ao carregar entidades recém-spawnadas.
 
+### 2.3.1 Sincronização de Estado Visual (`isSleeping` / `isResting`)
+*   **Correção (2026-07-28):** Os flags `isSleeping` e `isResting` (usados pelos `AnimationController` para
+    decidir entre as animações `sleep`/`idle`/`walk`) eram campos Java comuns em `AbstractDinosaurEntity`,
+    alterados apenas dentro de `tickTranquilizer()` e `NeutralBehaviorGoal#setResting()` — ambos executados
+    exclusivamente na instância **server-side** da entidade.
+*   **Sintoma:** A lógica de sono funcionava corretamente (navegação parava, alvo era limpo, `attachedDarts`
+    decaía), mas a animação de dormir **nunca era exibida**, pois o GeckoLib avalia o `AnimationController`
+    na instância **client-side**, que nunca recebia a mudança desses campos.
+*   **Correção aplicada:** `isSleeping`/`isResting` foram promovidos a `EntityDataAccessor<Boolean>`
+    (`IS_SLEEPING_SYNC` / `IS_RESTING_SYNC`) registrados em `defineSynchedData()`, seguindo o mesmo padrão já
+    usado por `DOMINANT_STATE`, `IS_MALE` e `AGE_TIER_SYNC`. Os getters/setters públicos (`isSleeping()`,
+    `isResting()`, `setResting(boolean)`) mantiveram a mesma assinatura, então nenhuma outra classe
+    (`SleepBehaviorGoal`, `NeutralBehaviorGoal`, `FullDartItem`, os `registerControllers()` de cada espécie)
+    precisou ser alterada.
+*   **Nota de design:** os dois flags **não são persistidos** em `readAdditionalSaveData` — são estados
+    transitórios de IA recalculados pelo tick do servidor, então um dino nunca deve "acordar dormindo" após
+    um `/reload` ou relog do jogador.
+
 ### 2.4 Incubação do Ovo
 
 O `Allosaurus Egg` produzido pelo Fusor é plantável no mundo. A eclosão depende de **calor constante** nos
@@ -207,6 +225,19 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 *   **Animações Específicas:** Possui um rig de animação avançado incluindo `speak` (chamados vocais usando a crista), `sit` (descanso passivo) e `sleep_adult` para transições de ciclo diário ou efeito de Dardos Tranquilizantes.
 *   **Dimorfismo e Crescimento:** Texturas independentes para filhotes (`baby`), machos (`male`) e fêmeas (`female`), além do sistema genético padrão de variação de escala (Scale Modifier).
 
+### 2.12.1 Correção do Mapeamento de Estado Dominante & Ciclo de "Olhar em Volta"
+*   **Bug corrigido (2026-07-28):** `movementPredicate()` indexava `Feeling.values()[dominantStateByte]`
+    sem subtrair 1, enquanto `DOMINANT_STATE` é gravado como `Feeling.ordinal() + 1` (0 = neutro). Isso
+    deslocava todo o mapeamento em uma posição — o dino podia disparar `stand_up`/`stand_down` no estado
+    emocional errado, ou nunca disparar quando realmente estava com medo ou fome. Corrigido para
+    `Feeling.values()[dominantStateByte - 1]`, com `null` explícito representando o estado neutro.
+*   **Nova animação idle — "olhar em volta":** aproveitando a correção, quando o Parasaurolophus está
+    **neutro** (sem feeling dominante) e parado, ele agora entra periodicamente (a cada ~5-20s, por ~3-7s)
+    num ciclo `stand_up` → `stand` → `stand_down`, reaproveitando exatamente as mesmas animações já usadas
+    pelo estado de fome. O ciclo é interrompido automaticamente se ele começar a andar ou algum feeling
+    assumir o controle. É puramente cosmético e local à instância renderizada (não sincronizado entre
+    clientes/servidor — cada cliente decide seu próprio timing, como uma variação de idle qualquer).
+
 ## Botânica Pré-Histórica
 
 * **Bagas Amargas (`BitterBerryBushBlock`):**
@@ -269,6 +300,8 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 - [x] Implementação de Bounds Check e Fallback state no `GeoRenderer`/`AnimationController` para evitar crashes por dessincronização de rede (Desync) entre o Client e o Server na leitura de variáveis de I.A. (`DOMINANT_STATE`).
 - [x] **Seringa Vazia & Extração de Sangue:** Coleta de sangue de dinossauros (50% de chance), com reação de raiva em animais selvagens. Gera `BLOOD_SYRINGE` com Data Component `SYRINGE_SPECIES`.
 - [x] **Processamento de Seringa de Sangue na Mesa de Limpeza:** `BLOOD_SYRINGE` é aceita como input e gera o DNA da espécie correspondente (Allosaurus, Spinosaurus, Pachycephalosaurus, Parasaurolophus) com qualidade garantida entre 85% e 100%.
+- [x] **Correção da sincronização de `isSleeping`/`isResting` (2026-07-28):** flags promovidos para `EntityDataAccessor<Boolean>` sincronizados em `AbstractDinosaurEntity`, corrigindo a animação de sono do Dardo Tranquilizante que não era exibida no cliente (ver 2.3.1).
+- [x] **Correção do mapeamento de estado dominante no Parasaurolophus + ciclo "olhar em volta" (2026-07-28):** `movementPredicate()` tinha índice fora de sincronia com `DOMINANT_STATE`, disparando `stand_up`/`stand_down` no estado emocional errado; corrigido e adicionado um ciclo idle periódico de "levantar a cabeça e olhar em volta" quando neutro (ver 2.12.1).
 
 - [x] **Dardos Tranquilizantes (`FULL_DART`) e Modo de Sono:**
   * **Aplicação (Botão Direito):** O jogador aplica o dardo diretamente no dinossauro.

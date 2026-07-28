@@ -3,7 +3,7 @@
 > **Objetivo:** Mapa de onde cada feature vive no código, para navegação rápida
 > do projeto. Atualize sempre que classes/pacotes forem criados ou removidos.
 >
-> Última atualização: 2026-07-25 (substituído sistema Fuzzy Goals por BehaviorResolver + *BehaviorGoal)
+> Última atualização: 2026-07-28 (corrigido mapeamento de dominantFeeling + ciclo "olhar em volta" no Parasaurolophus)
 ---
 
 ## 1. Estrutura geral de pacotes
@@ -52,6 +52,7 @@ Todas usam `ContainerData` para sincronização de progresso/combustível.
 | Peça | Arquivo |
 |---|---|
 | Entidade | `entity/AllosaurusEntity.java` — extends `TamableAnimal`, implementa `GeoEntity` |
+| Base comum | `entity/AbstractDinosaurEntity.java` — Feelings/Traits/Growth/Scale/Tame + `IS_SLEEPING_SYNC`/`IS_RESTING_SYNC` (`EntityDataAccessor<Boolean>`, sincronizados; ver nota de bugfix abaixo) |
 | IA (Goals estruturais) | `entity/ai/DinosaurFollowOwnerGoal.java`, `entity/ai/DinosaurTemptGoal.java` |
 | IA (Resolução de comportamento por Feeling) | `entity/ai/AbstractFuzzyGoal.java`, `entity/ai/BehaviorResolver.java`, `entity/ai/HungerBehaviorGoal.java`, `entity/ai/FearBehaviorGoal.java`, `entity/ai/AngerBehaviorGoal.java`, `entity/ai/CuriosityBehaviorGoal.java` |
 | Enums | `entity/Trait.java`, `entity/AgeTier.java`, `entity/Feeling.java` |
@@ -102,6 +103,21 @@ prioridade):
 
 **Nova prioridade (NeutralBehaviorGoal):** Adicionado na prioridade 0 (mesma do Sleep, o GoalSelector vanilla desempata por ordem de inserção — Sleep vem primeiro por ser adicionado antes). Ativo apenas quando `getDominantState() == 0`.
 
+#### 2.2.2 Bugfix (2026-07-28) — Animação de sono/descanso não sincronizava
+
+`isSleeping`/`isResting` viviam como campos Java simples em `AbstractDinosaurEntity`, escritos apenas por
+`tickTranquilizer()` e `NeutralBehaviorGoal#setResting()` — ambos rodando só na instância **server-side**.
+O `AnimationController` de cada espécie (`registerControllers()` em `AllosaurusEntity`,
+`PachycephalosaurusEntity`, `SpinosaurusEntity`, `ParasaurolophusEntity`) roda na instância **client-side**,
+então o predicate `this.isSleeping()`/`this.isResting()` nunca via a mudança — a lógica de sono funcionava
+(navegação parava, dardos decaíam) mas a troca de animação não acontecia.
+
+**Correção:** promovidos para `EntityDataAccessor<Boolean>` (`IS_SLEEPING_SYNC`, `IS_RESTING_SYNC`),
+registrados em `defineSynchedData()`, seguindo o padrão de `DOMINANT_STATE`/`IS_MALE`/`AGE_TIER_SYNC`.
+Assinatura pública de `isSleeping()`, `isResting()` e `setResting(boolean)` foi mantida — nenhuma outra
+classe precisou mudar. Os dois flags são resetados para `false` em `readAdditionalSaveData` (não
+persistidos), por serem estado transitório de IA.
+
 ### 2.3 Entidade Pachycephalosaurus (Herbívoro)
 
 | Peça | Arquivo |
@@ -140,6 +156,7 @@ prioridade):
 | Renderer (cliente) | `client/renderer/ParasaurolophusRenderer.java`. |
 | Assets (Animações) | Animações mapeadas em `parasaurolophus.animation.json`: `attack`, `eat`, `!eat`, `idle`, `run`, `sit`, `sleep_adult`, `speak`, `swim`, `walk`. |
 | Assets (Texturas) | `entity/parasaurolophus_baby.png`, `_female.png`, `_male.png`. |
+| **Bugfix + feature (2026-07-28)** | `movementPredicate()` corrigido: indexava `Feeling.values()[dominantStateByte]` sem `-1`, deslocando o mapeamento (ver `AbstractDinosaurEntity#updateDominantState`, que grava `ordinal()+1`, 0=neutro). Aproveitado para adicionar ciclo idle "olhar em volta" (`stand_up`→`stand`→`stand_down`) quando neutro e parado — puramente cosmético, não sincronizado. |
 | Ovo (bloco) | `block/ParasaurolophusEggBlock.java` + `block/entity/ParasaurolophusEggBlockEntity.java` + `item/ParasaurolophusEggBlockItem.java`. |
 
 ### 2.6 Escavação / Pincelamento

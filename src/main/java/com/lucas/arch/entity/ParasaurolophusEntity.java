@@ -48,7 +48,17 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
     @Override protected float getAdultSpawnScale() { return 1.8f; }
     @Override protected String getColorNbtKey() { return "ParasaurColor"; }
     @Override protected String getScaleNbtKey() { return "ParasaurScale"; }
+
     private boolean wasStanding = false;
+
+    private boolean isLookingAround = false;
+    private int lookAroundEndTick = 0;
+    private int nextLookAroundTick = 0;
+
+    private static final int LOOK_AROUND_MIN_HOLD_TICKS = 60; 
+    private static final int LOOK_AROUND_HOLD_VARIANCE_TICKS = 80;
+    private static final int LOOK_AROUND_MIN_COOLDOWN_TICKS = 100;
+    private static final int LOOK_AROUND_COOLDOWN_VARIANCE_TICKS = 300;
 
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(80.0, 0.28, 10.0);
@@ -117,16 +127,13 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
         }
 
         boolean isMoving = event.isMoving();
-        
+
         byte dominantStateByte = this.getDominantState();
-        Feeling[] feelings = Feeling.values();
-        
-        Feeling dominantFeeling;
-        if (dominantStateByte >= 0 && dominantStateByte < feelings.length) {
-            dominantFeeling = feelings[dominantStateByte];
-        } else {
-            dominantFeeling = feelings[0]; 
-        }
+        Feeling dominantFeeling = (dominantStateByte > 0 && dominantStateByte <= Feeling.values().length)
+            ? Feeling.values()[dominantStateByte - 1]
+            : null;
+
+        updateLookAroundCycle(dominantFeeling, isMoving);
 
         if (dominantFeeling == Feeling.FEAR && isMoving) {
             this.wasStanding = true;
@@ -135,11 +142,19 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
                 .thenLoop("animation.parasaurolophus.run"));
         }
 
-        if (dominantFeeling == Feeling.HUNGER && !isMoving) {
-            this.wasStanding = true;
-            return event.setAndContinue(RawAnimation.begin()
-                .thenPlay("animation.parasaurolophus.stand_up")
-                .thenLoop("animation.parasaurolophus.stand"));
+        // HUNGER parado (procurando/mastigando com a cabeça erguida) ou o ciclo cosmético de
+        // "olhar em volta" quando neutro — ambos reaproveitam a mesma pose erguida ("stand"),
+        // então a transição entre um motivo e outro não replica o stand_up à toa.
+        boolean shouldStandTall = (dominantFeeling == Feeling.HUNGER && !isMoving) || this.isLookingAround;
+
+        if (shouldStandTall) {
+            if (!this.wasStanding) {
+                this.wasStanding = true;
+                return event.setAndContinue(RawAnimation.begin()
+                    .thenPlay("animation.parasaurolophus.stand_up")
+                    .thenLoop("animation.parasaurolophus.stand"));
+            }
+            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.parasaurolophus.stand"));
         }
 
         if (isMoving) {
@@ -149,7 +164,6 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
                     .thenPlay("animation.parasaurolophus.stand_down")
                     .thenLoop("animation.parasaurolophus.walk"));
             } else {
-                // Caminhada normal
                 return event.setAndContinue(RawAnimation.begin()
                     .thenLoop("animation.parasaurolophus.walk"));
             }
@@ -163,6 +177,34 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
         }
 
         return event.setAndContinue(RawAnimation.begin().thenLoop("animation.parasaurolophus.idle"));
+    }
+
+    /**
+     * Controla o ciclo periódico de "olhar em volta": quando o dino está neutro e parado, a
+     * cada tanto ele entra em {@code isLookingAround} por alguns segundos (o que faz
+     * {@code movementPredicate} tocar stand_up -> stand) e depois sai (stand_down -> idle),
+     * agendando o próximo ciclo. Interrompido automaticamente se ele começar a andar ou algum
+     * feeling assumir o controle. Tudo calculado a partir de {@code tickCount} (em vez de
+     * decrementar um contador a cada chamada do predicate), pra ficar independente de quantas
+     * vezes por tick o AnimationController reavalia o estado.
+     */
+    private void updateLookAroundCycle(Feeling dominantFeeling, boolean isMoving) {
+        boolean eligible = dominantFeeling == null && !isMoving;
+
+        if (this.isLookingAround) {
+            if (!eligible || this.tickCount >= this.lookAroundEndTick) {
+                this.isLookingAround = false;
+                this.nextLookAroundTick = this.tickCount + LOOK_AROUND_MIN_COOLDOWN_TICKS
+                    + this.random.nextInt(LOOK_AROUND_COOLDOWN_VARIANCE_TICKS);
+            }
+            return;
+        }
+
+        if (eligible && this.tickCount >= this.nextLookAroundTick) {
+            this.isLookingAround = true;
+            this.lookAroundEndTick = this.tickCount + LOOK_AROUND_MIN_HOLD_TICKS
+                + this.random.nextInt(LOOK_AROUND_HOLD_VARIANCE_TICKS);
+        }
     }
 
     @Override
