@@ -21,6 +21,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import com.lucas.arch.item.EmptySyringeItem;
 
 public class ModItems {
     public static final String MOD_ID = "archeology_reimagined";
@@ -114,7 +115,7 @@ public class ModItems {
 
     // --- Melhoria genética ---
     public static final Item EMPTY_SYRINGE = registerItem("empty_syringe",
-         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+         p -> new EmptySyringeItem(p, "Lucke0302", "Lucke0302"));
 
     public static final Item FULL_SYRINGE = registerItem("full_syringe",
          p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
