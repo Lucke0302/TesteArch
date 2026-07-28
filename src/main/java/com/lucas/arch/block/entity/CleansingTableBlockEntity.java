@@ -1,8 +1,20 @@
 package com.lucas.arch.block.entity;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.lucas.arch.ImplementedInventory;
+import com.lucas.arch.config.ModConfig;
+import com.lucas.arch.recipe.CleansingRecipe;
+import com.lucas.arch.recipe.ModCleansingRecipes;
+import com.lucas.arch.registry.ModBlockEntities;
+import com.lucas.arch.registry.ModDataComponentTypes;
+import com.lucas.arch.registry.ModItems;
+import com.lucas.arch.screen.CleansingTableMenu;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,16 +28,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.Nullable;
-
-import com.lucas.arch.ImplementedInventory;
-import com.lucas.arch.config.ModConfig;
-import com.lucas.arch.recipe.CleansingRecipe;
-import com.lucas.arch.recipe.ModCleansingRecipes;
-import com.lucas.arch.registry.ModBlockEntities;
-import com.lucas.arch.registry.ModDataComponentTypes;
-import com.lucas.arch.registry.ModItems;
-import com.lucas.arch.screen.CleansingTableMenu;
 
 public class CleansingTableBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider {
 
@@ -130,7 +132,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
     @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
         if (index >= 0 && index <= 5) {
-            return ModCleansingRecipes.isValidInput(stack.getItem());
+            return ModCleansingRecipes.isValidInput(stack.getItem()) || stack.is(ModItems.BLOOD_SYRINGE);
         }
         return false; 
     }
@@ -182,16 +184,51 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
     private int findValidInputSlot() {
         for (int i = 0; i <= 5; i++) {
             ItemStack stack = this.inventory.get(i);
-            if (!stack.isEmpty() && ModCleansingRecipes.isValidInput(stack.getItem())) {
+            if (!stack.isEmpty() && (ModCleansingRecipes.isValidInput(stack.getItem()) || stack.is(ModItems.BLOOD_SYRINGE))) {
                 return i;
             }
         }
         return -1;
     }
 
+    /**
+     * Mapeia o Identifier da entidade 
+     */
+    private static Item speciesToDnaItem(Identifier speciesId) {
+        String path = speciesId.getPath();
+        return switch (path) {
+            case "allosaurus" -> ModItems.ALLOSAURUS_DNA;
+            case "spinosaurus" -> ModItems.SPINOSAURUS_DNA;
+            case "pachycephalosaurus" -> ModItems.PACHYCEPHALOSAURUS_DNA;
+            case "parasaurolophus" -> ModItems.PARASAUROLOPHUS_DNA;
+            default -> null;
+        };
+    }
+
     private boolean processFossil(Level level, int inputSlot) {
         ItemStack inputStack = this.inventory.get(inputSlot);
 
+        // --- Processamento especial: BloodSyringe ---
+        if (inputStack.is(ModItems.BLOOD_SYRINGE)) {
+            Identifier speciesId = inputStack.get(ModDataComponentTypes.SYRINGE_SPECIES);
+            if (speciesId == null) return false;
+
+            Item dnaItem = speciesToDnaItem(speciesId);
+            if (dnaItem == null) return false;
+
+            ItemStack dnaStack = new ItemStack(dnaItem);
+            int quality = 85 + level.getRandom().nextInt(16);
+            dnaStack.set(ModDataComponentTypes.DNA_QUALITY, quality);
+
+            if (!canInsert(dnaStack)) return false;
+
+            insertIntoOutput(dnaStack);
+            inputStack.shrink(1);
+            this.waterLevel = Math.max(0, this.waterLevel - ModConfig.get().cleansingTableWaterCost);
+            return true;
+        }
+
+        // --- Processamento padrão: fósseis ---
         if (inputStack.is(ModItems.MOSQUITO_IN_AMBER)) {
             ItemStack amber = new ItemStack(ModItems.AMBER);
             
