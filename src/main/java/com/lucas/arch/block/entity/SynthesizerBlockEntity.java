@@ -1,5 +1,15 @@
 package com.lucas.arch.block.entity; //
 
+import org.jetbrains.annotations.Nullable;
+
+import com.lucas.arch.ImplementedInventory;
+import com.lucas.arch.block.SynthesizerBlock;
+import com.lucas.arch.config.ModConfig;
+import com.lucas.arch.registry.ModBlockEntities;
+import com.lucas.arch.registry.ModDataComponentTypes;
+import com.lucas.arch.registry.ModItems;
+import com.lucas.arch.screen.SynthesizerMenu;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -9,22 +19,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.Nullable;
-import net.minecraft.world.item.Item;
-
-import com.lucas.arch.ImplementedInventory;
-import com.lucas.arch.block.SynthesizerBlock;
-import com.lucas.arch.config.ModConfig;
-import com.lucas.arch.registry.ModBlockEntities;
-import com.lucas.arch.registry.ModDataComponentTypes;
-import com.lucas.arch.registry.ModItems;
-import com.lucas.arch.screen.SynthesizerMenu;
 
 public class SynthesizerBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
@@ -182,6 +183,7 @@ public class SynthesizerBlockEntity extends BlockEntity implements ImplementedIn
             Item embryoResult = ModItems.ALLOSAURUS_EMBRYO;
             if (dnaStack.is(ModItems.SPINOSAURUS_DNA)) embryoResult = ModItems.SPINOSAURUS_EMBRYO;
             else if (dnaStack.is(ModItems.PACHYCEPHALOSAURUS_DNA)) embryoResult = ModItems.PACHYCEPHALOSAURUS_EMBRYO;
+            else if (dnaStack.is(ModItems.PARASAUROLOPHUS_DNA)) embryoResult = ModItems.PARASAUROLOPHUS_EMBRYO;
             else if (dnaStack.is(ModItems.ALLOSAURUS_DNA)) embryoResult = ModItems.ALLOSAURUS_EMBRYO;
 
             result = new ItemStack(embryoResult);

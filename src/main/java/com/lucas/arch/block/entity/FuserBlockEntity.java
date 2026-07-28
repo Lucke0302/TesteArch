@@ -1,5 +1,7 @@
 package com.lucas.arch.block.entity;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.lucas.arch.ImplementedInventory;
 import com.lucas.arch.block.FuserBlock;
 import com.lucas.arch.config.ModConfig;
@@ -7,6 +9,7 @@ import com.lucas.arch.registry.ModBlockEntities;
 import com.lucas.arch.registry.ModDataComponentTypes;
 import com.lucas.arch.registry.ModItems;
 import com.lucas.arch.screen.FuserMenu;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -23,7 +26,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.Nullable;
 
 public class FuserBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
@@ -78,7 +80,8 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
         if (index == 0) {
             boolean isEmbryo = stack.is(ModItems.ALLOSAURUS_EMBRYO) || 
                                stack.is(ModItems.SPINOSAURUS_EMBRYO) || 
-                               stack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO);
+                               stack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO) ||
+                               stack.is(ModItems.PARASAUROLOPHUS_EMBRYO);
             return isEmbryo && stack.has(ModDataComponentTypes.DNA_QUALITY);
         }
         if (index == 1) return stack.is(Items.EGG) || stack.is(Items.TURTLE_EGG) || stack.is(Items.SNIFFER_EGG);
@@ -131,7 +134,8 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
         
         boolean isEmbryo = embryo.is(ModItems.ALLOSAURUS_EMBRYO) || 
                            embryo.is(ModItems.SPINOSAURUS_EMBRYO) || 
-                           embryo.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO);
+                           embryo.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO) ||
+                           embryo.is(ModItems.PARASAUROLOPHUS_EMBRYO);
                            
         boolean hasEmbryo = !embryo.isEmpty() && isEmbryo && embryo.has(ModDataComponentTypes.DNA_QUALITY);
         boolean hasEgg = !egg.isEmpty() && (egg.is(Items.EGG) || egg.is(Items.TURTLE_EGG) || egg.is(Items.SNIFFER_EGG));
@@ -165,6 +169,8 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
                 result = new ItemStack(com.lucas.arch.registry.ModBlocks.SPINOSAURUS_EGG_BLOCK);
             } else if (embryoStack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO)) {
                 result = new ItemStack(com.lucas.arch.registry.ModBlocks.PACHYCEPHALOSAURUS_EGG_BLOCK);
+            } else if (embryoStack.is(ModItems.PARASAUROLOPHUS_EMBRYO)) {
+                result = new ItemStack(com.lucas.arch.registry.ModBlocks.PARASAUROLOPHUS_EGG_BLOCK);
             } else {
                 result = new ItemStack(com.lucas.arch.registry.ModBlocks.ALLOSAURUS_EGG_BLOCK);
             }
