@@ -270,6 +270,15 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 - [x] **Seringa Vazia & Extração de Sangue:** Coleta de sangue de dinossauros (50% de chance), com reação de raiva em animais selvagens. Gera `BLOOD_SYRINGE` com Data Component `SYRINGE_SPECIES`.
 - [x] **Processamento de Seringa de Sangue na Mesa de Limpeza:** `BLOOD_SYRINGE` é aceita como input e gera o DNA da espécie correspondente (Allosaurus, Spinosaurus, Pachycephalosaurus, Parasaurolophus) com qualidade garantida entre 85% e 100%.
 
+- [x] **Dardos Tranquilizantes (`FULL_DART`) e Modo de Sono:**
+  * **Aplicação (Botão Direito):** O jogador aplica o dardo diretamente no dinossauro.
+  * **Dosagem Física:** Requer 1 dardo para cada metro de altura da entidade (baseado no `getBbHeight()`).
+  * **Efeito Tardio:** Leva 15 segundos (300 ticks) após a dose completa para o sedativo fazer efeito.
+  * **Modo de Sono:** A entidade limpa sua IA de navegação, deita no chão (aciona a animação `sleep` via GeckoLib) e entra em dormência profunda.
+  * **Duração Máxima:** O sono dura **3600 ticks (3 minutos)** — o dino acorda automaticamente ao fim desse período.
+  * **Wake-on-Damage:** Se o dinossauro sofrer qualquer dano durante o sono (`hurtServer`), ele acorda imediatamente (zera contagem de dardos, timer e retorna à animação `idle`).
+  * **SleepBehaviorGoal:** Goal dedicada (`com.lucas.arch.entity.ai.SleepBehaviorGoal`) com flags `MOVE | LOOK | JUMP` travadas, mantendo a animação de `sleep` ativa continuamente enquanto `isSleeping == true`.
+
 ---
 
 ### Parcialmente Implementado / Requer Ajustes
@@ -297,8 +306,3 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 #### Utilitários Químicos & Contenção (Mecânicas de Uso em Entidades)
 - [ ] **Melhoramento de Embriões (Seringa com Aditivo):**
   * Adicionar mecânica (provavelmente no Fusor ou numa nova interface/crafting) para consumir a `FULL_SYRINGE` e aumentar a % de qualidade de um embrião existente.
-- [ ] **Dardos Tranquilizantes (`FULL_DART`) e Modo de Sono:**
-  * **Aplicação (Botão Direito):** O jogador aplica o dardo diretamente no dinossauro.
-  * **Dosagem Física:** Requer 1 dardo para cada metro de altura da entidade (baseado no `getBbHeight()`).
-  * **Efeito Tardio:** Leva 15 segundos (300 ticks) após a dose completa para o sedativo fazer efeito.
-  * **Modo de Sono:** A entidade limpa sua IA de navegação, deita no chão (aciona a animação `sleep` via GeckoLib) e entra em dormência profunda por meio dia no jogo.

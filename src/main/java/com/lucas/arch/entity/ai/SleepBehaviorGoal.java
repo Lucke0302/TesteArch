@@ -1,10 +1,12 @@
 package com.lucas.arch.entity.ai;
 
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.TamableAnimal;
-import com.lucas.arch.entity.FeelingDrivenEntity;
-import com.lucas.arch.entity.AbstractDinosaurEntity;
 import java.util.EnumSet;
+
+import com.lucas.arch.entity.AbstractDinosaurEntity;
+import com.lucas.arch.entity.FeelingDrivenEntity;
+
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class SleepBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> extends Goal {
     private final T dinosaur;
@@ -35,5 +37,10 @@ public class SleepBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> ex
     public void start() {
         this.dinosaur.getNavigation().stop();
         this.dinosaur.setTarget(null);
+    }
+
+    @Override
+    public void stop() {
+        
     }
 }

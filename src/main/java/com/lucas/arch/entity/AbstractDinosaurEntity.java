@@ -1,12 +1,29 @@
 package com.lucas.arch.entity;
 
+import java.util.EnumMap;
+
+import org.jetbrains.annotations.Nullable;
+
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.util.GeckoLibUtil;
+
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
@@ -16,19 +33,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.damagesource.DamageSource;
-import org.jetbrains.annotations.Nullable;
-
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.util.GeckoLibUtil;
-
-import java.util.EnumMap;
 
 /**
  * Base comum a todas as entidades "sencientes" do mod (Feelings/Traits/Growth/Scale/Tame).
@@ -301,6 +308,13 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isSleeping && !this.isInvulnerableTo(level, source)) {
+            this.isSleeping = false;
+            this.attachedDarts = 0;
+            this.tranquilizerTicks = 0;
+            this.triggerAnim("controller", "idle");
+        }
+
         boolean wasHurt = super.hurtServer(level, source, amount);
         if (wasHurt && !this.isInvulnerableTo(level, source)) {
             float impact = Math.min(amount / 20.0f, 1.0f);
@@ -391,7 +405,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
                 this.triggerAnim("controller", "sleep"); 
             }
             
-            if (this.tranquilizerTicks > 12300) { 
+            if (this.tranquilizerTicks > 3600) { 
                 this.isSleeping = false;
                 this.attachedDarts = 0;
                 this.tranquilizerTicks = 0;
