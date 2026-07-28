@@ -1,0 +1,29 @@
+# Regras de Comportamento e Navegação do Cline (Archeology Reimagined)
+
+Você é o assistente de desenvolvimento do mod Archeology Reimagined (Minecraft 1.21+, Fabric).
+Siga estas diretrizes estritas de navegação, modificação e manutenção de contexto para garantir a integridade da base de código `com.lucas.arch`.
+
+## 1. Manutenção Contínua de Documentação (OBRIGATÓRIO)
+Sempre que você criar, remover ou alterar a arquitetura de uma feature (classes, pacotes, interfaces, mixins), você DEVE atualizar imediatamente a documentação correspondente do projeto ANTES de finalizar a tarefa e pedir feedback ao usuário.
+- Utilize a ferramenta `replace_in_file` ou faça edições diretas para manter os arquivos sempre sincronizados com o estado atual do código.
+- **Arquivos alvo para atualização:** `README.md` (documento de design), `CODEMAP.md` (mapa de navegação) e `IMPORT_MAPPING.md` (registro de dependências).
+- Nunca deixe um código novo sem sua respectiva entrada estrutural no Codemap.
+
+## 2. Como usar o Mapeamento de Imports (IMPORT_MAPPING.md)
+O ecossistema do Minecraft 1.21 (Data Components, Render States, etc.) é rigoroso e mudou substancialmente em relação a versões anteriores. Para evitar alucinações de classes obsoletas, consulte o arquivo de Mapeamento de Imports.
+- **NÃO leia o arquivo inteiro!** Ele é propositalmente estruturado em tópicos indexados por `## NUM.`.
+- Faça uma busca pelos títulos/índices para encontrar apenas a seção relevante para a sua implementação atual, exemplo:
+  - `## 1.` - UI e Renderização (GuiGraphicsExtractor, RenderPipelines)
+  - `## 2.` - Componentes (DataComponents, substituto do NBT)
+- Leia exclusivamente o trecho numérico correspondente à sua tarefa e aplique os imports modernos ali listados.
+
+## 3. Como usar o Codemap (CODEMAP.md)
+O Codemap é o índice central de onde cada feature "vive" no projeto.
+- Antes de iniciar uma alteração complexa, consulte-o para localizar arquivos exatos (ex: Máquinas de produção, lógica de escavação, integração Jade).
+- A inteligência artificial das entidades vivas (Allosaurus, Pachycephalosaurus, Spinosaurus, Parasaurolophus) possui um mapeamento arquitetural estrito no Codemap. Consulte-o para entender onde residem o `BehaviorResolver`, os `*BehaviorGoal` (como `HungerBehaviorGoal` e `FearBehaviorGoal`) e as `Trait`s.
+
+## 4. Diretrizes Arquiteturais e Paradigmas Ativos
+- **Fuzzy Goals Obsoletas:** O sistema antigo de goals concorrentes foi removido. Toda IA baseada em "Sentimentos" deve utilizar o motor determinístico `BehaviorResolver` (tabelas de Traits par-a-par) chamando os comportamentos dentro das goals específicas de cada Feeling.
+- **Itens e Dados:** O antigo sistema de NBT em `ItemStack` está banido. Interaja com dados customizados de itens exclusivamente através do novo sistema de `DataComponents` (ex: `DataComponents.DNA_QUALITY`).
+- **Renderização de Interface:** Chamadas diretas (legacy) ao renderizador de UI estão banidas. Construa menus e telas abstraindo a renderização visual via `RenderPipelines`.
+"""

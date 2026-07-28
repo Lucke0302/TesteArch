@@ -203,8 +203,8 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 |---|---|
 | Processamento | `block/entity/BiocatalyzerBlockEntity.java` |
 | Itens | `EMPTY_SYRINGE`, `FULL_SYRINGE`, `BIO_PROPELLANT`, `EMPTY_DART`, `FULL_DART`, `BITTER_BERRY_JAR` em `registry/ModItems.java` |
-| Item de Sangue (Planejado) | `item/BloodSyringeItem.java` (A ser criado, gerenciará o Data Component de espécie). |
-| Componente de Espécie | `registry/ModDataComponentTypes.java` (A ser registrado: `SYRINGE_SPECIES`). |
+| Seringa de Sangue | `item/BloodSyringeItem.java` — Lê `SYRINGE_SPECIES` do Data Component e exibe no tooltip. |
+| Componente de Espécie | `registry/ModDataComponentTypes.java` — `SYRINGE_SPECIES` (DataComponentType<Identifier>) registrado e funcional. |
 
 ### 2.13 Guia Arqueológico
 

@@ -1,5 +1,13 @@
 package com.lucas.arch.registry;
 
+import java.util.function.Function;
+
+import com.lucas.arch.item.ArchItem;
+import com.lucas.arch.item.ArchItemNameBlockItem;
+import com.lucas.arch.item.BloodSyringeItem;
+import com.lucas.arch.item.DnaItem;
+import com.lucas.arch.item.EncyclopediaItem;
+
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,13 +21,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
-
-import java.util.function.Function;
-
-import com.lucas.arch.item.DnaItem;
-import com.lucas.arch.item.EncyclopediaItem;
-import com.lucas.arch.item.ArchItem;
-import com.lucas.arch.item.ArchItemNameBlockItem;
 
 public class ModItems {
     public static final String MOD_ID = "archeology_reimagined";
@@ -119,7 +120,7 @@ public class ModItems {
          p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
 
     public static final Item BLOOD_SYRINGE = registerItem("blood_syringe",
-         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+         p -> new BloodSyringeItem(p, "Lucke0302", "Lucke0302"));
 
     public static final Item BIO_PROPELLANT = registerItem("bio_propellant",
          p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
@@ -193,6 +194,7 @@ public class ModItems {
             output.accept(MOSQUITO_IN_AMBER);
             output.accept(EMPTY_SYRINGE);
             output.accept(FULL_SYRINGE);
+            output.accept(BLOOD_SYRINGE);
             output.accept(EMPTY_DART);
             output.accept(FULL_DART);
             output.accept(FRAGMENTED_DNA);
