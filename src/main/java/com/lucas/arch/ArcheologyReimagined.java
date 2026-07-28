@@ -1,7 +1,7 @@
 package com.lucas.arch;
 
-import net.fabricmc.api.ModInitializer;
-import net.minecraft.resources.Identifier;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,27 +13,28 @@ import com.lucas.arch.registry.ModEntities;
 import com.lucas.arch.registry.ModItems;
 import com.lucas.arch.registry.ModMenuTypes;
 import com.lucas.arch.registry.ModRecipeSerializers;
+import com.lucas.arch.registry.ModSounds;
 import com.lucas.arch.world.ModLootTableModifiers;
 import com.lucas.arch.world.ModWorldGen;
 
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.WrittenBookContent;
-import net.minecraft.server.network.Filterable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.ChatFormatting;
-import java.util.List;
-
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.Filterable;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.BlockPos;
 
 public class ArcheologyReimagined implements ModInitializer {
     public static final String MOD_ID = "archeology_reimagined";
@@ -54,6 +55,7 @@ public class ArcheologyReimagined implements ModInitializer {
 
         ModWorldGen.generateWorldGen();
 
+        ModSounds.register();
         ModEntities.registerEntities();
         ModEntities.registerAttributes();
 
