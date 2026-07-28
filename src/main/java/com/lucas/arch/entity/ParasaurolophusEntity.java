@@ -110,6 +110,12 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
                 .thenLoop(isAdult ? "animation.parasaurolophus.sleep_adult" : "animation.parasaurolophus.sleep_baby"));
         }
         
+        if (this.isResting()) {
+            boolean isAdult = this.getAgeTier() == AgeTier.ADULT;
+            return event.setAndContinue(RawAnimation.begin()
+                .thenLoop(isAdult ? "animation.parasaurolophus.sleep_adult" : "animation.parasaurolophus.sleep_baby"));
+        }
+
         boolean isMoving = event.isMoving();
         
         byte dominantStateByte = this.getDominantState();

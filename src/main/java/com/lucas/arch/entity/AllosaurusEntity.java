@@ -143,6 +143,9 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
             if (state.isMoving()) {
                 return state.setAndContinue(RawAnimation.begin().thenLoop("animation.allosaurus.walk"));
             }
+            if (this.isResting()) {
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.allosaurus.sleep"));
+            }
             return state.setAndContinue(RawAnimation.begin().thenLoop("animation.allosaurus.idle"));
         }));
         controllers.add(new AnimationController<AllosaurusEntity>("attack_controller", 0, state -> PlayState.STOP)

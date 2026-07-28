@@ -99,6 +99,9 @@ public class PachycephalosaurusEntity extends AbstractDinosaurEntity implements 
             if (state.isMoving()) {
                 return state.setAndContinue(RawAnimation.begin().thenLoop("animation.pachycephalosaurus.walk"));
             }
+            if (this.isResting()) {
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.pachycephalosaurus.sleep"));
+            }
             return state.setAndContinue(RawAnimation.begin().thenLoop("animation.pachycephalosaurus.idle"));
         }));
         controllers.add(new AnimationController<PachycephalosaurusEntity>("attack_controller", 0, state -> PlayState.STOP)

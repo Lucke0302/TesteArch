@@ -85,7 +85,7 @@ ativação a cada avaliação do vanilla `GoalSelector`.
 | `DinosaurFollowOwnerGoal.java` | Inalterada — "coleira invisível" sem teleporte, independente de Feeling. |
 | `DinosaurTemptGoal.java` | Inalterada — extends `TemptGoal` vanilla, restrita ao dono se domado. |
  | `SleepBehaviorGoal.java` | Goal de altíssima prioridade (sobrepõe as Fuzzy Goals). Trava a navegação do dinossauro e força a animação de `sleep` enquanto a duração do tranquilizante estiver ativa na entidade. |
- | `NeutralBehaviorGoal.java` | Goal de comportamento passivo executado quando o dinossauro está em estado NEUTRO (nenhum feeling dominante). Comportamento varia conforme a trait mais alta: CURIOSITY → wander aleatório; COWARDICE/GLUTTONY → deita sem fome, inquieto com fome; AGGRESSIVENESS → rosna e ativa ANGER para players não-dono a ≤10 blocos, senão deita. |
+ | `NeutralBehaviorGoal.java` | Goal de comportamento passivo executado quando o dinossauro está em estado NEUTRO (nenhum feeling dominante). Opera em ciclo **WANDERING/RESTING** com durações determinadas por AgeTier + Traits. Bebês (BABY/CHILD) andam ~80% do tempo, adultos ~50%. Fome override força wander inquieto. `isResting()` é setado durante fase RESTING para ativar animação de sono/deitado no AnimationController. AGGRESSIVENESS rosna e ativa ANGER para players não-dono a ≤10 blocos. |
 
 **`AllosaurusEntity.registerGoals()`** usa prioridades **fixas** no `GoalSelector` (não são recalculadas
 em runtime — a variação de comportamento vem inteiramente do `BehaviorResolver`, não de reordenar

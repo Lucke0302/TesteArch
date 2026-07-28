@@ -1,6 +1,7 @@
 package com.lucas.arch.entity.ai;
 
 import com.lucas.arch.entity.AbstractDinosaurEntity;
+import com.lucas.arch.entity.AgeTier;
 import com.lucas.arch.entity.Feeling;
 import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.Trait;
@@ -15,19 +16,33 @@ import java.util.List;
 
 /**
  * Goal de comportamento passivo executado quando o dinossauro está em estado NEUTRO
- * (nenhum feeling dominante acima do threshold). O comportamento depende da Trait
- * mais alta do dinossauro:
+ * (nenhum feeling dominante acima do threshold).
  *
- * - CURIOSITY: wander aleatório pelo espaço
- * - COWARDICE: sem fome → deita parado; com fome → inquieto, wander
- * - GLUTTONY: sem fome → deita parado; com fome → inquieto, wander
- * - AGGRESSIVENESS: players não-dono a ≤10 blocos → rosna e ativa ANGER; senão → deita
+ * O comportamento segue um ciclo faseado entre WANDERING e RESTING, com durações
+ * determinadas pelo AgeTier + Traits:
+ *
+ * - Bebês (BABY/CHILD): andam MUITO mais do que descansam (~80% wander)
+ * - JUVENILE: equilíbrio moderado (~60% wander)
+ * - ADULT: descansam tanto quanto andam (~50% cada)
+ *
+ * Traits modulam:
+ * - CURIOSITY: aumenta wander time, diminui rest time
+ * - COWARDICE: aumenta rest time, diminui wander time
+ * - GLUTTONY: restaurar fome reduz rest time
+ * - AGGRESSIVENESS: rosna e ativa ANGER se player não-dono a ≤10 blocos
+ *
+ * Se estiver com fome (HUNGER >= 0.3f), override para wander inquieto até saciar.
  */
 public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> extends Goal {
     private final T dino;
     private int cooldown = 0;
-    private int wanderTicks = 0;
-    private static final int CHECK_INTERVAL = 40; // checa a cada 2 segundos
+    private int phaseTimer = 0;
+    private Phase currentPhase = Phase.WANDERING;
+    private static final int CHECK_INTERVAL = 40;
+
+    private enum Phase {
+        WANDERING, RESTING
+    }
 
     public NeutralBehaviorGoal(T dino) {
         this.dino = dino;
@@ -50,7 +65,6 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
 
     @Override
     public boolean canContinueToUse() {
-        // Continua enquanto neutro e não dormindo
         if (this.dino.getDominantState() != 0) return false;
         if (this.dino instanceof AbstractDinosaurEntity ad && ad.isSleeping()) return false;
 
@@ -61,17 +75,18 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
             return isNonOwnerPlayerInRange(10.0);
         }
 
-        // COWARDICE / GLUTTONY: se está deitado, fica deitado
-        if ((dominant == Trait.COWARDICE || dominant == Trait.GLUTTONY) && !isHungry()) {
-            return true; // descansando
+        // Se estiver com fome, fica em wander inquieto até saciar
+        if (isHungry()) {
+            return true;
         }
 
-        return this.wanderTicks > 0;
+        // Fase atual ainda não expirou
+        return this.phaseTimer > 0;
     }
 
     @Override
     public void start() {
-        this.wanderTicks = 0;
+        this.phaseTimer = 0;
         setResting(false);
 
         Trait dominant = getDominantTrait();
@@ -79,41 +94,22 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
         switch (dominant) {
             case AGGRESSIVENESS -> {
                 if (isNonOwnerPlayerInRange(10.0)) {
-                    // Rosna e ativa ANGER para transicionar pro AngerBehaviorGoal
                     if (this.dino instanceof AbstractDinosaurEntity ad) {
                         growl();
                     }
                     float currentAnger = this.dino.getFeeling(Feeling.ANGER);
                     this.dino.setFeeling(Feeling.ANGER, Math.min(1.0f, currentAnger + 0.5f));
-                } else {
-                    setResting(true);
-                    this.dino.getNavigation().stop();
                 }
             }
             case COWARDICE, GLUTTONY -> {
-                if (!isHungry()) {
-                    setResting(true);
-                    this.dino.getNavigation().stop();
+                if (isHungry()) {
+                    startWanderPhase();
                 } else {
-                    // Inquieto: wander por aí
-                    this.wanderTicks = 100 + this.dino.getRandom().nextInt(100);
-                    this.dino.getNavigation().moveTo(
-                            this.dino.getX() + (this.dino.getRandom().nextDouble() - 0.5) * 10.0,
-                            this.dino.getY(),
-                            this.dino.getZ() + (this.dino.getRandom().nextDouble() - 0.5) * 10.0,
-                            1.0D
-                    );
+                    startRestPhase();
                 }
             }
             case CURIOSITY -> {
-                // Wander aleatório pelo espaço
-                this.wanderTicks = 100 + this.dino.getRandom().nextInt(100);
-                this.dino.getNavigation().moveTo(
-                        this.dino.getX() + (this.dino.getRandom().nextDouble() - 0.5) * 14.0,
-                        this.dino.getY(),
-                        this.dino.getZ() + (this.dino.getRandom().nextDouble() - 0.5) * 14.0,
-                        1.0D
-                );
+                startWanderPhase();
             }
         }
     }
@@ -123,53 +119,32 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
         Trait dominant = getDominantTrait();
 
         if (dominant == Trait.AGGRESSIVENESS) {
-            // Checa periodicamente se ainda tem players no raio
-            if (this.dino.tickCount % CHECK_INTERVAL == 0) {
-                if (isNonOwnerPlayerInRange(10.0)) {
-                    growl();
-                    float currentAnger = this.dino.getFeeling(Feeling.ANGER);
-                    this.dino.setFeeling(Feeling.ANGER, Math.min(1.0f, currentAnger + 0.15f));
-                } else {
-                    // Sem ameaça, deita
-                    setResting(true);
-                    this.dino.getNavigation().stop();
-                }
-            }
+            handleAggressiveTick();
             return;
         }
 
-        if (dominant == Trait.CURIOSITY) {
-            this.wanderTicks--;
-            if (this.wanderTicks <= 0 || this.dino.getNavigation().isDone()) {
-                // Escolhe novo ponto
-                this.wanderTicks = 100 + this.dino.getRandom().nextInt(100);
-                this.dino.getNavigation().moveTo(
-                        this.dino.getX() + (this.dino.getRandom().nextDouble() - 0.5) * 14.0,
-                        this.dino.getY(),
-                        this.dino.getZ() + (this.dino.getRandom().nextDouble() - 0.5) * 14.0,
-                        1.0D
-                );
+        this.phaseTimer--;
+
+        if (isHungry()) {
+            // Override: sempre wander quando com fome
+            if (currentPhase != Phase.WANDERING) {
+                currentPhase = Phase.WANDERING;
+                setResting(false);
             }
+            wanderTick();
+            return;
         }
 
-        if ((dominant == Trait.COWARDICE || dominant == Trait.GLUTTONY)) {
-            if (isHungry()) {
-                // Inquieto: continua wander
-                setResting(false);
-                this.wanderTicks--;
-                if (this.wanderTicks <= 0 || this.dino.getNavigation().isDone()) {
-                    this.wanderTicks = 100 + this.dino.getRandom().nextInt(100);
-                    this.dino.getNavigation().moveTo(
-                            this.dino.getX() + (this.dino.getRandom().nextDouble() - 0.5) * 10.0,
-                            this.dino.getY(),
-                            this.dino.getZ() + (this.dino.getRandom().nextDouble() - 0.5) * 10.0,
-                            1.0D
-                    );
-                }
-            } else {
-                // Deita
-                setResting(true);
-                this.dino.getNavigation().stop();
+        if (this.phaseTimer <= 0) {
+            // Transiciona entre fases
+            switch (currentPhase) {
+                case WANDERING -> startRestPhase();
+                case RESTING -> startWanderPhase();
+            }
+        } else {
+            switch (currentPhase) {
+                case WANDERING -> wanderTick();
+                case RESTING -> restTick();
             }
         }
     }
@@ -177,8 +152,111 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
     @Override
     public void stop() {
         setResting(false);
-        this.wanderTicks = 0;
+        this.currentPhase = Phase.WANDERING;
+        this.phaseTimer = 0;
         this.cooldown = 0;
+    }
+
+    // --- Gerenciamento de fases ---
+
+    private void startWanderPhase() {
+        currentPhase = Phase.WANDERING;
+        setResting(false);
+        this.phaseTimer = getWanderDuration();
+        wanderTick();
+    }
+
+    private void startRestPhase() {
+        currentPhase = Phase.RESTING;
+        setResting(true);
+        this.dino.getNavigation().stop();
+        this.phaseTimer = getRestDuration();
+    }
+
+    private void wanderTick() {
+        if (this.dino.getNavigation().isDone() || this.dino.getRandom().nextInt(20) == 0) {
+            double range = getWanderRange();
+            this.dino.getNavigation().moveTo(
+                    this.dino.getX() + (this.dino.getRandom().nextDouble() - 0.5) * range,
+                    this.dino.getY(),
+                    this.dino.getZ() + (this.dino.getRandom().nextDouble() - 0.5) * range,
+                    1.0D
+            );
+        }
+    }
+
+    private void restTick() {
+        // Quando descansando, só fica parado — a animação cuida do visual
+    }
+
+    private void handleAggressiveTick() {
+        if (this.dino.tickCount % CHECK_INTERVAL == 0) {
+            if (isNonOwnerPlayerInRange(10.0)) {
+                growl();
+                float currentAnger = this.dino.getFeeling(Feeling.ANGER);
+                this.dino.setFeeling(Feeling.ANGER, Math.min(1.0f, currentAnger + 0.15f));
+            } else {
+                this.currentPhase = Phase.RESTING;
+                setResting(true);
+                this.dino.getNavigation().stop();
+            }
+        }
+    }
+
+    // --- Cálculo de durações baseado em AgeTier + Traits ---
+
+    private int getWanderDuration() {
+        AgeTier age = getAgeTier();
+        Trait dominant = getDominantTrait();
+        float traitMod = 1.0f;
+
+        if (dominant == Trait.CURIOSITY) {
+            traitMod += getTraitValue(dominant) * 0.5f; // curioso anda mais tempo
+        }
+        if (dominant == Trait.COWARDICE) {
+            traitMod -= getTraitValue(dominant) * 0.3f; // medroso foge logo → descansa mais cedo
+        }
+
+        int base = switch (age) {
+            case BABY -> 250;
+            case CHILD -> 220;
+            case JUVENILE -> 180;
+            case ADULT -> 140;
+        };
+
+        return (int) ((base + this.dino.getRandom().nextInt(80)) * traitMod);
+    }
+
+    private int getRestDuration() {
+        AgeTier age = getAgeTier();
+        Trait dominant = getDominantTrait();
+        float traitMod = 1.0f;
+
+        if (dominant == Trait.COWARDICE) {
+            traitMod += getTraitValue(dominant) * 0.5f; // medroso descansa mais
+        }
+        if (dominant == Trait.CURIOSITY) {
+            traitMod -= getTraitValue(dominant) * 0.3f; // curioso descansa menos
+        }
+
+        int base = switch (age) {
+            case BABY -> 50;
+            case CHILD -> 70;
+            case JUVENILE -> 110;
+            case ADULT -> 150;
+        };
+
+        return Math.max(20, (int) ((base + this.dino.getRandom().nextInt(40)) * traitMod));
+    }
+
+    private double getWanderRange() {
+        AgeTier age = getAgeTier();
+        return switch (age) {
+            case BABY -> 6.0;   // Bebês andam perto
+            case CHILD -> 8.0;
+            case JUVENILE -> 10.0;
+            case ADULT -> 12.0; // Adultos exploram mais longe
+        };
     }
 
     // --- Helpers ---
@@ -196,6 +274,17 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
         return dominant;
     }
 
+    private float getTraitValue(Trait trait) {
+        return this.dino.getTrait(trait);
+    }
+
+    private AgeTier getAgeTier() {
+        if (this.dino instanceof AbstractDinosaurEntity ad) {
+            return ad.getAgeTier();
+        }
+        return AgeTier.ADULT;
+    }
+
     private boolean isHungry() {
         return this.dino.getFeeling(Feeling.HUNGER) >= 0.3f;
     }
@@ -209,7 +298,7 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
 
     private void growl() {
         if (this.dino instanceof AbstractDinosaurEntity ad) {
-            ad.playSound(ModSounds.ALLO_AMBIENT); // usando som ambiente como growl placeholder
+            ad.playSound(ModSounds.ALLO_AMBIENT);
         }
     }
 

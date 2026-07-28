@@ -113,6 +113,9 @@ public class SpinosaurusEntity extends AbstractDinosaurEntity implements Carnivo
             else if (state.isMoving()) {
                 return state.setAndContinue(RawAnimation.begin().thenLoop("animation.spinosaurus.walk"));
             }
+            if (this.isResting()) {
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.spinosaurus.sleep"));
+            }
             return state.setAndContinue(RawAnimation.begin().thenLoop("animation.spinosaurus.idle"));
         }));
         controllers.add(new AnimationController<SpinosaurusEntity>("attack_controller", 0, state -> PlayState.STOP)
