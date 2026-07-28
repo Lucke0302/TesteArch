@@ -137,6 +137,9 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<AllosaurusEntity>("main_controller", 5, state -> {
+            if (this.isSleeping()) {
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.allosaurus.sleep"));
+            }
             if (state.isMoving()) {
                 return state.setAndContinue(RawAnimation.begin().thenLoop("animation.allosaurus.walk"));
             }

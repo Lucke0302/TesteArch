@@ -1,6 +1,21 @@
 package com.lucas.arch.entity;
 
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.PlayState;
+import com.lucas.arch.entity.ai.AngerBehaviorGoal;
+import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
+import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
+import com.lucas.arch.entity.ai.DinosaurTemptGoal;
+import com.lucas.arch.entity.ai.FearBehaviorGoal;
+import com.lucas.arch.entity.ai.HerbivoreHungerGoal;
+import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
+import com.lucas.arch.entity.ai.SleepBehaviorGoal;
+import com.lucas.arch.registry.ModTags;
+
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -11,22 +26,6 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.registries.BuiltInRegistries;
-
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-
-import com.lucas.arch.entity.ai.AngerBehaviorGoal;
-import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
-import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
-import com.lucas.arch.entity.ai.DinosaurTemptGoal;
-import com.lucas.arch.entity.ai.FearBehaviorGoal;
-import com.lucas.arch.entity.ai.HerbivoreHungerGoal;
-import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
-import com.lucas.arch.entity.ai.SleepBehaviorGoal;
-import com.lucas.arch.registry.ModTags;
 
 public class PachycephalosaurusEntity extends AbstractDinosaurEntity implements HerbivoreDiet {
 
@@ -94,6 +93,9 @@ public class PachycephalosaurusEntity extends AbstractDinosaurEntity implements 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<PachycephalosaurusEntity>("main_controller", 5, state -> {
+            if (this.isSleeping()) {
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.pachycephalosaurus.sleep"));
+            }
             if (state.isMoving()) {
                 return state.setAndContinue(RawAnimation.begin().thenLoop("animation.pachycephalosaurus.walk"));
             }

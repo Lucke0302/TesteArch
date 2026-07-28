@@ -13,6 +13,7 @@ import com.lucas.arch.entity.ai.FearBehaviorGoal;
 import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
 import com.lucas.arch.entity.ai.SleepBehaviorGoal;
 import com.lucas.arch.registry.ModTags;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -103,6 +104,9 @@ public class SpinosaurusEntity extends AbstractDinosaurEntity implements Carnivo
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<SpinosaurusEntity>("main_controller", 5, state -> {
+            if (this.isSleeping()) {
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.spinosaurus.sleep"));
+            }
             if (state.isMoving() && this.isInWater()) {
                 return state.setAndContinue(RawAnimation.begin().thenLoop("animation.spinosaurus.swim_underwater"));
             }

@@ -308,11 +308,11 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-        if (this.isSleeping && !this.isInvulnerableTo(level, source)) {
+            if (this.isSleeping && !this.isInvulnerableTo(level, source)) {
             this.isSleeping = false;
             this.attachedDarts = 0;
             this.tranquilizerTicks = 0;
-            this.triggerAnim("controller", "idle");
+            this.triggerAnim("main_controller", "idle");
         }
 
         boolean wasHurt = super.hurtServer(level, source, amount);
@@ -402,14 +402,14 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
                 this.isSleeping = true;
                 this.getNavigation().stop();
                 this.setTarget(null);
-                this.triggerAnim("controller", "sleep"); 
+                this.triggerAnim("main_controller", "sleep"); 
             }
             
             if (this.tranquilizerTicks > 3600) { 
                 this.isSleeping = false;
                 this.attachedDarts = 0;
                 this.tranquilizerTicks = 0;
-                this.triggerAnim("controller", "idle");
+                this.triggerAnim("main_controller", "idle");
             }
         } else {
             if (this.attachedDarts > 0 && this.tickCount % 600 == 0) {

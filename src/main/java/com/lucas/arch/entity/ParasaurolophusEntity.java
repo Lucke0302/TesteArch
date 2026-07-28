@@ -1,6 +1,22 @@
 package com.lucas.arch.entity;
 
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.state.AnimationTest;
+import com.lucas.arch.entity.ai.AngerBehaviorGoal;
+import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
+import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
+import com.lucas.arch.entity.ai.DinosaurTemptGoal;
+import com.lucas.arch.entity.ai.FearBehaviorGoal;
+import com.lucas.arch.entity.ai.HerbivoreHungerGoal;
+import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
+import com.lucas.arch.entity.ai.SleepBehaviorGoal;
+import com.lucas.arch.registry.ModTags;
+
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -11,23 +27,6 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.registries.BuiltInRegistries;
-
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.state.AnimationTest;
-
-import com.lucas.arch.entity.ai.AngerBehaviorGoal;
-import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
-import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
-import com.lucas.arch.entity.ai.DinosaurTemptGoal;
-import com.lucas.arch.entity.ai.FearBehaviorGoal;
-import com.lucas.arch.entity.ai.HerbivoreHungerGoal;
-import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
-import com.lucas.arch.entity.ai.SleepBehaviorGoal;
-import com.lucas.arch.registry.ModTags;
 
 public class ParasaurolophusEntity extends AbstractDinosaurEntity implements HerbivoreDiet {
 
@@ -105,6 +104,12 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
     }
 
     private PlayState movementPredicate(AnimationTest<ParasaurolophusEntity> event) {
+        if (this.isSleeping()) {
+            boolean isAdult = this.getAgeTier() == AgeTier.ADULT;
+            return event.setAndContinue(RawAnimation.begin()
+                .thenLoop(isAdult ? "animation.parasaurolophus.sleep_adult" : "animation.parasaurolophus.sleep_baby"));
+        }
+        
         boolean isMoving = event.isMoving();
         
         byte dominantStateByte = this.getDominantState();
