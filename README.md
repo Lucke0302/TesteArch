@@ -17,8 +17,9 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
 
 ### 1.2 Extração de DNA (Mesa de Limpeza)
 * **Requisitos:** Consome **Água** (tanque até 10 baldes) e **Calor/Combustível** (fornalha vanilla).
-* **Processamento:** Limpa Fósseis Desconhecidos e Mosquitos no Âmbar.
-* **Resultado:** Produz amostras de **DNA Específico (Allosaurus, Spinosaurus, Pachycephalosaurus)** ou genérico (Mamíferos, Peixes, Plantas) com um atributo dinâmico de **Qualidade de DNA** (`DNA_QUALITY`, 0-100%). Em caso de falha no processo, gera *DNA Fragmentado* ou itens secundários (Areia, Cascalho, Osso, Carvão Vegetal).
+* **Processamento:** Limpa Fósseis Desconhecidos, Mosquitos no Âmbar e **Seringas de Sangue (`BLOOD_SYRINGE`)**.
+* **Resultado:** Produz amostras de **DNA Específico (Allosaurus, Spinosaurus, Pachycephalosaurus, Parasaurolophus)** ou genérico (Mamíferos, Peixes, Plantas) com um atributo dinâmico de **Qualidade de DNA** (`DNA_QUALITY`, 0-100%). Em caso de falha no processo, gera *DNA Fragmentado* ou itens secundários (Areia, Cascalho, Osso, Carvão Vegetal).
+* **Seringa de Sangue:** Ao processar uma `BLOOD_SYRINGE`, a mesa lê o `SYRINGE_SPECIES` do Data Component e gera **sempre o DNA da espécie correspondente** com **qualidade garantida entre 85% e 100%** (sem chance de falha).
 
 ### 1.3 Síntese de Embrião (Sintetizador)
 * **Processamento:** Combina DNA específico (ex: `SPINOSAURUS_DNA`) com **Combustíveis Orgânicos**.
@@ -266,6 +267,8 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 - [x] Estrutura completa de áudio implementada (`ModSounds.java`, `sounds.json` e arquivos `.ogg` indexados por entidade).
 - [x] Sincronização de efeitos sonoros com animações do Blockbench através do `SoundKeyframeHandler` do GeckoLib 5 (ex: som de mastigação amarrado ao frame exato da animação).
 - [x] Implementação de Bounds Check e Fallback state no `GeoRenderer`/`AnimationController` para evitar crashes por dessincronização de rede (Desync) entre o Client e o Server na leitura de variáveis de I.A. (`DOMINANT_STATE`).
+- [x] **Seringa Vazia & Extração de Sangue:** Coleta de sangue de dinossauros (50% de chance), com reação de raiva em animais selvagens. Gera `BLOOD_SYRINGE` com Data Component `SYRINGE_SPECIES`.
+- [x] **Processamento de Seringa de Sangue na Mesa de Limpeza:** `BLOOD_SYRINGE` é aceita como input e gera o DNA da espécie correspondente (Allosaurus, Spinosaurus, Pachycephalosaurus, Parasaurolophus) com qualidade garantida entre 85% e 100%.
 
 ---
 
@@ -292,19 +295,6 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 - [ ] Implementar a *Render Layer* de proteção no AllosaurusRenderer para garantir que olhos, garras e dentes não sejam tingidos pelo filtro de cor da pele.
 
 #### Utilitários Químicos & Contenção (Mecânicas de Uso em Entidades)
-- [ ] **Seringa Vazia & Extração de Sangue:**
-  * **Coleta (Botão Direito):** O jogador deve (clicar com o botão direito) um dinossauro segurando uma Seringa Vazia (`EMPTY_SYRINGE`).
-  * **Interação e Risco:**
-    * *Dinossauro do Dono:* Aceita a extração pacificamente.
-    * *Dinossauro Selvagem/Alheio:* Reage à picada. Aumenta a Raiva (`ANGER`) do dinossauro na fórmula: `10% * (Trait de Agressividade * 10)`. Se a agressividade for alta, ele atacará o jogador imediatamente.
-  * **Resultado:** 50% de chance de sucesso para obter uma **Seringa com Sangue**.
-- [ ] **Novo Item: Seringa com Sangue (`BLOOD_SYRINGE` - Item Único com NBT):**
-  * Usa a mesma textura da Seringa com Aditivo (temporariamente).
-  * **Unstackable (Max Count 1):** Para proteger o Data Component.
-  * **Data Component (`SPECIES`):** Armazena a espécie exata de onde o sangue foi retirado.
-  * **Usos:**
-    1. *Purificação Perfeita:* Pode ser colocada na Mesa de Limpeza para extrair DNA da respectiva espécie com Qualidade Altíssima (garantido entre 85% e 100%).
-    2. *Melhoramento Específico:* Pode ser usada no lugar da Seringa com Aditivo para melhorar embriões (exige que o sangue seja da mesma espécie do embrião).
 - [ ] **Melhoramento de Embriões (Seringa com Aditivo):**
   * Adicionar mecânica (provavelmente no Fusor ou numa nova interface/crafting) para consumir a `FULL_SYRINGE` e aumentar a % de qualidade de um embrião existente.
 - [ ] **Dardos Tranquilizantes (`FULL_DART`) e Modo de Sono:**

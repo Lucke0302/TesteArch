@@ -223,7 +223,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
             if (!canInsert(dnaStack)) return false;
 
             insertIntoOutput(dnaStack);
-            inputStack.shrink(1);
+            this.inventory.set(inputSlot, new ItemStack(ModItems.EMPTY_SYRINGE));
             this.waterLevel = Math.max(0, this.waterLevel - ModConfig.get().cleansingTableWaterCost);
             return true;
         }
