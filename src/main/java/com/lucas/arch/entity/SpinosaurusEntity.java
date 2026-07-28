@@ -4,7 +4,14 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
-import com.lucas.arch.entity.ai.*;
+import com.lucas.arch.entity.ai.AngerBehaviorGoal;
+import com.lucas.arch.entity.ai.CarnivoreHungerGoal;
+import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
+import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
+import com.lucas.arch.entity.ai.DinosaurTemptGoal;
+import com.lucas.arch.entity.ai.FearBehaviorGoal;
+import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
+import com.lucas.arch.entity.ai.SleepBehaviorGoal;
 import com.lucas.arch.registry.ModTags;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -114,6 +121,7 @@ public class SpinosaurusEntity extends AbstractDinosaurEntity implements Carnivo
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
+        this.goalSelector.addGoal(0, new NeutralBehaviorGoal<>(this));
         this.goalSelector.addGoal(1, new FearBehaviorGoal<>(this));
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this));
         this.goalSelector.addGoal(3, new DinosaurTemptGoal<>(this, 1.1D,

@@ -80,11 +80,12 @@ ativação a cada avaliação do vanilla `GoalSelector`.
 | `BehaviorResolver.java` | Classe utilitária **estática e sem estado** (não extends `Goal`). Para um `Feeling` dominante, identifica as duas `Trait`s de maior valor do dino e resolve, via tabela de confronto par-a-par explícita por Feeling (não-transitiva — ver `resolveCuriosity`), qual Trait "vence". Mapeia o vencedor pra um `Behavior` enum: `HUNT_ATTACK`, `FLEE`, `SEEK_GROUND_FOOD`, `BEG_OWNER`, `FOLLOW_PLAYER`, `FOLLOW_OWNER_OR_NEAREST`, `DO_NOTHING`. Chamado **uma vez** dentro de `canFuzzyActivate()` de cada goal — nunca por tick, o modo fica fixo até a goal terminar. |
 | `HungerBehaviorGoal.java` | Goal única pro `Feeling.HUNGER` (substitui `FuzzyHungerGoal` + `SeekDroppedFoodGoal`). `HUNT_ATTACK` persegue fauna (vaca/porco/ovelha/galinha) ou jogador com item de `ModTags.Items.CARNIVORE_FOOD` na mão; `SEEK_GROUND_FOOD` busca `ItemEntity` da mesma tag no chão; `BEG_OWNER` (trait GLUTTONY dominante) tenta comida no chão primeiro e cai pra caça se não achar. |
 | `FearBehaviorGoal.java` | Goal única pro `Feeling.FEAR` (substitui `FuzzyFleeGoal`). Resolve entre `FLEE` (foge da ameaça mais próxima via `DefaultRandomPos.getPosAway`) e `HUNT_ATTACK` (trait AGGRESSIVENESS dominante vira confronto em vez de fuga). |
-| `AngerBehaviorGoal.java` | Goal única pro `Feeling.ANGER` (substitui `FuzzyAggressiveGoal`). Resolve entre `HUNT_ATTACK` e `FLEE` (trait COWARDICE dominante foge mesmo irritado). |
-| `CuriosityBehaviorGoal.java` | Goal única pro `Feeling.CURIOSITY` (substitui `FuzzyCuriosityGoal`). Resolve entre `FOLLOW_PLAYER` (segue jogador mais próximo), `FOLLOW_OWNER_OR_NEAREST` (segue dono se domado e a até 16 blocos, senão jogador mais próximo) e `DO_NOTHING` (trait COWARDICE dominante — não faz nada). |
+ | `AngerBehaviorGoal.java` | Goal única pro `Feeling.ANGER` (substitui `FuzzyAggressiveGoal`). Resolve entre `HUNT_ATTACK` e `FLEE` (trait COWARDICE dominante foge mesmo irritado). **Corrigido:** filtra dono do target (não fica bravo com o próprio dono). |
+ | `CuriosityBehaviorGoal.java` | Goal única pro `Feeling.CURIOSITY` (substitui `FuzzyCuriosityGoal`). Resolve entre `FOLLOW_PLAYER` (segue jogador mais próximo), `FOLLOW_OWNER_OR_NEAREST` (segue dono se domado e a até 16 blocos, senão jogador mais próximo) e `DO_NOTHING` (trait COWARDICE dominante — não faz nada). |
 | `DinosaurFollowOwnerGoal.java` | Inalterada — "coleira invisível" sem teleporte, independente de Feeling. |
 | `DinosaurTemptGoal.java` | Inalterada — extends `TemptGoal` vanilla, restrita ao dono se domado. |
-| `SleepBehaviorGoal.java` (Planejado) | Goal de altíssima prioridade (sobrepõe as Fuzzy Goals). Trava a navegação do dinossauro e força a animação de `sleep` enquanto a duração do tranquilizante estiver ativa na entidade. |
+ | `SleepBehaviorGoal.java` | Goal de altíssima prioridade (sobrepõe as Fuzzy Goals). Trava a navegação do dinossauro e força a animação de `sleep` enquanto a duração do tranquilizante estiver ativa na entidade. |
+ | `NeutralBehaviorGoal.java` | Goal de comportamento passivo executado quando o dinossauro está em estado NEUTRO (nenhum feeling dominante). Comportamento varia conforme a trait mais alta: CURIOSITY → wander aleatório; COWARDICE/GLUTTONY → deita sem fome, inquieto com fome; AGGRESSIVENESS → rosna e ativa ANGER para players não-dono a ≤10 blocos, senão deita. |
 
 **`AllosaurusEntity.registerGoals()`** usa prioridades **fixas** no `GoalSelector` (não são recalculadas
 em runtime — a variação de comportamento vem inteiramente do `BehaviorResolver`, não de reordenar
@@ -93,11 +94,13 @@ prioridade):
     1 → FearBehaviorGoal
     2 → AngerBehaviorGoal
     3 → DinosaurTemptGoal
-    4 → AllosaurusHungerGoal
+     4 → CarnivoreHungerGoal (Allosaurus/Spinosaurus) ou HerbivoreHungerGoal (Pachy/Parasaurolophus)
     7 → DinosaurFollowOwnerGoal
-    8 → CuriosityBehaviorGoal
-    9 → WaterAvoidingRandomStrollGoal (vanilla)
-    10 → RandomLookAroundGoal (vanilla)
+     8 → CuriosityBehaviorGoal
+     9 → WaterAvoidingRandomStrollGoal (vanilla)
+     10 → RandomLookAroundGoal (vanilla)
+
+**Nova prioridade (NeutralBehaviorGoal):** Adicionado na prioridade 0 (mesma do Sleep, o GoalSelector vanilla desempata por ordem de inserção — Sleep vem primeiro por ser adicionado antes). Ativo apenas quando `getDominantState() == 0`.
 
 ### 2.3 Entidade Pachycephalosaurus (Herbívoro)
 
@@ -181,8 +184,8 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | Peça | Arquivo |
 |---|---|
 | Bloco | `block/BitterBerryBushBlock.java` |
-| Item | `item/ArchItemNameBlockItem.java` (berries) |
-| Frasco | `ModItems.BITTER_BERRY_JAR` |
+ | Item | `item/ArchItemNameBlockItem.java` (berries) |
+ | Frasco | `ModItems.BITTER_BERRY_JAR` |
 | Receita do frasco | `data/.../recipe/bitter_berry_jar.json` |
 | Worldgen | `data/.../worldgen/...`, config dinâmica via `ModConfig` |
 

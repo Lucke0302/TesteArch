@@ -22,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import com.lucas.arch.item.EmptySyringeItem;
+import com.lucas.arch.item.FullDartItem;
 
 public class ModItems {
     public static final String MOD_ID = "archeology_reimagined";
@@ -131,7 +132,7 @@ public class ModItems {
          p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
 
     public static final Item FULL_DART = registerItem("full_dart",
-         p -> new ArchItem(p, "Lucke0302", "Lucke0302"));
+         p -> new FullDartItem(p, "Lucke0302", "Lucke0302"));
 
     public static final Item BITTER_BERRY_JAR = registerItem("bitter_berry_jar", 
          p -> new ArchItem(p, "Edu Guter", "Lucke0302"));

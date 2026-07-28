@@ -1,8 +1,12 @@
 package com.lucas.arch.entity.ai;
 
+import java.util.EnumSet;
+import java.util.List;
+
 import com.lucas.arch.entity.Feeling;
 import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.Trait;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
@@ -11,9 +15,6 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.EnumSet;
-import java.util.List;
 
 /**
  * Goal única para o estado de RAIVA (ANGER). Resolve, ao ativar, qual sub-comportamento
@@ -65,7 +66,7 @@ public class AngerBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> ex
         double closest = Double.MAX_VALUE;
         for (LivingEntity e : entities) {
             if (e.getType() == this.dino.getType()) continue;
-            if (e instanceof Player player && (player.isCreative() || player.isSpectator())) continue;
+            if (e instanceof Player player && (player.isCreative() || player.isSpectator() || this.dino.isOwnedBy(player))) continue;
 
             double dist = this.dino.distanceToSqr(e);
             if (dist < closest) {

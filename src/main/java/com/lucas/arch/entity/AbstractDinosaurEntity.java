@@ -67,6 +67,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     private int attachedDarts = 0;
     private int tranquilizerTicks = 0;
     private boolean isSleeping = false;
+    private boolean isResting = false;
 
     protected AbstractDinosaurEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
@@ -330,6 +331,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
             setFeeling(Feeling.HUNGER, getFeeling(Feeling.HUNGER) + 0.05f + (gluttony * 0.05f));
         }
 
+        this.tickTranquilizer();
         updateDominantState();
 
         if (getAgeTier() != AgeTier.ADULT) {
@@ -355,8 +357,25 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         this.attachedDarts++;
     }
 
+    /**
+     * @return true se estiver dormindo por tranquilizante
+     */
     public boolean isSleeping() {
         return this.isSleeping;
+    }
+
+    /**
+     * @return true se estiver descansando/deitado (comportamento passivo por trait)
+     */
+    public boolean isResting() {
+        return this.isResting;
+    }
+
+    /**
+     * Define se o dinossauro está descansando/deitado (comportamento passivo por trait).
+     */
+    public void setResting(boolean resting) {
+        this.isResting = resting;
     }
 
     protected void tickTranquilizer() {

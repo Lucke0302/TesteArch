@@ -1,6 +1,5 @@
 package com.lucas.arch.entity;
 
-import net.minecraft.client.renderer.texture.SpriteContents.AnimationState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,7 +17,6 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.state.AnimationPoint;
 import com.geckolib.animation.state.AnimationTest;
 
 import com.lucas.arch.entity.ai.AngerBehaviorGoal;
@@ -27,6 +25,7 @@ import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
 import com.lucas.arch.entity.ai.DinosaurTemptGoal;
 import com.lucas.arch.entity.ai.FearBehaviorGoal;
 import com.lucas.arch.entity.ai.HerbivoreHungerGoal;
+import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
 import com.lucas.arch.entity.ai.SleepBehaviorGoal;
 import com.lucas.arch.registry.ModTags;
 
@@ -159,6 +158,7 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
+        this.goalSelector.addGoal(0, new NeutralBehaviorGoal<>(this));
         this.goalSelector.addGoal(1, new FearBehaviorGoal<>(this));
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this, "attack_1"));
         this.goalSelector.addGoal(3, new DinosaurTemptGoal<>(this, 1.1D,

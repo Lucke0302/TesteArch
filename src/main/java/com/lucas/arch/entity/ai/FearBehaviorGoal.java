@@ -36,7 +36,7 @@ public class FearBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> ext
 
         AABB box = this.dino.getBoundingBox().inflate(searchRadius);
         List<LivingEntity> entities = this.dino.level().getEntitiesOfClass(LivingEntity.class, box, e ->
-                (e instanceof Player p && !p.isCreative() && !p.isSpectator()) ||
+                (e instanceof Player p && !p.isCreative() && !p.isSpectator() && !this.dino.isOwnedBy(p)) ||
                 (e.getType() == this.dino.getType() && e != this.dino));
         if (entities.isEmpty()) return false;
 
