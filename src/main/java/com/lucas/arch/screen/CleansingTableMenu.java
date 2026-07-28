@@ -2,6 +2,7 @@ package com.lucas.arch.screen;
 
 import com.lucas.arch.recipe.ModCleansingRecipes;
 import com.lucas.arch.registry.ModMenuTypes;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -94,7 +95,7 @@ public class CleansingTableMenu extends AbstractContainerMenu {
                 slot.onQuickCraft(originalStack, newStack);
             } 
             else {
-                if (ModCleansingRecipes.isValidInput(originalStack.getItem())) {
+                if (ModCleansingRecipes.isValidInput(originalStack.getItem()) || originalStack.is(com.lucas.arch.registry.ModItems.BLOOD_SYRINGE)) {
                     if (!this.moveItemStackTo(originalStack, 0, 6, false)) {
                         return ItemStack.EMPTY;
                     }

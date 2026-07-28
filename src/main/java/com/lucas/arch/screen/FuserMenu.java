@@ -3,6 +3,7 @@ package com.lucas.arch.screen;
 import com.lucas.arch.registry.ModDataComponentTypes;
 import com.lucas.arch.registry.ModItems;
 import com.lucas.arch.registry.ModMenuTypes;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -84,7 +85,8 @@ public class FuserMenu extends AbstractContainerMenu {
             } else {
                 boolean isEmbryo = originalStack.is(ModItems.ALLOSAURUS_EMBRYO) || 
                                    originalStack.is(ModItems.SPINOSAURUS_EMBRYO) || 
-                                   originalStack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO);
+                                   originalStack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO) ||
+                                   originalStack.is(ModItems.PARASAUROLOPHUS_EMBRYO);
 
                 if (isEmbryo && originalStack.has(ModDataComponentTypes.DNA_QUALITY)) {
                     if (!this.moveItemStackTo(originalStack, 0, 1, false)) return ItemStack.EMPTY;
