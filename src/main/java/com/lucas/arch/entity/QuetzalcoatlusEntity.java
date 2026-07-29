@@ -52,6 +52,14 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
     @Override protected String getScaleNbtKey() { return "QuetzalScale"; }
     @Override protected float getMinEnclosureRadius() { return 25f; }
     @Override public float getFlightAltitude() { return 12f; }
+    
+    private boolean isStanding = false;
+    private int standEndTick = 0;
+    private int nextStandTick = 0;
+    private static final int STAND_MIN_HOLD_TICKS = 60;
+    private static final int STAND_HOLD_VARIANCE_TICKS = 80;
+    private static final int STAND_MIN_COOLDOWN_TICKS = 100;
+    private static final int STAND_COOLDOWN_VARIANCE_TICKS = 300;
 
     @Override 
     protected boolean isDiurnal() { 
@@ -164,6 +172,66 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
             .triggerableAnim("attack", RawAnimation.begin().thenPlay("animation.quetzalcoatlus.attack")));
         controllers.add(new AnimationController<QuetzalcoatlusEntity>("eat_controller", 0, state -> PlayState.STOP)
             .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.quetzalcoatlus.eat")));
+        controllers.add(new AnimationController<>("main_controller", 5, this::movementPredicate));
+    }
+
+    private PlayState movementPredicate(com.geckolib.animation.state.AnimationTest<QuetzalcoatlusEntity> event) {
+        if (this.isSleeping() || this.isResting()) {
+            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.sleep"));
+        }
+
+        boolean isMoving = event.isMoving();
+        boolean isFlying = this.isFlying();
+
+        // 1. Prioridade para Voo
+        if (isFlying) {
+            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.fly"));
+        }
+
+        // 2. Lógica de Chão (Baseada no Parassaurolofo)
+        Feeling dominant = getDominantFeeling();
+        updateStandCycle(dominant, isMoving);
+
+        boolean wantsStand = (dominant == Feeling.HUNGER && !isMoving) 
+                        || (dominant == Feeling.FEAR && isMoving) 
+                        || this.isStanding;
+
+        if (wantsStand) {
+            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.pose"));
+        }
+
+        if (isMoving) {
+            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.walk"));
+        }
+
+        return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.idle"));
+    }
+
+    private Feeling getDominantFeeling() {
+        byte stateByte = this.getDominantState();
+        if (stateByte > 0 && stateByte <= Feeling.values().length) {
+            return Feeling.values()[stateByte - 1];
+        }
+        return null;
+    }
+    
+    private void updateStandCycle(Feeling dominantFeeling, boolean isMoving) {
+        boolean eligible = dominantFeeling == null && !isMoving && !this.isFlying();
+
+        if (this.isStanding) {
+            if (!eligible || this.tickCount >= this.standEndTick) {
+                this.isStanding = false;
+                this.nextStandTick = this.tickCount + STAND_MIN_COOLDOWN_TICKS
+                    + this.random.nextInt(STAND_COOLDOWN_VARIANCE_TICKS);
+            }
+            return;
+        }
+
+        if (eligible && this.tickCount >= this.nextStandTick) {
+            this.isStanding = true;
+            this.standEndTick = this.tickCount + STAND_MIN_HOLD_TICKS
+                + this.random.nextInt(STAND_HOLD_VARIANCE_TICKS);
+        }
     }
 
     @Override

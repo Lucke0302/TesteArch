@@ -10,6 +10,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
@@ -54,14 +55,11 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
         this.entityData.set(FLIGHT_ALTITUDE, input.getFloatOr("FlightAltitude", getFlightAltitude()));
     }
 
-    // --- Hook de altitude de voo ---
 
     /**
      * @return altitude padrão de voo em blocos acima do chão.
      */
     public abstract float getFlightAltitude();
-
-    // --- Estado de voo ---
 
     public boolean isFlying() {
         return this.entityData.get(IS_FLYING);
@@ -71,46 +69,36 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
         this.entityData.set(IS_FLYING, flying);
     }
 
-    // --- Navegação ---
-
     @Override
     protected PathNavigation createNavigation(Level level) {
-        FlyingPathNavigation nav = new FlyingPathNavigation(this, level);
-        nav.setCanOpenDoors(false);
+        GroundPathNavigation nav = new GroundPathNavigation(this, level);
         nav.setCanFloat(true);
         return nav;
     }
 
-    // --- Dimensões (hitbox) ---
 
     @Override
     public EntityDimensions getDefaultDimensions(Pose pose) {
         EntityDimensions base = super.getDefaultDimensions(pose);
         if (this.isFlying()) {
-            // Asa aberta: hitbox mais larga no XZ
             return base.scale(1.4f, 1.0f);
         }
         return base;
     }
 
-    // --- Estresse específico de voador ---
 
     @Override
     protected void calculateEnclosureStress() {
         float requiredRadius = getMinEnclosureRadius();
         if (requiredRadius <= 0f) return;
 
-        // Scan horizontal no chão
         float groundDist = scanHorizontalRadius(this.blockPosition().getY());
 
-        // Scan horizontal na altitude de voo (~flightAltitude acima do chão)
         int flightY = this.blockPosition().getY() + (int) getFlightAltitude();
         float flightDist = scanHorizontalRadius(flightY);
 
-        // Scan vertical (pé-direito)
         float verticalClearance = scanVerticalClearance();
 
-        // Média ponderada: 40% chão, 40% voo, 20% vertical
         float avgDist = (groundDist * 0.4f) + (flightDist * 0.4f) + (verticalClearance * 0.2f);
 
         float stress;
@@ -123,7 +111,23 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
         setFeeling(Feeling.STRESS, net.minecraft.util.Mth.clamp(stress, 0.0f, 1.0f));
     }
 
-    // --- Fall damage override (voadores não tomam fall damage voando) ---
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level().isClientSide()) {
+            boolean flying = this.isFlying();
+            
+            if (flying && !this.isNoGravity()) {
+                this.setNoGravity(true);
+                this.navigation = new FlyingPathNavigation(this, this.level());
+            } 
+            else if (!flying && this.isNoGravity()) {
+                this.setNoGravity(false);
+                this.navigation = new GroundPathNavigation(this, this.level());
+            }
+        }
+    }
+
 
     @Override
     public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
