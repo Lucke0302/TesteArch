@@ -13,6 +13,8 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.level.Level;
 
 /**
@@ -116,18 +118,17 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
         super.tick();
         if (!this.level().isClientSide()) {
             boolean flying = this.isFlying();
-            
             if (flying && !this.isNoGravity()) {
                 this.setNoGravity(true);
                 this.navigation = new FlyingPathNavigation(this, this.level());
-            } 
-            else if (!flying && this.isNoGravity()) {
+                this.moveControl = new FlyingMoveControl(this, 20, true);
+            } else if (!flying && this.isNoGravity()) {
                 this.setNoGravity(false);
                 this.navigation = new GroundPathNavigation(this, this.level());
+                this.moveControl = new MoveControl(this);
             }
         }
     }
-
 
     @Override
     public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {

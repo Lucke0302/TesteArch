@@ -4,6 +4,7 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.state.AnimationTest;
 import com.lucas.arch.entity.ai.AngerBehaviorGoal;
 import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
 import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
@@ -150,61 +151,41 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<QuetzalcoatlusEntity>("main_controller", 5, state -> {
-            if (this.isSleeping()) {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.sleep"));
-            }
-            if (this.isFlying()) {
-                if (state.isMoving()) {
-                    return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.fly"));
-                }
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.pose"));
-            }
-            if (state.isMoving()) {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.walk"));
-            }
-            if (this.isResting()) {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.sleep"));
-            }
-            return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.idle"));
-        }));
+        controllers.add(new AnimationController<>("main_controller", 5, this::movementPredicate));
+
         controllers.add(new AnimationController<QuetzalcoatlusEntity>("attack_controller", 0, state -> PlayState.STOP)
             .triggerableAnim("attack", RawAnimation.begin().thenPlay("animation.quetzalcoatlus.attack")));
+
         controllers.add(new AnimationController<QuetzalcoatlusEntity>("eat_controller", 0, state -> PlayState.STOP)
             .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.quetzalcoatlus.eat")));
-        controllers.add(new AnimationController<>("main_controller", 5, this::movementPredicate));
     }
 
-    private PlayState movementPredicate(com.geckolib.animation.state.AnimationTest<QuetzalcoatlusEntity> event) {
+    private PlayState movementPredicate(AnimationTest<QuetzalcoatlusEntity> event) {
         if (this.isSleeping() || this.isResting()) {
-            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.sleep"));
+            return event.setAndContinue(RawAnimation.begin()
+                .thenLoop("animation.quetzalcoatlus.sleep"));
+        }
+
+        if (this.isFlying()) {
+            if (event.isMoving()) {
+                return event.setAndContinue(RawAnimation.begin()
+                    .thenLoop("animation.quetzalcoatlus.fly"));
+            }
+            return event.setAndContinue(RawAnimation.begin()
+                .thenLoop("animation.quetzalcoatlus.pose"));
         }
 
         boolean isMoving = event.isMoving();
-        boolean isFlying = this.isFlying();
-
-        // 1. Prioridade para Voo
-        if (isFlying) {
-            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.fly"));
-        }
-
-        // 2. Lógica de Chão (Baseada no Parassaurolofo)
         Feeling dominant = getDominantFeeling();
         updateStandCycle(dominant, isMoving);
 
-        boolean wantsStand = (dominant == Feeling.HUNGER && !isMoving) 
-                        || (dominant == Feeling.FEAR && isMoving) 
-                        || this.isStanding;
-
-        if (wantsStand) {
-            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.pose"));
-        }
-
         if (isMoving) {
-            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.walk"));
+            return event.setAndContinue(RawAnimation.begin()
+                .thenLoop("animation.quetzalcoatlus.walk"));
         }
 
-        return event.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.idle"));
+        return event.setAndContinue(RawAnimation.begin()
+            .thenLoop("animation.quetzalcoatlus.idle"));
     }
 
     private Feeling getDominantFeeling() {
