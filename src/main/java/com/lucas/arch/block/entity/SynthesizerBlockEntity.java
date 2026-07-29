@@ -184,6 +184,7 @@ public class SynthesizerBlockEntity extends BlockEntity implements ImplementedIn
             if (dnaStack.is(ModItems.SPINOSAURUS_DNA)) embryoResult = ModItems.SPINOSAURUS_EMBRYO;
             else if (dnaStack.is(ModItems.PACHYCEPHALOSAURUS_DNA)) embryoResult = ModItems.PACHYCEPHALOSAURUS_EMBRYO;
             else if (dnaStack.is(ModItems.PARASAUROLOPHUS_DNA)) embryoResult = ModItems.PARASAUROLOPHUS_EMBRYO;
+            else if (dnaStack.is(ModItems.QUETZALCOATLUS_DNA)) embryoResult = ModItems.QUETZALCOATLUS_EMBRYO;
             else if (dnaStack.is(ModItems.ALLOSAURUS_DNA)) embryoResult = ModItems.ALLOSAURUS_EMBRYO;
 
             result = new ItemStack(embryoResult);

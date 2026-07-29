@@ -3,6 +3,7 @@ package com.lucas.arch.registry;
 import com.lucas.arch.entity.AllosaurusEntity;
 import com.lucas.arch.entity.PachycephalosaurusEntity;
 import com.lucas.arch.entity.ParasaurolophusEntity;
+import com.lucas.arch.entity.QuetzalcoatlusEntity;
 import com.lucas.arch.entity.SpinosaurusEntity;
 
 import net.minecraft.world.entity.EntityType;
@@ -49,6 +50,14 @@ public class ModEntities {
                 .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "parasaurolophus")))
     );
 
+    public static final EntityType<QuetzalcoatlusEntity> QUETZALCOATLUS = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "quetzalcoatlus"),
+        EntityType.Builder.of(QuetzalcoatlusEntity::new, MobCategory.CREATURE)
+                .sized(1.8f, 0.9f)
+                .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "quetzalcoatlus")))
+    );
+
     public static void registerEntities() {
         ArcheologyReimagined.LOGGER.info("Registering entities for " + ArcheologyReimagined.MOD_ID);
     }
@@ -58,5 +67,6 @@ public class ModEntities {
         FabricDefaultAttributeRegistry.register(PACHYCEPHALOSAURUS, PachycephalosaurusEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(SPINOSAURUS, SpinosaurusEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PARASAUROLOPHUS, ParasaurolophusEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(QUETZALCOATLUS, QuetzalcoatlusEntity.createAttributes());
     }
 }

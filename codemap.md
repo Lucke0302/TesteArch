@@ -3,7 +3,7 @@
 > **Objetivo:** Mapa de onde cada feature vive no código, para navegação rápida
 > do projeto. Atualize sempre que classes/pacotes forem criados ou removidos.
 >
-> Última atualização: 2026-07-28 (corrigido mapeamento de dominantFeeling + ciclo "olhar em volta" no Parasaurolophus)
+> Última atualização: 2026-07-29 (adicionado Quetzalcoatlus, sistema de estresse, voadores)
 ---
 
 ## 1. Estrutura geral de pacotes
@@ -251,7 +251,42 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | Client provider (Entities)| `compat/jade/AllosaurusClientProvider.java` |
 | Plugin | `compat/jade/ArchJadePlugin.java` — `@WailaPlugin` (Registra provedores para Allosaurus e Pachycephalosaurus) |
 
-### 2.16 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
+### 2.16 Entidade Quetzalcoatlus (Voador Onívoro)
+
+| Peça | Arquivo |
+|---|---|
+| Entidade | `entity/QuetzalcoatlusEntity.java` — extends `AbstractFlyingDinosaurEntity`, implementa `OmnivoreDiet`. |
+| Base voadora | `entity/AbstractFlyingDinosaurEntity.java` — IS_FLYING sync, FlyingPathNavigation, calculateEnclosureStress override. |
+| Goal de Voo | `entity/ai/FlyingGoal.java` — TAKEOFF/FLYING/LANDING modes, fuga aérea por FEAR/STRESS. |
+| Registro | `registry/ModEntities.java`, `registry/ModBlocks.java`, `registry/ModBlockEntities.java` |
+| Modelo (cliente) | `client/model/QuetzalcoatlusModel.java` |
+| Renderer (cliente) | `client/renderer/QuetzalcoatlusRenderer.java` |
+| Ovo (bloco) | `block/QuetzalcoatlusEggBlock.java` + `block/entity/QuetzalcoatlusEggBlockEntity.java` + `item/QuetzalcoatlusEggBlockItem.java` |
+| Dieta | `entity/OmnivoreDiet.java` — peixes + frutas + herbivore_food + carnivore_food. |
+
+### 2.17 Sistema de Estresse por Confinamento
+
+Implementado em `AbstractDinosaurEntity.java`:
+
+| Método | Descrição |
+|---|---|
+| `getMinEnclosureRadius()` | Hook abstrato: cada espécie define seu raio mínimo. 0f = desativado. |
+| `scanHorizontalRadius(int yLevel)` | Escaneia 8 direções cardeais até 64 blocos procurando bloco sólido. Retorna a menor distância. |
+| `scanVerticalClearance()` | Escaneia verticalmente para cima até primeiro bloco sólido. Usado por voadores. |
+| `calculateEnclosureStress()` | Chamado a cada 1200 ticks. Terrestres: só scan horizontal. Voadores: média de 3 scans (chão, voo, vertical). |
+| Decaimento | STRESS decai 0.005f por ciclo de 1200 ticks (~200s para zerar de 1.0). |
+| Amplificação | STRESS >= 0.5f multiplica ANGER por 1.3x e FEAR por 1.2x em `updateDominantState()`. |
+
+Raio por espécie:
+| Espécie | Raio mínimo |
+|---|---|
+| Allosaurus | 20f |
+| Parasaurolophus | 15f |
+| Spinosaurus | 30f |
+| Pachycephalosaurus | 12f |
+| Quetzalcoatlus (voador) | 25f |
+
+### 2.18 Classes Base de Itens & Sistema de Autoria (`com.lucas.arch.item`)
 
 | Classe | Propósito |
 |---|---|
@@ -289,7 +324,7 @@ Usa blocos vanilla como placeholder. Funciona apenas via farinha de osso (sem wo
 | `ModMenuTypes.java` | MenuTypes das 4 máquinas |
 | `ModRecipeSerializers.java` | `GUIDE_BOOK_RECIPE` |
 | `ModDataComponentTypes.java` | `DNA_QUALITY` |
-| `ModTags.java` | `Items.CARNIVORE_FOOD`, `Blocks.EGG_HEAT_SOURCES` |
+| `ModTags.java` | `Items.CARNIVORE_FOOD`, `Items.HERBIVORE_FOOD`, `Blocks.EGG_HEAT_SOURCES` |
 
 ---
 

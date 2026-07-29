@@ -105,5 +105,13 @@
 
   "entity.archeology_reimagined.parasaurolophus": "Parasaurolophus",
   "block.archeology_reimagined.parasaurolophus_egg_block": "Parasaurolophus Egg",
-  "item.archeology_reimagined.parasaurolophus_egg_block": "Parasaurolophus Egg "
+  "item.archeology_reimagined.parasaurolophus_egg_block": "Parasaurolophus Egg",
+
+  "entity.archeology_reimagined.quetzalcoatlus": "Quetzalcoatlus",
+  "item.archeology_reimagined.quetzalcoatlus_dna": "Quetzalcoatlus DNA",
+  "item.archeology_reimagined.quetzalcoatlus_embryo": "Quetzalcoatlus Embryo",
+  "block.archeology_reimagined.quetzalcoatlus_egg_block": "Quetzalcoatlus Egg",
+  "item.archeology_reimagined.quetzalcoatlus_egg_block": "Quetzalcoatlus Egg",
+
+  "feeling.archeology_reimagined.stress": "Stressed"
 }

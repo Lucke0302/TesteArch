@@ -59,6 +59,7 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
     @Override protected float getAdultSpawnScale() { return 3.1f; }
     @Override protected String getColorNbtKey() { return "AllosaurusColor"; }
     @Override protected String getScaleNbtKey() { return "AllosaurusScale"; }
+    @Override protected float getMinEnclosureRadius() { return 20f; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(100.0, 0.3, 10.0);

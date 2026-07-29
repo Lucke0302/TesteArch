@@ -18,7 +18,7 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
 ### 1.2 Extração de DNA (Mesa de Limpeza)
 * **Requisitos:** Consome **Água** (tanque até 10 baldes) e **Calor/Combustível** (fornalha vanilla).
 * **Processamento:** Limpa Fósseis Desconhecidos, Mosquitos no Âmbar e **Seringas de Sangue (`BLOOD_SYRINGE`)**.
-* **Resultado:** Produz amostras de **DNA Específico (Allosaurus, Spinosaurus, Pachycephalosaurus, Parasaurolophus)** ou genérico (Mamíferos, Peixes, Plantas) com um atributo dinâmico de **Qualidade de DNA** (`DNA_QUALITY`, 0-100%). Em caso de falha no processo, gera *DNA Fragmentado* ou itens secundários (Areia, Cascalho, Osso, Carvão Vegetal).
+* **Resultado:** Produz amostras de **DNA Específico (Allosaurus, Spinosaurus, Pachycephalosaurus, Parasaurolophus, Quetzalcoatlus)** ou genérico (Mamíferos, Peixes, Plantas) com um atributo dinâmico de **Qualidade de DNA** (`DNA_QUALITY`, 0-100%). Em caso de falha no processo, gera *DNA Fragmentado* ou itens secundários (Areia, Cascalho, Osso, Carvão Vegetal).
 * **Seringa de Sangue:** Ao processar uma `BLOOD_SYRINGE`, a mesa lê o `SYRINGE_SPECIES` do Data Component e gera **sempre o DNA da espécie correspondente** com **qualidade garantida entre 85% e 100%** (sem chance de falha).
 
 ### 1.3 Síntese de Embrião (Sintetizador)
@@ -321,6 +321,7 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
   * **Wake-on-Damage:** Se o dinossauro sofrer qualquer dano durante o sono (`hurtServer`), ele acorda imediatamente (zera contagem de dardos, timer e retorna à animação `idle`).
   * **SleepBehaviorGoal:** Goal dedicada (`com.lucas.arch.entity.ai.SleepBehaviorGoal`) com flags `MOVE | LOOK | JUMP` travadas, mantendo a animação de `sleep` ativa continuamente enquanto `isSleeping == true`.
 
+  - [x] Adicionar 1 dinossauro Voador (Quetzalcoatlus).
 ---
 
 ### Parcialmente Implementado / Requer Ajustes
@@ -353,4 +354,3 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 
 #### Adições aos animais
 - [ ] Adicionar 1 dinossauro Aquático (Dieta piscívora).
-- [ ] Adicionar 1 dinossauro Voador.

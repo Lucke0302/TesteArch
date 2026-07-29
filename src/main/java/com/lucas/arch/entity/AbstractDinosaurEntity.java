@@ -8,6 +8,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.util.GeckoLibUtil;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -33,9 +34,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 /**
  * Base comum a todas as entidades "sencientes" do mod (Feelings/Traits/Growth/Scale/Tame).
@@ -73,6 +76,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     private static final float DOMINANT_STATE_THRESHOLD = 0.3f;
     protected static final int TICKS_TO_GROW = 1200;
     protected static final float SATURATION_TO_GROW = 4.0f;
+    private static final int MAX_SCAN_DISTANCE = 64;
 
     protected final EnumMap<Trait, Float> traits = new EnumMap<>(Trait.class);
     protected final EnumMap<Feeling, Float> feelings = new EnumMap<>(Feeling.class);
@@ -103,6 +107,90 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     protected abstract float getAdultSpawnScale();
     protected abstract String getColorNbtKey();
     protected abstract String getScaleNbtKey();
+
+    /**
+     * @return raio mínimo do recinto para o dinossauro não sentir estresse.
+     * 0f = desativado (não sente estresse por espaço).
+     */
+    protected abstract float getMinEnclosureRadius();
+
+    // --- Sistema de Estresse por Raio de Jaula ---
+
+    /**
+     * Escaneia em 8 direções cardeais no mesmo Y para encontrar a menor distância
+     * até um bloco de colisão sólida. Retorna o raio livre mínimo encontrado.
+     */
+    protected float scanHorizontalRadius(int yLevel) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        float minDist = MAX_SCAN_DISTANCE;
+        int[][] directions = {
+            { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 1 },
+            { -1, 0 }, { -1, -1 }, { 0, -1 }, { 1, -1 }
+        };
+        Level level = this.level();
+        CollisionContext ctx = CollisionContext.of(this);
+
+        for (int[] dir : directions) {
+            int dx = dir[0];
+            int dz = dir[1];
+            cursor.set(this.blockPosition());
+            float dist = 0;
+            for (int step = 1; step <= MAX_SCAN_DISTANCE; step++) {
+                cursor.set(this.blockPosition().getX() + dx * step, yLevel, this.blockPosition().getZ() + dz * step);
+                BlockState state = level.getBlockState(cursor);
+                if (state.isSolid() || state.isRedstoneConductor(level, cursor)) {
+                    dist = step;
+                    break;
+                }
+                if (step == MAX_SCAN_DISTANCE) dist = MAX_SCAN_DISTANCE;
+            }
+            if (dist < minDist) minDist = dist;
+        }
+        return minDist;
+    }
+
+    /**
+     * Escaneia verticalmente para cima a partir do Y+1 até o primeiro bloco sólido.
+     * Usado por voadores para medir pé-direito.
+     */
+    protected float scanVerticalClearance() {
+        Level level = this.level();
+        CollisionContext ctx = CollisionContext.of(this);
+        int startY = this.blockPosition().getY() + 1;
+        int maxY = level.getMaxY();
+        int limit = Math.min(startY + MAX_SCAN_DISTANCE, maxY);
+
+        for (int y = startY; y < limit; y++) {
+            BlockPos checkPos = new BlockPos(this.blockPosition().getX(), y, this.blockPosition().getZ());
+            BlockState state = level.getBlockState(checkPos);
+            if (state.isSolid() || state.isRedstoneConductor(level, checkPos)) {
+                return y - startY;
+            }
+        }
+        return limit - startY;
+    }
+
+    /**
+     * Calcula o estresse por confinamento. Terrestres: só scan horizontal no chão.
+     * Voadores: override que faz média entre scan no chão, scan na altitude de voo e scan vertical.
+     * Se getMinEnclosureRadius() == 0, retorna 0 (desativado).
+     */
+    protected void calculateEnclosureStress() {
+        float requiredRadius = getMinEnclosureRadius();
+        if (requiredRadius <= 0f) return;
+
+        float horizontalDist = scanHorizontalRadius(this.blockPosition().getY());
+
+        float stress;
+        if (horizontalDist >= requiredRadius) {
+            stress = 0f;
+        } else {
+            stress = 1.0f - (horizontalDist / requiredRadius);
+        }
+
+        stress = Mth.clamp(stress, 0.0f, 1.0f);
+        setFeeling(Feeling.STRESS, stress);
+    }
 
     @Override
     public EntityDimensions getDefaultDimensions(Pose pose) {
@@ -264,12 +352,23 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         float aggro = getTrait(Trait.AGGRESSIVENESS), coward = getTrait(Trait.COWARDICE);
         float glut = getTrait(Trait.GLUTTONY), curio = getTrait(Trait.CURIOSITY);
 
+        float stressLevel = getFeeling(Feeling.STRESS);
+        float stressAngerMultiplier = stressLevel >= 0.5f ? 1.3f : 1.0f;
+        float stressFearMultiplier = stressLevel >= 0.5f ? 1.2f : 1.0f;
+
         for (Feeling feeling : Feeling.values()) {
+            if (feeling == Feeling.STRESS) continue;
             float raw = getFeeling(feeling);
             float multiplier = 1.0f;
             switch (feeling) {
-                case ANGER -> multiplier += (aggro * 0.6f) + (curio * aggro * 0.4f) - (coward * 0.5f);
-                case FEAR -> multiplier += (coward * 0.6f) - (aggro * 0.5f) - (curio * 0.3f);
+                case ANGER -> {
+                    multiplier += (aggro * 0.6f) + (curio * aggro * 0.4f) - (coward * 0.5f);
+                    multiplier *= stressAngerMultiplier;
+                }
+                case FEAR -> {
+                    multiplier += (coward * 0.6f) - (aggro * 0.5f) - (curio * 0.3f);
+                    multiplier *= stressFearMultiplier;
+                }
                 case HUNGER -> multiplier += (glut * 0.5f) + (aggro * 0.3f);
                 case CURIOSITY -> multiplier += (curio * 0.5f) + (glut * curio * 0.3f) - (coward * 0.6f);
             }
@@ -292,6 +391,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
             case FEAR -> Trait.COWARDICE;
             case CURIOSITY -> Trait.CURIOSITY;
             case HUNGER -> Trait.GLUTTONY;
+            default -> Trait.COWARDICE;
         };
     }
 
@@ -359,15 +459,26 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
             if (current > 0.0f) {
                 float traitValue = getTrait(getAssociatedTrait(feeling));
                 int decayInterval = (int) (1200 * Math.max(0.2f, traitValue));
-                if (feeling != Feeling.HUNGER && decayInterval > 0 && this.tickCount % decayInterval == 0) {
+                if (feeling != Feeling.HUNGER && feeling != Feeling.STRESS && decayInterval > 0 && this.tickCount % decayInterval == 0) {
                     setFeeling(feeling, current - 0.1f);
                 }
             }
         }
 
+        // Decaimento específico do STRESS: só decai a cada 1200 ticks
+        float currentStress = getFeeling(Feeling.STRESS);
+        if (currentStress >= 0.01f && this.tickCount % 1200 == 0) {
+            setFeeling(Feeling.STRESS, currentStress - 0.005f);
+        }
+
         if (this.tickCount % 1200 == 0) {
             float gluttony = getTrait(Trait.GLUTTONY);
             setFeeling(Feeling.HUNGER, getFeeling(Feeling.HUNGER) + 0.05f + (gluttony * 0.05f));
+        }
+
+        // Recalcular estresse por jaula a cada 1200 ticks (1 minuto)
+        if (this.tickCount % 1200 == 0) {
+            calculateEnclosureStress();
         }
 
         this.tickTranquilizer();
@@ -431,6 +542,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
      * Lê o valor sincronizado (EntityDataAccessor), então funciona corretamente
      * tanto na instância server-side (lógica) quanto na client-side (GeckoLib).
      */
+    @Override
     public boolean isSleeping() {
         return this.entityData.get(IS_SLEEPING_SYNC);
     }

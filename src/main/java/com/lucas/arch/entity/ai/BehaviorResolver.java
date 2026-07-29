@@ -56,6 +56,7 @@ public final class BehaviorResolver {
             case FEAR -> resolveFear(a, b);
             case ANGER -> resolveAnger(a, b);
             case CURIOSITY -> resolveCuriosity(a, b);
+            case STRESS -> null;
         };
         if (winner != null) return winner;
 
@@ -120,6 +121,10 @@ public final class BehaviorResolver {
                 case AGGRESSIVENESS, GLUTTONY -> Behavior.FOLLOW_PLAYER;
                 case COWARDICE -> Behavior.DO_NOTHING;
                 case CURIOSITY -> Behavior.FOLLOW_OWNER_OR_NEAREST;
+            };
+            case STRESS -> switch (winner) {
+                case AGGRESSIVENESS, CURIOSITY, GLUTTONY -> Behavior.HUNT_ATTACK;
+                case COWARDICE -> Behavior.FLEE;
             };
         };
     }

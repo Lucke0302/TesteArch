@@ -11,6 +11,7 @@ import com.lucas.arch.block.CycadSaplingBlock;
 import com.lucas.arch.block.FuserBlock;
 import com.lucas.arch.block.PachycephalosaurusEggBlock;
 import com.lucas.arch.block.ParasaurolophusEggBlock;
+import com.lucas.arch.block.QuetzalcoatlusEggBlock;
 import com.lucas.arch.block.SpinosaurusEggBlock;
 import com.lucas.arch.block.SequoiaSaplingBlock;
 import com.lucas.arch.block.SynthesizerBlock;
@@ -18,6 +19,7 @@ import com.lucas.arch.item.AllosaurusEggBlockItem;
 import com.lucas.arch.item.ArchBlockItem;
 import com.lucas.arch.item.PachycephalosaurusEggBlockItem;
 import com.lucas.arch.item.ParasaurolophusEggBlockItem;
+import com.lucas.arch.item.QuetzalcoatlusEggBlockItem;
 import com.lucas.arch.item.SpinosaurusEggBlockItem;
 
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -131,6 +133,11 @@ public class ModBlocks {
             .noCollision().strength(0.0f).sound(SoundType.BONE_BLOCK).noOcclusion()),
         (block, itemProps) -> new ParasaurolophusEggBlockItem(block, itemProps, "F&A, Lucke0302", "Lucke0302"));
 
+    public static final Block QUETZALCOATLUS_EGG_BLOCK = registerBlock("quetzalcoatlus_egg_block",
+        properties -> new QuetzalcoatlusEggBlock(properties.mapColor(MapColor.SAND)
+            .noCollision().strength(0.0f).sound(SoundType.BONE_BLOCK).noOcclusion()),
+        (block, itemProps) -> new QuetzalcoatlusEggBlockItem(block, itemProps, "F&A, Lucke0302", "Lucke0302"));
+
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function, String designer, String programmer) {
         return registerBlock(name, function,
             (block, itemProps) -> new ArchBlockItem(block, itemProps, designer, programmer));
@@ -162,6 +169,7 @@ public class ModBlocks {
             output.accept(PACHYCEPHALOSAURUS_EGG_BLOCK);
             output.accept(SPINOSAURUS_EGG_BLOCK);
             output.accept(PARASAUROLOPHUS_EGG_BLOCK);
+            output.accept(QUETZALCOATLUS_EGG_BLOCK);
         });
     }
 }

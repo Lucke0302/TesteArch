@@ -10,6 +10,7 @@ import com.lucas.arch.block.entity.AllosaurusEggBlockEntity;
 import com.lucas.arch.block.entity.SpinosaurusEggBlockEntity;
 import com.lucas.arch.block.entity.ArchBrushableBlockEntity;
 import com.lucas.arch.block.entity.BiocatalyzerBlockEntity;
+import com.lucas.arch.block.entity.QuetzalcoatlusEggBlockEntity;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
@@ -81,6 +82,13 @@ public class ModBlockEntities {
         BuiltInRegistries.BLOCK_ENTITY_TYPE,
         Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "parasaurolophus_egg_be"),
         FabricBlockEntityTypeBuilder.create(ParasaurolophusEggBlockEntity::new, ModBlocks.PARASAUROLOPHUS_EGG_BLOCK).build()
+    );
+
+    public static final BlockEntityType<QuetzalcoatlusEggBlockEntity> QUETZALCOATLUS_EGG_BE =
+    Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "quetzalcoatlus_egg_be"),
+        FabricBlockEntityTypeBuilder.create(QuetzalcoatlusEggBlockEntity::new, ModBlocks.QUETZALCOATLUS_EGG_BLOCK).build()
     );
 
     public static void registerBlockEntities() {
