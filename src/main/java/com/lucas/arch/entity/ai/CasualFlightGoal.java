@@ -80,14 +80,22 @@ public class CasualFlightGoal extends Goal {
     }
 
     private void performLanding() {
-        Vec3 pos = entity.position();
-        double groundY = entity.level().getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, entity.blockPosition()).getY() + 1;
-        if (pos.y > groundY + 0.5) {
-            entity.getNavigation().moveTo(pos.x, groundY, pos.z, 0.6);
-        } else {
-            entity.setFlying(false);
-            entity.getNavigation().stop();
-            landing = false;
+        if (this.entity.isFlying() && !this.entity.isDiving()) {
+            if (this.entity.hasDiveAnimation()) {
+                this.entity.startDiving();
+                return;
+            } else {
+                this.entity.setFlying(false);
+                this.entity.getNavigation().stop();
+                this.landing = false;
+                return;
+            }
         }
+
+        if (this.entity.isDiving()) {
+            return;
+        }
+
+        this.landing = false;
     }
 }

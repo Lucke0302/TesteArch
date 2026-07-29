@@ -39,8 +39,12 @@ public class FearFlightGoal extends Goal {
 
     @Override
     public void stop() {
-        if (!entity.isFlying()) return;
-        landingTicks = 20;
+        if (!this.entity.isFlying()) return;
+        if (this.entity.hasDiveAnimation()) {
+            this.entity.startDiving();
+        } else {
+            this.entity.setFlying(false);
+        }
     }
 
     @Override
