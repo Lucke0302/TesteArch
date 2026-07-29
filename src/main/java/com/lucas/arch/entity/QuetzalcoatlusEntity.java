@@ -31,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implements OmnivoreDiet {
 
@@ -42,7 +43,7 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
 
     @Override protected float getBaseHealth() { return 50.0f; }
     @Override protected float getBaseAttackDamage() { return 8.0f; }
-    @Override protected float getHitboxScaleRatio() { return 1.5f; }
+    @Override protected float getHitboxScaleRatio() { return 1f; }
     @Override protected float getMaxSafeHitboxScale() { return 3.0f; }
     @Override protected int[] getColorPalette() { return COLORS; }
     @Override protected float[] getSpawnScaleRange() { return new float[]{1.8f, 2.4f}; }
@@ -59,6 +60,20 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
 
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(50.0, 0.22, 8.0);
+    }
+
+    @Override
+    public void updateStats() {
+        super.updateStats();
+
+        if (this.getAgeTier() == AgeTier.BABY) {
+            float customBabyScale = this.baseScale * (0.12f / getAdultSpawnScale());
+
+            if (this.getAttribute(Attributes.SCALE) != null) {
+                this.getAttribute(Attributes.SCALE).setBaseValue(customBabyScale);
+            }
+            this.entityData.set(SCALE, customBabyScale);
+        }
     }
 
     // --- OmnivoreDiet ---

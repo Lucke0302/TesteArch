@@ -92,6 +92,7 @@ public class FlyingGoal extends Goal {
     public void start() {
         this.mode = Mode.TAKEOFF;
         this.targetPos = null;
+        this.entity.setFlying(true);
 
         if (this.entity.isFlying()) {
             this.mode = Mode.FLYING;
