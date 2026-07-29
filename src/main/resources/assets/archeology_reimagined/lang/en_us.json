@@ -90,10 +90,10 @@
   "gender.archeology_reimagined.male": "Male",
   "gender.archeology_reimagined.female": "Female",
 
-  "tooltip.archeology_reimagined.awareness": "Estado: ",
-  "awareness.archeology_reimagined.awake": "Acordado",
-  "awareness.archeology_reimagined.sleeping": "Dormindo",
-  "awareness.archeology_reimagined.tranquilized": "Tranquilizado",
+  "tooltip.archeology_reimagined.awareness": "Status: ",
+  "awareness.archeology_reimagined.awake": "Awake",
+  "awareness.archeology_reimagined.sleeping": "Sleeping",
+  "awareness.archeology_reimagined.tranquilized": "Tranquilized",
 
   "entity.archeology_reimagined.pachycephalosaurus": "Pachycephalosaurus",
   "block.archeology_reimagined.pachycephalosaurus_egg_block": "Pachycephalosaurus Egg",

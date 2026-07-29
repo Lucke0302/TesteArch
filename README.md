@@ -64,6 +64,13 @@ A progressão do mod é estruturada em etapas encadeadas para ressuscitar espéc
   sentimento com maior peso ativo, ponderado pelas Traits (`updateDominantState`), se torna o **Estado
   Dominante** (`DOMINANT_STATE`, sincronizado e exibido no Jade).
 
+* **Ciclo Circadiano (Sono Natural):**
+  Cada espécie é definida como diurna ou noturna (`isDiurnal()`).
+  O relógio biológico lê o tempo padrão do Overworld (`level.getDefaultClockTime()`).
+  Durante o seu período de descanso (ex: de noite para diurnos), se a entidade estiver em **Estado Neutro** ou com sentimentos muito baixos ($\le 50\%$), ela tem 20% de chance a cada 10 segundos de deitar e dormir.
+  
+* **Instinto de Sobrevivência:** Se a fome atingir **80%** durante o sono (ou se a entidade for atacada), ela acorda imediatamente, ignorando o horário de descanso, para buscar alimento.
+
 * **Resolução de Comportamento por Traits (`com.lucas.arch.entity.ai.BehaviorResolver`):** Para cada
   Feeling dominante existe **uma única Goal responsável** (`*BehaviorGoal`), evitando que múltiplas goals
   do mesmo Feeling disputem prioridade e gerem indecisão. Ao ativar, a goal pergunta ao
@@ -328,7 +335,7 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 
 #### Utilitários Químicos & Contenção (Mecânicas de Uso em Entidades)
 - [ ] **Dardos Tranquilizantes (`FULL_DART`):** Implementar projétil disparável (arma/zarabatana ou arremesso) para sedar dinossauros à distância.
-- [ ] **Seringas com Aditivos (`FULL_SYRINGE`):** Implementar interação no botão direito para injeção direta no dinossauro, aplicando mutações de atributos ou cura acelerada.
+- [ ] **Alimentadores Automáticos:** Blocos de comedouro que filtram dietas (Carnívoro/Herbívoro) para recintos planejados (Goal: `EatFromFeederGoal`).
 
 #### Sela Customizada e Montaria
 - [ ] Item de Sela de Dinossauro.
@@ -341,3 +348,9 @@ Como herbívoros não recebem o "bônus de abate" do combate que os carnívoros 
 #### Utilitários Químicos & Contenção (Mecânicas de Uso em Entidades)
 - [ ] **Melhoramento de Embriões (Seringa com Aditivo):**
   * Adicionar mecânica (provavelmente no Fusor ou numa nova interface/crafting) para consumir a `FULL_SYRINGE` e aumentar a % de qualidade de um embrião existente.
+- [ ] **Drop Protegido Pós-Morte:** Dinossauros devem dropar carnes protegidas que não despawnam rapidamente, permitindo re-clonagem.
+- [ ] **Quebra de Blocos (Breakout):** Dinossauros irritados ou grandes quebrando cercas e blocos frágeis.
+
+#### Adições aos animais
+- [ ] Adicionar 1 dinossauro Aquático (Dieta piscívora).
+- [ ] Adicionar 1 dinossauro Voador.
