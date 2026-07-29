@@ -1359,31 +1359,31 @@
 					}
 				},
 				"leftUpperArm": {
-					"rotation": {
-						"vector": ["-127.5+math.sin(query.anim_time*1440/12+60)*-5", 20, -12.5]
-					},
-					"position": {
-						"vector": [0, 1, 1]
-					}
-				},
-				"leftLowerArm": {
-					"rotation": {
-						"vector": [37.5, 0, 0]
-					}
-				},
-				"rightUpperArm": {
-					"rotation": {
-						"vector": [-147.49569, 7.49971, 0.06583]
-					}
-				},
-				"rightLowerArm": {
-					"rotation": {
-						"vector": [62.5, 0, 0]
-					},
-					"position": {
-						"vector": [0, 0, -0.4]
-					}
-				},
+                    "rotation": {
+                        "vector": ["80+math.sin(query.anim_time*1440/12+60)*-5", 20, -12.5]
+                    },
+                    "position": {
+                        "vector": [0, 1, 1]
+                    }
+                },
+                "leftLowerArm": {
+                    "rotation": {
+                        "vector": [37.5, 0, 0]
+                    }
+                },
+                "rightUpperArm": {
+                    "rotation": {
+                        "vector": ["80+math.sin(query.anim_time*1440/12+30)*-5", 7.5, 0.06583]
+                    }
+                },
+                "rightLowerArm": {
+                    "rotation": {
+                        "vector": [62.5, 0, 0]
+                    },
+                    "position": {
+                        "vector": [0, 0, -0.4]
+                    }
+                },
 				"tail1": {
 					"rotation": {
 						"vector": [
