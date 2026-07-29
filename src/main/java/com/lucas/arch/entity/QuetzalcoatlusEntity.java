@@ -135,7 +135,7 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
                 if (state.isMoving()) {
                     return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.fly"));
                 }
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.hover"));
+                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.pose"));
             }
             if (state.isMoving()) {
                 return state.setAndContinue(RawAnimation.begin().thenLoop("animation.quetzalcoatlus.walk"));
