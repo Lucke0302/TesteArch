@@ -3,6 +3,7 @@ package com.lucas.arch.entity.ai;
 import java.util.EnumSet;
 
 import com.lucas.arch.entity.AbstractDinosaurEntity;
+import com.lucas.arch.entity.AbstractFlyingDinosaurEntity;
 import com.lucas.arch.entity.FeelingDrivenEntity;
 
 import net.minecraft.world.entity.TamableAnimal;
@@ -35,6 +36,9 @@ public class SleepBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> ex
 
     @Override
     public void start() {
+        if (this.dinosaur instanceof AbstractFlyingDinosaurEntity flying) {
+            flying.startSleeping();
+        }
         this.dinosaur.getNavigation().stop();
         this.dinosaur.setTarget(null);
     }

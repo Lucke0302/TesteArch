@@ -33,6 +33,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 
 public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implements OmnivoreDiet {
 
@@ -70,13 +72,26 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(50.0, 0.22, 8.0);
     }
+    
+    @Override
+    public boolean hasDiveAnimation() {
+        return true;
+    }
+
+    @Override
+    public void startDiving() {
+        if (!this.level().isClientSide()) {
+            this.entityData.set(IS_DIVING, true);
+            this.diveEndTick = this.tickCount + 40; 
+        }
+    }
 
     @Override
     public void updateStats() {
         super.updateStats();
 
         if (this.getAgeTier() == AgeTier.BABY) {
-            float customBabyScale = this.baseScale * (0.12f / getAdultSpawnScale());
+            float customBabyScale = this.baseScale * (0.5f / getAdultSpawnScale());
 
             if (this.getAttribute(Attributes.SCALE) != null) {
                 this.getAttribute(Attributes.SCALE).setBaseValue(customBabyScale);
@@ -158,9 +173,18 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
 
         controllers.add(new AnimationController<QuetzalcoatlusEntity>("eat_controller", 0, state -> PlayState.STOP)
             .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.quetzalcoatlus.eat")));
+        
+        controllers.add(new AnimationController<QuetzalcoatlusEntity>("dive_controller", 0, state -> PlayState.STOP)
+            .triggerableAnim("dive", RawAnimation.begin().thenPlay("animation.quetzalcoatlus.dive")));
+
     }
 
     private PlayState movementPredicate(AnimationTest<QuetzalcoatlusEntity> event) {
+        if (this.isDiving()) {
+            return event.setAndContinue(RawAnimation.begin()
+                .thenPlay("animation.quetzalcoatlus.dive"));
+        }
+
         if (this.isSleeping() || this.isResting()) {
             return event.setAndContinue(RawAnimation.begin()
                 .thenLoop("animation.quetzalcoatlus.sleep"));
@@ -218,17 +242,17 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(0, new FlyingGoal(this));
-        this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
-        this.goalSelector.addGoal(0, new NeutralBehaviorGoal<>(this));
-        this.goalSelector.addGoal(1, new FearBehaviorGoal<>(this));
+
+        this.goalSelector.addGoal(1, new SleepBehaviorGoal<>(this));    
+        this.goalSelector.addGoal(2, new NeutralBehaviorGoal<>(this));
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this));
-        this.goalSelector.addGoal(3, new DinosaurTemptGoal<>(this, 1.1D,
+        this.goalSelector.addGoal(1, new FearBehaviorGoal<>(this)); 
+        this.goalSelector.addGoal(4, new DinosaurTemptGoal<>(this, 1.1D,
                 Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
-        this.goalSelector.addGoal(4, new OmnivoreHungerGoal<>(this));
+        this.goalSelector.addGoal(5, new OmnivoreHungerGoal<>(this));
         this.goalSelector.addGoal(7, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
         this.goalSelector.addGoal(8, new CuriosityBehaviorGoal<>(this));
-        this.goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(10, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(9, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
     }
 }

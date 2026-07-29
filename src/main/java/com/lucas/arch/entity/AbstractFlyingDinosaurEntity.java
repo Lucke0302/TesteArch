@@ -1,6 +1,8 @@
 package com.lucas.arch.entity;
 
 import com.geckolib.animatable.GeoEntity;
+import com.lucas.arch.entity.ai.CasualFlightGoal;
+import com.lucas.arch.entity.ai.FearFlightGoal;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,6 +31,11 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     public static final EntityDataAccessor<Boolean> IS_FLYING = SynchedEntityData.defineId(
         AbstractFlyingDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
 
+    public static final EntityDataAccessor<Boolean> IS_DIVING = SynchedEntityData.defineId(
+        AbstractFlyingDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
+
+    public int diveEndTick = 0;
+
     public static final EntityDataAccessor<Float> FLIGHT_ALTITUDE = SynchedEntityData.defineId(
         AbstractFlyingDinosaurEntity.class, EntityDataSerializers.FLOAT);
 
@@ -37,10 +44,38 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     }
 
     @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new FearFlightGoal(this));
+        this.goalSelector.addGoal(3, new CasualFlightGoal(this));
+    }
+
+    public void startSleeping() {
+        if (this.isFlying()) {
+            this.setFlying(false);
+            int groundY = this.level().getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, this.blockPosition()).getY();
+            this.teleportTo(this.getX(), groundY, this.getZ());
+        }
+    }
+
+    public boolean isDiving() {
+        return this.entityData.get(IS_DIVING);
+    }
+
+    public void startDiving() {
+        this.setFlying(false);
+    }
+
+    public boolean hasDiveAnimation() {
+        return false;
+    }
+
+    @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_FLYING, false);
         builder.define(FLIGHT_ALTITUDE, getFlightAltitude());
+        builder.define(IS_DIVING, false);
     }
 
     @Override
@@ -117,6 +152,11 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     public void tick() {
         super.tick();
         if (!this.level().isClientSide()) {
+            if (this.isDiving() && this.tickCount >= this.diveEndTick) {
+                this.entityData.set(IS_DIVING, false);
+                this.setFlying(false);
+            }
+
             boolean flying = this.isFlying();
             if (flying && !this.isNoGravity()) {
                 this.setNoGravity(true);
