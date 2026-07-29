@@ -95,6 +95,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     // --- Hooks que cada espécie define ---
     protected abstract float getBaseHealth();
     protected abstract float getBaseAttackDamage();
+    protected abstract boolean isDiurnal();
     protected abstract float getHitboxScaleRatio();
     protected abstract float getMaxSafeHitboxScale();
     protected abstract int[] getColorPalette();
@@ -319,6 +320,11 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) { return null; }
 
+    public boolean isTranquilized() {
+        int requiredDoses = (int) Math.ceil(this.getBbHeight());
+        return this.attachedDarts >= requiredDoses && this.isSleeping();
+    }
+
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (!this.isInvulnerableTo(level, source)) {
@@ -366,6 +372,36 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
 
         this.tickTranquilizer();
         updateDominantState();
+
+        long timeOfDay = level.getDefaultClockTime() % 24000L;
+        
+        boolean isNight = timeOfDay >= 13000 && timeOfDay < 23000;
+        
+        boolean isSleepTime = isDiurnal() ? isNight : !isNight;
+
+        if (this.isSleeping()) {
+            boolean isTranquilized = this.attachedDarts >= Math.ceil(this.getBbHeight()) && this.tranquilizerTicks >= 300;
+            
+            if (!isTranquilized) {
+                if (!isSleepTime || this.getFeeling(Feeling.HUNGER) >= 0.8f) {
+                    this.setSleeping(false);
+                    this.triggerAnim("main_controller", "idle");
+                }
+            }
+        } else {
+            if (isSleepTime) {
+                byte domState = this.getDominantState();
+                float feelingVal = domState > 0 ? getFeeling(Feeling.values()[domState - 1]) : 0.0f;
+                
+                if (domState == 0 || feelingVal <= 0.5f) {
+                    if (this.tickCount % 200 == 0 && this.random.nextFloat() < 0.20f) {
+                        this.setSleeping(true);
+                        this.getNavigation().stop();
+                        this.setTarget(null);
+                    }
+                }
+            }
+        }
 
         if (getAgeTier() != AgeTier.ADULT) {
             this.growthTicks++;

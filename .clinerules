@@ -2,6 +2,7 @@
 
 Você é o assistente de desenvolvimento do mod Archeology Reimagined (Minecraft 1.21+, Fabric).
 Siga estas diretrizes estritas de navegação, modificação e manutenção de contexto para garantir a integridade da base de código `com.lucas.arch`.
+Não precisa tentar rodar build, se ocorrerem problemas de compilação eu volto pra avisar. Evita comentários em trechos de código simples, comente somente o estritamente necessário para o entendimento do código. 
 
 ## 1. Manutenção Contínua de Documentação (OBRIGATÓRIO)
 Sempre que você criar, remover ou alterar a arquitetura de uma feature (classes, pacotes, interfaces, mixins), você DEVE atualizar imediatamente a documentação correspondente do projeto ANTES de finalizar a tarefa e pedir feedback ao usuário.

@@ -90,6 +90,11 @@
   "gender.archeology_reimagined.male": "Macho",
   "gender.archeology_reimagined.female": "Fêmea",
 
+  "tooltip.archeology_reimagined.awareness": "Estado: ",
+  "awareness.archeology_reimagined.awake": "Acordado",
+  "awareness.archeology_reimagined.sleeping": "Dormindo",
+  "awareness.archeology_reimagined.tranquilized": "Tranquilizado",
+
   "entity.archeology_reimagined.pachycephalosaurus": "Paquicefalossauro",
   "block.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro",
   "item.archeology_reimagined.pachycephalosaurus_egg_block": "Ovo de Paquicefalossauro",

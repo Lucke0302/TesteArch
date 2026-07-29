@@ -2069,7 +2069,7 @@
 			}
 		},
 		"animation.parasaurolophus.stand_up": {
-			"animation_length": 2.5,
+			"animation_length": 5.0,
 			"bones": {
 				"body": {
 					"position": {

@@ -39,6 +39,11 @@ public class SpinosaurusEntity extends AbstractDinosaurEntity implements Carnivo
         super(entityType, level);
     }
 
+    @Override 
+    protected boolean isDiurnal() { 
+        return true;
+    }
+
     @Override protected float getBaseHealth() { return 90.0f; }
     @Override protected float getBaseAttackDamage() { return 16.0f; }
     @Override protected float getHitboxScaleRatio() { return 1f; }

@@ -44,6 +44,11 @@ public class AllosaurusEntity extends AbstractDinosaurEntity implements Carnivor
         super(entityType, level);
     }
 
+    @Override 
+    protected boolean isDiurnal() { 
+        return true;
+    }
+
     // --- Hooks de espécie ---
     @Override protected float getBaseHealth() { return 100.0f; }
     @Override protected float getBaseAttackDamage() { return 20.0f; }

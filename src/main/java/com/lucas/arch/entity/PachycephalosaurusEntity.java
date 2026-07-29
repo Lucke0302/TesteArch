@@ -52,6 +52,11 @@ public class PachycephalosaurusEntity extends AbstractDinosaurEntity implements 
         return baseAttributes(60.0, 0.28, 6.0);
     }
 
+    @Override 
+    protected boolean isDiurnal() { 
+        return true; 
+    }
+
     public void feedSaturation(ItemStack foodStack) {
         if (!foodStack.has(DataComponents.FOOD)) return;
         FoodProperties food = foodStack.get(DataComponents.FOOD);

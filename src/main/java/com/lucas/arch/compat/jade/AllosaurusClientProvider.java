@@ -80,6 +80,25 @@ public enum AllosaurusClientProvider implements IEntityComponentProvider {
             }
             tooltip.add(Component.translatable("tooltip.archeology_reimagined.state").withStyle(ChatFormatting.GRAY).append(stateComponent));
         });
+
+        // Consciência (Acordado / Dormindo / Tranquilizado)
+        if (data.contains("IsSleeping")) {
+            boolean isSleeping = data.getBoolean("IsSleeping").orElse(false);
+            boolean isTranquilized = data.getBoolean("IsTranquilized").orElse(false);
+
+            MutableComponent statusComponent;
+            if (isTranquilized) {
+                statusComponent = Component.translatable("awareness.archeology_reimagined.tranquilized").withStyle(ChatFormatting.DARK_AQUA);
+            } else if (isSleeping) {
+                statusComponent = Component.translatable("awareness.archeology_reimagined.sleeping").withStyle(ChatFormatting.BLUE);
+            } else {
+                statusComponent = Component.translatable("awareness.archeology_reimagined.awake").withStyle(ChatFormatting.GREEN);
+            }
+
+            tooltip.add(Component.translatable("tooltip.archeology_reimagined.awareness")
+                .withStyle(ChatFormatting.GRAY)
+                .append(statusComponent));
+        }
     }
 
     @Override

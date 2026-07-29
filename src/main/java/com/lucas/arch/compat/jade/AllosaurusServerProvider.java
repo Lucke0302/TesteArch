@@ -44,6 +44,9 @@ public enum AllosaurusServerProvider implements IServerDataProvider<EntityAccess
                 if (dino.getAgeTier() != AgeTier.ADULT) {
                     data.putInt("GrowthPercent", dino.getGrowthPercent());
                 }
+                
+                data.putBoolean("IsSleeping", dino.isSleeping());
+                data.putBoolean("IsTranquilized", dino.isTranquilized());
             }
         }
     }

@@ -157,6 +157,7 @@ persistidos), por serem estado transitório de IA.
 | Assets (Animações) | Animações mapeadas em `parasaurolophus.animation.json`: `attack`, `eat`, `!eat`, `idle`, `run`, `sit`, `sleep_adult`, `speak`, `swim`, `walk`. |
 | Assets (Texturas) | `entity/parasaurolophus_baby.png`, `_female.png`, `_male.png`. |
 | **Bugfix + feature (2026-07-28)** | `movementPredicate()` corrigido: indexava `Feeling.values()[dominantStateByte]` sem `-1`, deslocando o mapeamento (ver `AbstractDinosaurEntity#updateDominantState`, que grava `ordinal()+1`, 0=neutro). Aproveitado para adicionar ciclo idle "olhar em volta" (`stand_up`→`stand`→`stand_down`) quando neutro e parado — puramente cosmético, não sincronizado. |
+| **Bugfix (2026-07-28 rev2)** | **Ciclo de stand_up/stand_down infinito:** o sistema anterior usava `standStartTick` com uma checagem intra-frame `standStartTick == tickCount` que quebrava em ticks subsequentes, causando stand_up→stand_down em loop sem nunca completar nem andar. **Corrigido:** renomeado para `standAnimStartTick` + nova trava `standMinEndTick` (stand mínimo de ~4s antes de poder descer). **stand_up muito rápido:** `animation_length` alterado de 2.5s para 5.0s no JSON de animação para um movimento de levantar mais lento e natural. |
 | Ovo (bloco) | `block/ParasaurolophusEggBlock.java` + `block/entity/ParasaurolophusEggBlockEntity.java` + `item/ParasaurolophusEggBlockItem.java`. |
 
 ### 2.6 Escavação / Pincelamento

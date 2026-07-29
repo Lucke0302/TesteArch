@@ -67,66 +67,33 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
     public boolean canContinueToUse() {
         if (this.dino.getDominantState() != 0) return false;
         if (this.dino instanceof AbstractDinosaurEntity ad && ad.isSleeping()) return false;
-
-        Trait dominant = getDominantTrait();
-
-        // AGGRESSIVENESS: continua enquanto houver player não-dono no raio
-        if (dominant == Trait.AGGRESSIVENESS) {
-            return isNonOwnerPlayerInRange(10.0);
-        }
-
-        // Se estiver com fome, fica em wander inquieto até saciar
-        if (isHungry()) {
-            return true;
-        }
-
-        // Fase atual ainda não expirou
-        return this.phaseTimer > 0;
+        
+        return true;
     }
 
     @Override
     public void start() {
         this.phaseTimer = 0;
         setResting(false);
-
-        Trait dominant = getDominantTrait();
-
-        switch (dominant) {
-            case AGGRESSIVENESS -> {
-                if (isNonOwnerPlayerInRange(10.0)) {
-                    if (this.dino instanceof AbstractDinosaurEntity ad) {
-                        growl();
-                    }
-                    float currentAnger = this.dino.getFeeling(Feeling.ANGER);
-                    this.dino.setFeeling(Feeling.ANGER, Math.min(1.0f, currentAnger + 0.5f));
-                }
-            }
-            case COWARDICE, GLUTTONY -> {
-                if (isHungry()) {
-                    startWanderPhase();
-                } else {
-                    startRestPhase();
-                }
-            }
-            case CURIOSITY -> {
-                startWanderPhase();
-            }
-        }
+        
+        startWanderPhase();
     }
 
     @Override
     public void tick() {
         Trait dominant = getDominantTrait();
-
+        
         if (dominant == Trait.AGGRESSIVENESS) {
-            handleAggressiveTick();
-            return;
+            if (this.dino.tickCount % CHECK_INTERVAL == 0) {
+                if (isNonOwnerPlayerInRange(10.0)) {
+                    growl();
+                    float currentAnger = this.dino.getFeeling(Feeling.ANGER);
+                    this.dino.setFeeling(Feeling.ANGER, Math.min(1.0f, currentAnger + 0.15f));
+                }
+            }
         }
-
-        this.phaseTimer--;
-
+        
         if (isHungry()) {
-            // Override: sempre wander quando com fome
             if (currentPhase != Phase.WANDERING) {
                 currentPhase = Phase.WANDERING;
                 setResting(false);
@@ -134,9 +101,9 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
             wanderTick();
             return;
         }
-
+        
+        this.phaseTimer--;
         if (this.phaseTimer <= 0) {
-            // Transiciona entre fases
             switch (currentPhase) {
                 case WANDERING -> startRestPhase();
                 case RESTING -> startWanderPhase();
