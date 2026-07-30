@@ -171,13 +171,21 @@ public class FlyingGoal extends Goal {
     }
 
     private void findNewFlyingTarget() {
-        double x = this.entity.getX() + (this.entity.getRandom().nextDouble() - 0.5) * 16;
-        double y = this.entity.blockPosition().getY() + this.entity.getFlightAltitude()
-            + (this.entity.getRandom().nextDouble() - 0.5) * 6;
-        double z = this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 16;
+        double x = this.entity.getX() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
+        double z = this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
+        
+        int groundY = this.entity.level().getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, net.minecraft.core.BlockPos.containing(x, 0, z)).getY();
+        
+        double y = groundY + this.entity.getFlightAltitude() + (this.entity.getRandom().nextDouble() - 0.5) * 6;
+        
+        y = Math.max(groundY + 2, Math.min(y, this.entity.level().getMaxY() - 5));
 
-        y = Math.max(this.entity.blockPosition().getY() + 2, Math.min(y, this.entity.level().getMaxY() - 5));
-        targetPos = new Vec3(x, y, z);
+        net.minecraft.core.BlockPos targetBlock = net.minecraft.core.BlockPos.containing(x, y, z);
+        if (this.entity.level().isEmptyBlock(targetBlock)) {
+            targetPos = new Vec3(x, y, z);
+        } else {
+            targetPos = null;
+        }
     }
 
     private void tickLanding() {

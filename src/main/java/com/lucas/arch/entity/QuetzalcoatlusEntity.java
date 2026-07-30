@@ -71,7 +71,7 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
 
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(50.0, 0.22, 8.0)
-                .add(Attributes.FLYING_SPEED, 0.8); // Velocidade de voo desejada (blocos/tick)
+                .add(Attributes.FLYING_SPEED, 0.5);
     }
     
     @Override
@@ -242,14 +242,19 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
         super.registerGoals();
 
         this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
+        
+        // 1 e 2: Sobrevivência básica (Fome e Defesa)
+        this.goalSelector.addGoal(1, new OmnivoreHungerGoal<>(this)); 
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this));
-        this.goalSelector.addGoal(3, new NeutralBehaviorGoal<>(this));
-        this.goalSelector.addGoal(4, new FearBehaviorGoal<>(this));
-        this.goalSelector.addGoal(5, new DinosaurTemptGoal<>(this, 1.1D,
-                Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
-        this.goalSelector.addGoal(6, new OmnivoreHungerGoal<>(this));
-        this.goalSelector.addGoal(7, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
-        this.goalSelector.addGoal(8, new CuriosityBehaviorGoal<>(this));
+        this.goalSelector.addGoal(3, new FearBehaviorGoal<>(this));
+        
+        this.goalSelector.addGoal(4, new FlyingGoal(this));
+        
+        // 5 em diante: Interação e comportamentos passivos
+        this.goalSelector.addGoal(5, new DinosaurTemptGoal<>(this, 1.1D, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
+        this.goalSelector.addGoal(6, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
+        this.goalSelector.addGoal(7, new CuriosityBehaviorGoal<>(this));
+        this.goalSelector.addGoal(8, new NeutralBehaviorGoal<>(this));
         this.goalSelector.addGoal(9, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
     }
