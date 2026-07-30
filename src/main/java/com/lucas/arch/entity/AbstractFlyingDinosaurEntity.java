@@ -180,7 +180,7 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
 
     @Override
     public void travel(Vec3 travelVector) {
-        if (this.isLogicalSideForUpdatingMovement() && this.isDiving()) {
+        if (this.isDiving()) {
             this.moveRelative(0.1F, travelVector);
             this.setDeltaMovement(this.getDeltaMovement().add(0, -0.15D, 0));
             this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
