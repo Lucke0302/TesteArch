@@ -12,12 +12,12 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntity implements GeoEntity {
 
@@ -36,55 +36,15 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     private final FlyingMoveControl flyingMoveControl;
     private boolean wasFlying = false;
 
-    private class CustomFlyingMoveControl extends FlyingMoveControl {
-        private final AbstractFlyingDinosaurEntity entity;
-        private final int maxTurnX;
-
-        public CustomFlyingMoveControl(AbstractFlyingDinosaurEntity entity, int maxTurnX, boolean hoversInPlace) {
-            super(entity, maxTurnX, hoversInPlace);
-            this.entity = entity;
-            this.maxTurnX = maxTurnX;
-        }
-
-        @Override
-        public void tick() {
-            if (entity.isFlying()) {
-                double speed = entity.getAttributeValue(Attributes.FLYING_SPEED);
-                
-                if (this.operation == MoveControl.Operation.MOVE_TO) {
-                    this.operation = MoveControl.Operation.WAIT;
-                    double dx = this.wantedX - entity.getX();
-                    double dy = this.wantedY - entity.getY();
-                    double dz = this.wantedZ - entity.getZ();
-                    double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                    if (dist < 1.0E-5D) {
-                        entity.setSpeed(0.0F);
-                        return;
-                    }
-
-                    double horizontalDistSq = dx * dx + dz * dz;
-                    if (horizontalDistSq > 1.0E-3D) {
-                        float yaw = (float) (Mth.atan2(dz, dx) * (180.0D / Math.PI)) - 90.0F;
-                        entity.setYRot(this.rotlerp(entity.getYRot(), yaw, this.maxTurnX));
-                    }
-                    float pitch = (float) (-(Mth.atan2(dy, Math.sqrt(horizontalDistSq)) * (180.0D / Math.PI)));
-                    entity.setXRot(this.rotlerp(entity.getXRot(), pitch, this.maxTurnX));
-                    float speedFactor = (float) (speed * 0.5D);
-                    entity.setSpeed(speedFactor);
-                } else {
-                }
-            } else {
-                super.tick();
-            }
-        }
-    }
-
     protected AbstractFlyingDinosaurEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
         this.groundNavigation = new GroundPathNavigation(this, level);
         this.flyingNavigation = new FlyingPathNavigation(this, level);
         this.groundMoveControl = new MoveControl(this);
-        this.flyingMoveControl = new CustomFlyingMoveControl(this, 20, true);
+        
+        // Usando o controlador de voo nativo e confiável do Vanilla
+        this.flyingMoveControl = new FlyingMoveControl(this, 20, true);
+        
         this.navigation = this.groundNavigation;
         this.moveControl = this.groundMoveControl;
     }
@@ -219,16 +179,15 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     }
 
     @Override
-    public void travel(net.minecraft.world.phys.Vec3 travelVector) {
-        if (this.isFlying() && !this.isDiving()) {
-            net.minecraft.world.phys.Vec3 look = this.getLookAngle();
-            double thrust = this.getSpeed() * 2.0D;
-            net.minecraft.world.phys.Vec3 desired = look.scale(thrust);
-            this.setDeltaMovement(this.getDeltaMovement().lerp(desired, 0.2D));
+    public void travel(Vec3 travelVector) {
+        if (this.isLogicalSideForUpdatingMovement() && this.isDiving()) {
+            this.moveRelative(0.1F, travelVector);
+            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.15D, 0));
             this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.91D));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
             return;
         }
+        
         super.travel(travelVector);
     }
 
