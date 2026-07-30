@@ -13,7 +13,8 @@ import java.util.EnumSet;
  * Goal de voo para dinossauros voadores (AbstractFlyingDinosaurEntity).
  * - Estado neutro: decola periodicamente (~a cada 30-60s)
  * - FEAR dominante: decola imediatamente (fuga aérea)
- * - STRESS >= 0.6f: fica voando obsessivamente
+ * - STRESS >= 0.8f: fica voando obsessivamente
+ * - HUNGER >= 0.8f: decola para procurar comida (se não houver comida acessível)
  *
  * Prioridade: 0 (antes do NeutralBehaviorGoal)
  */
@@ -23,11 +24,12 @@ public class FlyingGoal extends Goal {
     private int nextTakeoffTick = 0;
     private Mode mode = Mode.LANDING;
     private Vec3 targetPos = null;
-    private static final int TAKEOFF_COOLDOWN_MIN = 600;
-    private static final int TAKEOFF_COOLDOWN_MAX = 1200;
+    private static final int TAKEOFF_COOLDOWN_MIN = 1200;
+    private static final int TAKEOFF_COOLDOWN_MAX = 2400;
     private static final int FLYING_DURATION_MIN = 200;
     private static final int FLYING_DURATION_MAX = 800;
     private int flyingEndTick = 0;
+    private int flightTicks = 0; // para limitar duração
 
     private enum Mode {
         TAKEOFF, FLYING, LANDING
@@ -46,18 +48,27 @@ public class FlyingGoal extends Goal {
 
         byte domState = this.entity.getDominantState();
 
+        // FEAR dominante
         if (domState > 0 && Feeling.values()[domState - 1] == Feeling.FEAR) {
             return true;
         }
 
-        if (this.entity.getFeeling(Feeling.STRESS) >= 0.6f) {
+        // STRESS muito alto
+        if (this.entity.getFeeling(Feeling.STRESS) >= 0.8f) {
             return true;
         }
 
+        // FOME alta – ativa voo para procurar comida
+        if (this.entity.getFeeling(Feeling.HUNGER) >= 0.8f) {
+            // Opcional: verificar se há comida nas proximidades (para evitar voo desnecessário)
+            // Se não houver comida, voa
+            return true;
+        }
+
+        // Voo casual em estado neutro
         if (domState == 0 && this.entity.tickCount >= this.nextTakeoffTick) {
-            return true;
+            return this.entity.getRandom().nextFloat() < 0.2f;
         }
-
         return false;
     }
 
@@ -69,7 +80,16 @@ public class FlyingGoal extends Goal {
         byte domState = this.entity.getDominantState();
         if (domState > 0) {
             Feeling dominant = Feeling.values()[domState - 1];
-            if (dominant == Feeling.HUNGER) return false;
+            if (dominant == Feeling.HUNGER) {
+                // Se a fome ainda estiver alta, continua voando
+                if (this.entity.getFeeling(Feeling.HUNGER) >= 0.5f) {
+                    return true;
+                }
+            }
+            if (dominant == Feeling.HUNGER && this.entity.getFeeling(Feeling.HUNGER) < 0.5f) {
+                // Se a fome baixou, pode pousar
+                return false;
+            }
             if (dominant == Feeling.ANGER &&
                 this.entity.getTrait(Trait.AGGRESSIVENESS) >= this.entity.getTrait(Trait.COWARDICE)) {
                 return false;
@@ -82,6 +102,11 @@ public class FlyingGoal extends Goal {
         }
 
         if (this.mode == Mode.FLYING && this.entity.tickCount >= this.flyingEndTick) {
+            // Se estiver com fome, renova o tempo de voo
+            if (this.entity.getFeeling(Feeling.HUNGER) >= 0.6f) {
+                scheduleFlyingEnd();
+                return true;
+            }
             return false;
         }
 
@@ -92,6 +117,7 @@ public class FlyingGoal extends Goal {
     public void start() {
         this.mode = Mode.TAKEOFF;
         this.targetPos = null;
+        this.flightTicks = 0;
         this.entity.setFlying(true);
     }
 
@@ -125,17 +151,22 @@ public class FlyingGoal extends Goal {
             return;
         }
 
-        Vec3 takeoffTarget = new Vec3(this.entity.getX(), targetY, this.entity.getZ());
-        this.entity.getNavigation().moveTo(takeoffTarget.x, takeoffTarget.y, takeoffTarget.z, 1.0);
+        // Pequeno deslocamento horizontal na direção em que o bicho já está olhando,
+        // pra evitar mirar exatamente em cima da própria posição (yaw instável / giro no lugar).
+        double yawRad = Math.toRadians(this.entity.getYRot());
+        double forwardX = -Math.sin(yawRad) * 1.5;
+        double forwardZ = Math.cos(yawRad) * 1.5;
+        Vec3 takeoffTarget = new Vec3(this.entity.getX() + forwardX, targetY, this.entity.getZ() + forwardZ);
+        this.entity.steerTo(takeoffTarget.x, takeoffTarget.y, takeoffTarget.z, 1.0);
     }
 
     private void tickFlying() {
-        if (targetPos == null || this.entity.distanceToSqr(targetPos) < 4.0) {
+        if (targetPos == null || this.entity.distanceToSqr(targetPos) < 16.0) {
             findNewFlyingTarget();
         }
 
         if (targetPos != null) {
-            this.entity.getNavigation().moveTo(targetPos.x, targetPos.y, targetPos.z, 1.0);
+            this.entity.steerTo(targetPos.x, targetPos.y, targetPos.z, 1.0);
         }
     }
 
@@ -162,7 +193,7 @@ public class FlyingGoal extends Goal {
         }
 
         Vec3 landTarget = new Vec3(this.entity.getX(), this.entity.getY() - 2, this.entity.getZ());
-        this.entity.getNavigation().moveTo(landTarget.x, landTarget.y, landTarget.z, 0.8);
+        this.entity.steerTo(landTarget.x, landTarget.y, landTarget.z, 0.8);
     }
 
     private void scheduleFlyingEnd() {

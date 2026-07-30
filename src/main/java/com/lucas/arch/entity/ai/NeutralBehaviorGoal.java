@@ -1,6 +1,7 @@
 package com.lucas.arch.entity.ai;
 
 import com.lucas.arch.entity.AbstractDinosaurEntity;
+import com.lucas.arch.entity.AbstractFlyingDinosaurEntity;
 import com.lucas.arch.entity.AgeTier;
 import com.lucas.arch.entity.Feeling;
 import com.lucas.arch.entity.FeelingDrivenEntity;
@@ -60,6 +61,8 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
         // Se estiver dormindo (tranquilizante), não interfere
         if (this.dino instanceof AbstractDinosaurEntity ad && ad.isSleeping()) return false;
 
+        if (this.dino instanceof AbstractFlyingDinosaurEntity afd && afd.isFlying()) return false;
+
         return true;
     }
 
@@ -82,6 +85,13 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
     @Override
     public void tick() {
         Trait dominant = getDominantTrait();
+
+        if (currentPhase == Phase.RESTING) {
+            if (this.dino instanceof AbstractDinosaurEntity ad && !ad.canRest()) {
+                startWanderPhase();
+                return;
+            }
+        }
         
         if (dominant == Trait.AGGRESSIVENESS) {
             if (this.dino.tickCount % CHECK_INTERVAL == 0) {
@@ -134,6 +144,12 @@ public class NeutralBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> 
     }
 
     private void startRestPhase() {
+        if (this.dino instanceof AbstractDinosaurEntity ad) {
+            if (!ad.canRest()) {
+                startWanderPhase();
+                return;
+            }
+        }
         currentPhase = Phase.RESTING;
         setResting(true);
         this.dino.getNavigation().stop();

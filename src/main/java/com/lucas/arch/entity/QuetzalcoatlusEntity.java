@@ -70,7 +70,8 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return baseAttributes(50.0, 0.22, 8.0);
+        return baseAttributes(50.0, 0.22, 8.0)
+                .add(Attributes.FLYING_SPEED, 0.8); // Velocidade de voo desejada (blocos/tick)
     }
     
     @Override
@@ -191,12 +192,9 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
         }
 
         if (this.isFlying()) {
-            if (event.isMoving()) {
-                return event.setAndContinue(RawAnimation.begin()
-                    .thenLoop("animation.quetzalcoatlus.fly"));
-            }
             return event.setAndContinue(RawAnimation.begin()
-                .thenLoop("animation.quetzalcoatlus.pose"));
+                .thenLoop("animation.quetzalcoatlus.fly"));
+
         }
 
         boolean isMoving = event.isMoving();
@@ -243,13 +241,13 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
     protected void registerGoals() {
         super.registerGoals();
 
-        this.goalSelector.addGoal(1, new SleepBehaviorGoal<>(this));    
-        this.goalSelector.addGoal(2, new NeutralBehaviorGoal<>(this));
+        this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this));
-        this.goalSelector.addGoal(1, new FearBehaviorGoal<>(this)); 
-        this.goalSelector.addGoal(4, new DinosaurTemptGoal<>(this, 1.1D,
+        this.goalSelector.addGoal(3, new NeutralBehaviorGoal<>(this));
+        this.goalSelector.addGoal(4, new FearBehaviorGoal<>(this));
+        this.goalSelector.addGoal(5, new DinosaurTemptGoal<>(this, 1.1D,
                 Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
-        this.goalSelector.addGoal(5, new OmnivoreHungerGoal<>(this));
+        this.goalSelector.addGoal(6, new OmnivoreHungerGoal<>(this));
         this.goalSelector.addGoal(7, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
         this.goalSelector.addGoal(8, new CuriosityBehaviorGoal<>(this));
         this.goalSelector.addGoal(9, new WaterAvoidingRandomStrollGoal(this, 1.0D));

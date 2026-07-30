@@ -40,26 +40,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
-/**
- * Base comum a todas as entidades "sencientes" do mod (Feelings/Traits/Growth/Scale/Tame).
- * Extraído de AllosaurusEntity + PachycephalosaurusEntity — NÃO altere a mecânica sem
- * revisar as duas subclasses e o BehaviorResolver.
- *
- * O que a subclasse ainda precisa fazer:
- *  - registerGoals() (composição das fuzzy goals + tempt/follow/stroll)
- *  - mobInteract() (dieta específica: qual tag de comida, chance de tame)
- *  - feedSaturation(ItemStack, boolean bonus) — carnívoro tem hunt bonus, herbívoro não
- *  - registerControllers() (GeckoLib, animações específicas do modelo)
- *  - doHurtTarget()/hurtServer() extras se a espécie tiver efeito colateral de combate
- *
- * NOTA (correção 2026-07-28): isSleeping/isResting foram promovidos de campos Java simples
- * para EntityDataAccessor<Boolean> sincronizados. Antes disso, tickTranquilizer() e
- * NeutralBehaviorGoal#setResting() alteravam apenas a instância server-side da entidade —
- * a instância client-side (a que o GeckoLib AnimationController realmente consulta em
- * registerControllers()) nunca recebia a mudança, então a lógica de sono/descanso
- * funcionava (navegação parava, etc.) mas a animação de "sleep" nunca era ativada.
- * Ver README.md (seção "Sincronização de Estado Visual") e CODEMAP.md (2.2.1) para mais detalhes.
- */
 public abstract class AbstractDinosaurEntity extends TamableAnimal implements GeoEntity, FeelingDrivenEntity {
 
     protected final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -73,7 +53,8 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     public static final EntityDataAccessor<Boolean> IS_SLEEPING_SYNC = SynchedEntityData.defineId(AbstractDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> IS_RESTING_SYNC = SynchedEntityData.defineId(AbstractDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
 
-    private static final float DOMINANT_STATE_THRESHOLD = 0.3f;
+    // AUMENTADO de 0.3f para 0.5f – só feelings acima de 50% contam como dominantes
+    private static final float DOMINANT_STATE_THRESHOLD = 0.5f;
     protected static final int TICKS_TO_GROW = 1200;
     protected static final float SATURATION_TO_GROW = 4.0f;
     private static final int MAX_SCAN_DISTANCE = 64;
@@ -107,19 +88,9 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     protected abstract float getAdultSpawnScale();
     protected abstract String getColorNbtKey();
     protected abstract String getScaleNbtKey();
-
-    /**
-     * @return raio mínimo do recinto para o dinossauro não sentir estresse.
-     * 0f = desativado (não sente estresse por espaço).
-     */
     protected abstract float getMinEnclosureRadius();
 
-    // --- Sistema de Estresse por Raio de Jaula ---
-
-    /**
-     * Escaneia em 8 direções cardeais no mesmo Y para encontrar a menor distância
-     * até um bloco de colisão sólida. Retorna o raio livre mínimo encontrado.
-     */
+    // --- Sistema de Estresse por Raio de Jaula (sem alterações) ---
     protected float scanHorizontalRadius(int yLevel) {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         float minDist = MAX_SCAN_DISTANCE;
@@ -128,8 +99,6 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
             { -1, 0 }, { -1, -1 }, { 0, -1 }, { 1, -1 }
         };
         Level level = this.level();
-        CollisionContext ctx = CollisionContext.of(this);
-
         for (int[] dir : directions) {
             int dx = dir[0];
             int dz = dir[1];
@@ -149,17 +118,11 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         return minDist;
     }
 
-    /**
-     * Escaneia verticalmente para cima a partir do Y+1 até o primeiro bloco sólido.
-     * Usado por voadores para medir pé-direito.
-     */
     protected float scanVerticalClearance() {
         Level level = this.level();
-        CollisionContext ctx = CollisionContext.of(this);
         int startY = this.blockPosition().getY() + 1;
         int maxY = level.getMaxY();
         int limit = Math.min(startY + MAX_SCAN_DISTANCE, maxY);
-
         for (int y = startY; y < limit; y++) {
             BlockPos checkPos = new BlockPos(this.blockPosition().getX(), y, this.blockPosition().getZ());
             BlockState state = level.getBlockState(checkPos);
@@ -170,24 +133,16 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         return limit - startY;
     }
 
-    /**
-     * Calcula o estresse por confinamento. Terrestres: só scan horizontal no chão.
-     * Voadores: override que faz média entre scan no chão, scan na altitude de voo e scan vertical.
-     * Se getMinEnclosureRadius() == 0, retorna 0 (desativado).
-     */
     protected void calculateEnclosureStress() {
         float requiredRadius = getMinEnclosureRadius();
         if (requiredRadius <= 0f) return;
-
         float horizontalDist = scanHorizontalRadius(this.blockPosition().getY());
-
         float stress;
         if (horizontalDist >= requiredRadius) {
             stress = 0f;
         } else {
             stress = 1.0f - (horizontalDist / requiredRadius);
         }
-
         stress = Mth.clamp(stress, 0.0f, 1.0f);
         setFeeling(Feeling.STRESS, stress);
     }
@@ -353,8 +308,9 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         float glut = getTrait(Trait.GLUTTONY), curio = getTrait(Trait.CURIOSITY);
 
         float stressLevel = getFeeling(Feeling.STRESS);
-        float stressAngerMultiplier = stressLevel >= 0.5f ? 1.3f : 1.0f;
-        float stressFearMultiplier = stressLevel >= 0.5f ? 1.2f : 1.0f;
+        // REDUZIDO o impacto do stress – multiplicadores menores
+        float stressAngerMultiplier = stressLevel >= 0.5f ? 1.1f : 1.0f;
+        float stressFearMultiplier = stressLevel >= 0.5f ? 1.05f : 1.0f;
 
         for (Feeling feeling : Feeling.values()) {
             if (feeling == Feeling.STRESS) continue;
@@ -465,10 +421,10 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
             }
         }
 
-        // Decaimento específico do STRESS: só decai a cada 1200 ticks
+        // DECAIMENTO MAIS RÁPIDO DO STRESS: 0.01 em vez de 0.005
         float currentStress = getFeeling(Feeling.STRESS);
         if (currentStress >= 0.01f && this.tickCount % 1200 == 0) {
-            setFeeling(Feeling.STRESS, currentStress - 0.005f);
+            setFeeling(Feeling.STRESS, currentStress - 0.01f);
         }
 
         if (this.tickCount % 1200 == 0) {
@@ -476,7 +432,6 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
             setFeeling(Feeling.HUNGER, getFeeling(Feeling.HUNGER) + 0.05f + (gluttony * 0.05f));
         }
 
-        // Recalcular estresse por jaula a cada 1200 ticks (1 minuto)
         if (this.tickCount % 1200 == 0) {
             calculateEnclosureStress();
         }
@@ -485,14 +440,11 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         updateDominantState();
 
         long timeOfDay = level.getDefaultClockTime() % 24000L;
-        
         boolean isNight = timeOfDay >= 13000 && timeOfDay < 23000;
-        
         boolean isSleepTime = isDiurnal() ? isNight : !isNight;
 
         if (this.isSleeping()) {
             boolean isTranquilized = this.attachedDarts >= Math.ceil(this.getBbHeight()) && this.tranquilizerTicks >= 300;
-            
             if (!isTranquilized) {
                 if (!isSleepTime || this.getFeeling(Feeling.HUNGER) >= 0.8f) {
                     this.setSleeping(false);
@@ -500,10 +452,10 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
                 }
             }
         } else {
-            if (isSleepTime) {
+            if (this.canSleep() && isSleepTime) {
                 byte domState = this.getDominantState();
                 float feelingVal = domState > 0 ? getFeeling(Feeling.values()[domState - 1]) : 0.0f;
-                
+                // PERMITE DORMIR mesmo com dominantState ativo, desde que o feeling seja baixo (<= 0.5)
                 if (domState == 0 || feelingVal <= 0.5f) {
                     if (this.tickCount % 200 == 0 && this.random.nextFloat() < 0.20f) {
                         this.setSleeping(true);
@@ -537,51 +489,42 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         this.attachedDarts++;
     }
 
-    /**
-     * @return true se estiver dormindo por tranquilizante.
-     * Lê o valor sincronizado (EntityDataAccessor), então funciona corretamente
-     * tanto na instância server-side (lógica) quanto na client-side (GeckoLib).
-     */
+    protected boolean canSleep() {
+        return true;
+    }
+
+    public boolean canRest() {
+        return true;
+    }
+
     @Override
     public boolean isSleeping() {
         return this.entityData.get(IS_SLEEPING_SYNC);
     }
 
-    /**
-     * @return true se estiver descansando/deitado (comportamento passivo por trait).
-     * Também sincronizado — ver nota da classe.
-     */
     public boolean isResting() {
         return this.entityData.get(IS_RESTING_SYNC);
     }
 
-    /**
-     * Define se o dinossauro está descansando/deitado (comportamento passivo por trait).
-     * Chamado a partir de NeutralBehaviorGoal. Só deve ser chamado no lado servidor;
-     * o valor é replicado automaticamente para o cliente via SynchedEntityData.
-     */
     public void setResting(boolean resting) {
         this.entityData.set(IS_RESTING_SYNC, resting);
     }
 
-    private void setSleeping(boolean sleeping) {
+    protected void setSleeping(boolean sleeping) {
         this.entityData.set(IS_SLEEPING_SYNC, sleeping);
     }
 
     protected void tickTranquilizer() {
-        int requiredDoses = (int) Math.ceil(this.getBbHeight()); 
-        
+        int requiredDoses = (int) Math.ceil(this.getBbHeight());
         if (this.attachedDarts >= requiredDoses) {
             this.tranquilizerTicks++;
-            
             if (this.tranquilizerTicks == 300) {
                 this.setSleeping(true);
                 this.getNavigation().stop();
                 this.setTarget(null);
-                this.triggerAnim("main_controller", "sleep"); 
+                this.triggerAnim("main_controller", "sleep");
             }
-            
-            if (this.tranquilizerTicks > 3600) { 
+            if (this.tranquilizerTicks > 3600) {
                 this.setSleeping(false);
                 this.attachedDarts = 0;
                 this.tranquilizerTicks = 0;

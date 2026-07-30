@@ -1,73 +1,103 @@
 package com.lucas.arch.entity;
 
 import com.geckolib.animatable.GeoEntity;
-import com.lucas.arch.entity.ai.CasualFlightGoal;
-import com.lucas.arch.entity.ai.FearFlightGoal;
+import com.lucas.arch.entity.ai.FlyingGoal;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth; 
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
 
-/**
- * Base para dinossauros voadores. Extende AbstractDinosaurEntity com:
- * - Sincronização de estado de voo (IS_FLYING)
- * - FlyingPathNavigation (navegação aérea)
- * - Default dimensions com asa aberta/fechada
- * - Override de calculateEnclosureStress() que faz média de 3 scans
- */
 public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntity implements GeoEntity {
 
     public static final EntityDataAccessor<Boolean> IS_FLYING = SynchedEntityData.defineId(
         AbstractFlyingDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
-
     public static final EntityDataAccessor<Boolean> IS_DIVING = SynchedEntityData.defineId(
         AbstractFlyingDinosaurEntity.class, EntityDataSerializers.BOOLEAN);
-
-    public int diveEndTick = 0;
-
     public static final EntityDataAccessor<Float> FLIGHT_ALTITUDE = SynchedEntityData.defineId(
         AbstractFlyingDinosaurEntity.class, EntityDataSerializers.FLOAT);
 
+    public int diveEndTick = 0;
+
+    private final GroundPathNavigation groundNavigation;
+    private final FlyingPathNavigation flyingNavigation;
+    private final MoveControl groundMoveControl;
+    private final FlyingMoveControl flyingMoveControl;
+    private boolean wasFlying = false;
+
+    private class CustomFlyingMoveControl extends FlyingMoveControl {
+        private final AbstractFlyingDinosaurEntity entity;
+        private final int maxTurnX;
+
+        public CustomFlyingMoveControl(AbstractFlyingDinosaurEntity entity, int maxTurnX, boolean hoversInPlace) {
+            super(entity, maxTurnX, hoversInPlace);
+            this.entity = entity;
+            this.maxTurnX = maxTurnX;
+        }
+
+        @Override
+        public void tick() {
+            if (entity.isFlying()) {
+                double speed = entity.getAttributeValue(Attributes.FLYING_SPEED);
+                
+                if (this.operation == MoveControl.Operation.MOVE_TO) {
+                    this.operation = MoveControl.Operation.WAIT;
+                    double dx = this.wantedX - entity.getX();
+                    double dy = this.wantedY - entity.getY();
+                    double dz = this.wantedZ - entity.getZ();
+                    double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    if (dist < 1.0E-5D) {
+                        entity.setSpeed(0.0F);
+                        return;
+                    }
+
+                    double horizontalDistSq = dx * dx + dz * dz;
+                    if (horizontalDistSq > 1.0E-3D) {
+                        float yaw = (float) (Mth.atan2(dz, dx) * (180.0D / Math.PI)) - 90.0F;
+                        entity.setYRot(this.rotlerp(entity.getYRot(), yaw, this.maxTurnX));
+                    }
+                    float pitch = (float) (-(Mth.atan2(dy, Math.sqrt(horizontalDistSq)) * (180.0D / Math.PI)));
+                    entity.setXRot(this.rotlerp(entity.getXRot(), pitch, this.maxTurnX));
+                    float speedFactor = (float) (speed * 0.5D);
+                    entity.setSpeed(speedFactor);
+                } else {
+                }
+            } else {
+                super.tick();
+            }
+        }
+    }
+
     protected AbstractFlyingDinosaurEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
+        this.groundNavigation = new GroundPathNavigation(this, level);
+        this.flyingNavigation = new FlyingPathNavigation(this, level);
+        this.groundMoveControl = new MoveControl(this);
+        this.flyingMoveControl = new CustomFlyingMoveControl(this, 20, true);
+        this.navigation = this.groundNavigation;
+        this.moveControl = this.groundMoveControl;
     }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(0, new FearFlightGoal(this));
-        this.goalSelector.addGoal(3, new CasualFlightGoal(this));
+        this.goalSelector.addGoal(1, new FlyingGoal(this));
     }
 
-    public void startSleeping() {
-        if (this.isFlying()) {
-            this.setFlying(false);
-            int groundY = this.level().getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, this.blockPosition()).getY();
-            this.teleportTo(this.getX(), groundY, this.getZ());
-        }
-    }
-
-    public boolean isDiving() {
-        return this.entityData.get(IS_DIVING);
-    }
-
-    public void startDiving() {
-        this.setFlying(false);
-    }
-
-    public boolean hasDiveAnimation() {
-        return false;
+    @Override
+    public boolean canRest() {
+        return super.canRest() && !this.isFlying();
     }
 
     @Override
@@ -92,10 +122,6 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
         this.entityData.set(FLIGHT_ALTITUDE, input.getFloatOr("FlightAltitude", getFlightAltitude()));
     }
 
-
-    /**
-     * @return altitude padrão de voo em blocos acima do chão.
-     */
     public abstract float getFlightAltitude();
 
     public boolean isFlying() {
@@ -103,16 +129,57 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     }
 
     public void setFlying(boolean flying) {
+        boolean wasFlyingBefore = this.entityData.get(IS_FLYING);
         this.entityData.set(IS_FLYING, flying);
+        if (flying) {
+            this.setSleeping(false);
+            this.setResting(false);
+        }
+
+        if (flying != wasFlyingBefore) {
+            if (flying) {
+                this.setNoGravity(true);
+                this.navigation = this.flyingNavigation;
+                this.moveControl = this.flyingMoveControl;
+                this.setPose(Pose.STANDING);
+            } else {
+                this.setNoGravity(false);
+                this.navigation = this.groundNavigation;
+                this.moveControl = this.groundMoveControl;
+                this.setResting(false);
+                this.setSleeping(false);
+            }
+            this.getNavigation().stop();
+        }
+        this.wasFlying = flying;
     }
 
-    @Override
-    protected PathNavigation createNavigation(Level level) {
-        GroundPathNavigation nav = new GroundPathNavigation(this, level);
-        nav.setCanFloat(true);
-        return nav;
+    public boolean isDiving() {
+        return this.entityData.get(IS_DIVING);
     }
 
+    public void startDiving() {
+        this.setFlying(false);
+    }
+
+    public boolean hasDiveAnimation() {
+        return false;
+    }
+
+    public void steerTo(double x, double y, double z, double speedModifier) {
+        this.moveControl.setWantedPosition(x, y, z, speedModifier);
+    }
+
+    public void startSleeping() {
+        if (this.isFlying()) {
+            this.setFlying(false);
+            int groundY = this.level().getHeightmapPos(
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING,
+                this.blockPosition()
+            ).getY();
+            this.teleportTo(this.getX(), groundY, this.getZ());
+        }
+    }
 
     @Override
     public EntityDimensions getDefaultDimensions(Pose pose) {
@@ -123,56 +190,54 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
         return base;
     }
 
-
     @Override
     protected void calculateEnclosureStress() {
         float requiredRadius = getMinEnclosureRadius();
         if (requiredRadius <= 0f) return;
 
         float groundDist = scanHorizontalRadius(this.blockPosition().getY());
-
         int flightY = this.blockPosition().getY() + (int) getFlightAltitude();
         float flightDist = scanHorizontalRadius(flightY);
-
         float verticalClearance = scanVerticalClearance();
 
         float avgDist = (groundDist * 0.4f) + (flightDist * 0.4f) + (verticalClearance * 0.2f);
 
-        float stress;
-        if (avgDist >= requiredRadius) {
-            stress = 0f;
-        } else {
-            stress = 1.0f - (avgDist / requiredRadius);
-        }
-
+        float stress = (avgDist >= requiredRadius) ? 0f : 1.0f - (avgDist / requiredRadius);
         setFeeling(Feeling.STRESS, net.minecraft.util.Mth.clamp(stress, 0.0f, 1.0f));
     }
 
     @Override
     public void tick() {
         super.tick();
+
         if (!this.level().isClientSide()) {
             if (this.isDiving() && this.tickCount >= this.diveEndTick) {
                 this.entityData.set(IS_DIVING, false);
                 this.setFlying(false);
             }
-
-            boolean flying = this.isFlying();
-            if (flying && !this.isNoGravity()) {
-                this.setNoGravity(true);
-                this.navigation = new FlyingPathNavigation(this, this.level());
-                this.moveControl = new FlyingMoveControl(this, 20, true);
-            } else if (!flying && this.isNoGravity()) {
-                this.setNoGravity(false);
-                this.navigation = new GroundPathNavigation(this, this.level());
-                this.moveControl = new MoveControl(this);
-            }
         }
+    }
+
+    @Override
+    public void travel(net.minecraft.world.phys.Vec3 travelVector) {
+        if (this.isFlying() && !this.isDiving()) {
+            net.minecraft.world.phys.Vec3 look = this.getLookAngle();
+            double thrust = this.getSpeed() * 2.0D;
+            net.minecraft.world.phys.Vec3 desired = look.scale(thrust);
+            this.setDeltaMovement(this.getDeltaMovement().lerp(desired, 0.2D));
+            this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.91D));
+            return;
+        }
+        super.travel(travelVector);
     }
 
     @Override
     public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
         if (source.is(net.minecraft.world.damagesource.DamageTypes.FALL) && this.isFlying()) {
+            return false;
+        }
+        if (source.is(net.minecraft.world.damagesource.DamageTypes.IN_WALL) && this.isFlying()) {
             return false;
         }
         return super.hurtServer(level, source, amount);
