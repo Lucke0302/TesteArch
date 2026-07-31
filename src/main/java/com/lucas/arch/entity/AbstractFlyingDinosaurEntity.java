@@ -133,9 +133,6 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     }
 
     public void steerTo(double x, double y, double z, double speedModifier) {
-        if (this.tickCount % 20 == 0) {
-            System.out.println("[QUETZAL DEBUG] steerTo() -> Direcionando para X: " + x + " Y: " + y + " Z: " + z + " | Distância até o alvo: " + this.distanceToSqr(x, y, z));
-        }
         this.moveControl.setWantedPosition(x, y, z, speedModifier);
     }
 
