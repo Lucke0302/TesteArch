@@ -57,19 +57,22 @@ public class FlyingGoal extends Goal {
         if (this.entity.isSleeping()) return false;
         if (this.entity.isResting()) return false;
 
-        if (this.entity.getFeeling(Feeling.STRESS) >= HIGH_STRESS_NO_FLY_THRESHOLD) {
-            return false;
-        }
-
-        if (isFearDominant()) {
+        if (this.entity.isFlying()) {
             return true;
         }
 
+        if (this.entity.getFeeling(Feeling.STRESS) >= HIGH_STRESS_NO_FLY_THRESHOLD) {
+            return false;
+        }
+        if (isFearDominant()) {
+            return true;
+        }
+        
         if (this.entity.tickCount >= this.nextCasualFlightCheckTick) {
             this.nextCasualFlightCheckTick = this.entity.tickCount + CASUAL_FLIGHT_CHECK_INTERVAL;
             return this.entity.getRandom().nextFloat() < CASUAL_FLIGHT_CHANCE;
         }
-
+        
         return false;
     }
 
