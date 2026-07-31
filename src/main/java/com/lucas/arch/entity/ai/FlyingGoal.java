@@ -13,7 +13,6 @@ public class FlyingGoal extends Goal {
     private Mode mode = Mode.LANDING;
     private Vec3 targetPos = null;
     
-    // Variáveis do Anti-Stuck
     private Vec3 lastPos = Vec3.ZERO;
     private int stuckTicks = 0;
 
@@ -111,7 +110,6 @@ public class FlyingGoal extends Goal {
 
     @Override
     public void tick() {
-        // Atualiza a mecânica de travamento
         if (this.entity.tickCount % 20 == 0) {
             if (this.lastPos.distanceToSqr(this.entity.position()) < 1.0) {
                 this.stuckTicks += 20;
@@ -148,7 +146,6 @@ public class FlyingGoal extends Goal {
     }
 
     private void tickFlying() {
-        // Força buscar um novo alvo se alcançou o atual OU se está preso há 3 segundos
         if (targetPos == null || this.entity.distanceToSqr(targetPos) < 16.0 || this.stuckTicks >= 60) {
             findNewFlyingTarget();
             this.stuckTicks = 0;
@@ -192,14 +189,12 @@ public class FlyingGoal extends Goal {
             this.entity.blockPosition()
         ).getY();
 
-        // Aumentamos a margem de colisão para 1.5 para ele não bugar dentro do chão antes de desligar o voo
         if (this.entity.getY() <= groundY + 1.5) {
             this.entity.setFlying(false);
             this.entity.getNavigation().stop();
             return;
         }
 
-        // Sistema de planeio (gliding): se não tem alvo ou se travou no ar, busca um ponto à frente e abaixo
         if (targetPos == null || this.entity.getY() < targetPos.y + 2 || this.stuckTicks >= 40) {
             double forwardX = this.entity.getX() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
             double forwardZ = this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 24;

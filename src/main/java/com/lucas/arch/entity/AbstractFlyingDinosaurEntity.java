@@ -91,28 +91,29 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     }
 
     public void setFlying(boolean flying) {
-        System.out.println("[QUETZAL DEBUG] setFlying chamado. Novo valor: " + flying + " | Estava voando: " + this.entityData.get(IS_FLYING) + " | isClientSide: " + this.level().isClientSide());
-        
         boolean wasFlyingBefore = this.entityData.get(IS_FLYING);
+        this.entityData.set(IS_FLYING, flying);
+
         this.entityData.set(IS_FLYING, flying);
         if (flying) {
             this.setSleeping(false);
             this.setResting(false);
         }
+        
         if (flying != wasFlyingBefore) {
             if (flying) {
                 this.setNoGravity(true);
                 this.navigation = this.flyingNavigation;
                 this.moveControl = this.flyingMoveControl;
                 this.setPose(Pose.STANDING);
-                System.out.println("[QUETZAL DEBUG] Trocado para FlyingNavigation e FlyingMoveControl");
             } else {
                 this.setNoGravity(false);
                 this.navigation = this.groundNavigation;
                 this.moveControl = this.groundMoveControl;
                 this.setResting(false);
                 this.setSleeping(false);
-                System.out.println("[QUETZAL DEBUG] Trocado para GroundNavigation e GroundMoveControl");
+                
+                this.fallDistance = 0.0F; 
             }
             this.getNavigation().stop();
         }
@@ -201,7 +202,7 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
 
     @Override
     public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
-        if (source.is(net.minecraft.world.damagesource.DamageTypes.FALL) && this.isFlying()) {
+        if (source.is(net.minecraft.world.damagesource.DamageTypes.FALL)) {
             return false;
         }
         if (source.is(net.minecraft.world.damagesource.DamageTypes.IN_WALL) && this.isFlying()) {
