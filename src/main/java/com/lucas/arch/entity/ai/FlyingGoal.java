@@ -143,21 +143,31 @@ public class FlyingGoal extends Goal {
     }
 
     private void findNewFlyingTarget() {
-        double x = this.entity.getX() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
-        double z = this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
+        for (int attempt = 0; attempt < 8; attempt++) {
+            double x = this.entity.getX() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
+            double z = this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
 
-        int groundY = this.entity.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, BlockPos.containing(x, 0, z)).getY();
+            int groundY = this.entity.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, BlockPos.containing(x, 0, z)).getY();
 
-        double y = groundY + this.entity.getFlightAltitude() + (this.entity.getRandom().nextDouble() - 0.5) * 6;
+            double y = groundY + this.entity.getFlightAltitude() + (this.entity.getRandom().nextDouble() - 0.5) * 6;
+            y = Math.max(groundY + 2, Math.min(y, this.entity.level().getMaxY() - 5));
 
-        y = Math.max(groundY + 2, Math.min(y, this.entity.level().getMaxY() - 5));
-
-        BlockPos targetBlock = BlockPos.containing(x, y, z);
-        if (this.entity.level().isEmptyBlock(targetBlock)) {
-            targetPos = new Vec3(x, y, z);
-        } else {
-            targetPos = null;
+            BlockPos targetBlock = BlockPos.containing(x, y, z);
+            if (this.entity.level().isEmptyBlock(targetBlock)) {
+                targetPos = new Vec3(x, y, z);
+                return;
+            }
         }
+
+        double fallbackY = Math.min(
+            this.entity.getY() + this.entity.getFlightAltitude() * 0.25,
+            this.entity.level().getMaxY() - 5
+        );
+        targetPos = new Vec3(
+            this.entity.getX() + (this.entity.getRandom().nextDouble() - 0.5) * 24,
+            fallbackY,
+            this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 24
+        );
     }
 
     private void tickLanding() {
