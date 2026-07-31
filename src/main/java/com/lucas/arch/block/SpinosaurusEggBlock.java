@@ -3,18 +3,22 @@ package com.lucas.arch.block;
 import com.lucas.arch.block.entity.SpinosaurusEggBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class SpinosaurusEggBlock extends Block implements EntityBlock {
+public class SpinosaurusEggBlock extends AbstractDinosaurEggBlock {
 
     public SpinosaurusEggBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected boolean isValidBaseBlock(BlockState state) {
+        return super.isValidBaseBlock(state) || state.is(Blocks.SAND); 
     }
 
     @Nullable

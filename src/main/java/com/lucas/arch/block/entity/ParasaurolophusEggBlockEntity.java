@@ -1,6 +1,5 @@
 package com.lucas.arch.block.entity;
 
-import com.lucas.arch.entity.PachycephalosaurusEntity;
 import com.lucas.arch.entity.ParasaurolophusEntity;
 import com.lucas.arch.registry.ModBlockEntities;
 import com.lucas.arch.registry.ModEntities;
