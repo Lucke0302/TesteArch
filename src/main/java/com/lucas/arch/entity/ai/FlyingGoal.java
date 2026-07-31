@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 import com.lucas.arch.entity.AbstractFlyingDinosaurEntity;
 import com.lucas.arch.entity.Feeling;
-import com.lucas.arch.entity.Trait;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -13,25 +12,29 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Goal de voo para dinossauros voadores (AbstractFlyingDinosaurEntity).
- * - Estado neutro: decola periodicamente (~a cada 30-60s)
- * - FEAR dominante: decola imediatamente (fuga aérea)
- * - STRESS >= 0.8f: fica voando obsessivamente
- * - HUNGER >= 0.8f: decola para procurar comida (se não houver comida acessível)
+ * Ciclo padrão: Walk/Run no chão.
+ * - MEDO dominante: decola imediatamente (fuga aérea), mantém-se voando
+ *   enquanto o medo continuar dominante.
+ * - Caso contrário (neutro ou qualquer outro sentimento): a cada
+ *   CASUAL_FLIGHT_CHECK_INTERVAL ticks, rola UMA chance de decolar por
+ *   voo casual.
  *
- * Prioridade: 0 (antes do NeutralBehaviorGoal)
+ * Prioridade: 4 (ver QuetzalcoatlusEntity#registerGoals)
  */
 public class FlyingGoal extends Goal {
 
     private final AbstractFlyingDinosaurEntity entity;
-    private int nextTakeoffTick = 0;
+
     private Mode mode = Mode.LANDING;
     private Vec3 targetPos = null;
-    private static final int TAKEOFF_COOLDOWN_MIN = 1200;
-    private static final int TAKEOFF_COOLDOWN_MAX = 2400;
+
+    private static final int CASUAL_FLIGHT_CHECK_INTERVAL = 400;
+    private static final float CASUAL_FLIGHT_CHANCE = 0.2f;
+    private int nextCasualFlightCheckTick = 0;
+
     private static final int FLYING_DURATION_MIN = 200;
     private static final int FLYING_DURATION_MAX = 800;
     private int flyingEndTick = 0;
-    private int flightTicks = 0;
 
     private enum Mode {
         TAKEOFF, FLYING, LANDING
@@ -42,28 +45,26 @@ public class FlyingGoal extends Goal {
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
+    private boolean isFearDominant() {
+        byte domState = this.entity.getDominantState();
+        return domState > 0 && Feeling.values()[domState - 1] == Feeling.FEAR;
+    }
+
     @Override
     public boolean canUse() {
         if (!this.entity.isAlive()) return false;
         if (this.entity.isSleeping()) return false;
         if (this.entity.isResting()) return false;
 
-        byte domState = this.entity.getDominantState();
-
-        if (domState > 0 && Feeling.values()[domState - 1] == Feeling.FEAR) {
+        if (isFearDominant()) {
             return true;
         }
 
-        if (this.entity.getFeeling(Feeling.STRESS) >= 0.8f) {
-            return true;
-        }
-        if (this.entity.getFeeling(Feeling.HUNGER) >= 0.8f) {
-            return true;
+        if (this.entity.tickCount >= this.nextCasualFlightCheckTick) {
+            this.nextCasualFlightCheckTick = this.entity.tickCount + CASUAL_FLIGHT_CHECK_INTERVAL;
+            return this.entity.getRandom().nextFloat() < CASUAL_FLIGHT_CHANCE;
         }
 
-        if (domState == 0 && this.entity.tickCount >= this.nextTakeoffTick) {
-            return this.entity.getRandom().nextFloat() < 0.2f;
-        }
         return false;
     }
 
@@ -76,34 +77,11 @@ public class FlyingGoal extends Goal {
             return this.entity.isFlying();
         }
 
-        byte domState = this.entity.getDominantState();
-        if (domState > 0) {
-            Feeling dominant = Feeling.values()[domState - 1];
-
-            if (dominant == Feeling.HUNGER) {
-                if (this.entity.getFeeling(Feeling.HUNGER) < 0.5f) {
-                    this.mode = Mode.LANDING;
-                }
-                return true;
-            }
-
-            if (dominant == Feeling.ANGER &&
-                this.entity.getTrait(Trait.AGGRESSIVENESS) >= this.entity.getTrait(Trait.COWARDICE)) {
-                this.mode = Mode.LANDING;
-                return true;
-            }
-
-            if (dominant == Feeling.CURIOSITY) {
-                this.mode = Mode.LANDING;
-                return true;
-            }
+        if (isFearDominant()) {
+            return true;
         }
 
         if (this.mode == Mode.FLYING && this.entity.tickCount >= this.flyingEndTick) {
-            if (this.entity.getFeeling(Feeling.HUNGER) >= 0.6f) {
-                scheduleFlyingEnd();
-                return true;
-            }
             this.mode = Mode.LANDING;
         }
 
@@ -114,7 +92,6 @@ public class FlyingGoal extends Goal {
     public void start() {
         this.mode = Mode.TAKEOFF;
         this.targetPos = null;
-        this.flightTicks = 0;
         this.entity.setFlying(true);
     }
 
@@ -123,8 +100,7 @@ public class FlyingGoal extends Goal {
         if (this.entity.isFlying()) {
             this.mode = Mode.LANDING;
         } else {
-            this.nextTakeoffTick = this.entity.tickCount + TAKEOFF_COOLDOWN_MIN
-                + this.entity.getRandom().nextInt(TAKEOFF_COOLDOWN_MAX - TAKEOFF_COOLDOWN_MIN);
+            this.nextCasualFlightCheckTick = this.entity.tickCount + CASUAL_FLIGHT_CHECK_INTERVAL;
         }
         this.targetPos = null;
     }
