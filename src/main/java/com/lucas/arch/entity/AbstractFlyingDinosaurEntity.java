@@ -78,7 +78,9 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     @Override
     protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
         super.readAdditionalSaveData(input);
-        this.entityData.set(IS_FLYING, input.getBooleanOr("IsFlying", false));
+        
+        this.setFlying(input.getBooleanOr("IsFlying", false)); 
+        
         this.entityData.set(FLIGHT_ALTITUDE, input.getFloatOr("FlightAltitude", getFlightAltitude()));
     }
 
