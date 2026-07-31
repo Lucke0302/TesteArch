@@ -82,7 +82,8 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
                                stack.is(ModItems.SPINOSAURUS_EMBRYO) || 
                                stack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO) ||
                                stack.is(ModItems.PARASAUROLOPHUS_EMBRYO) ||
-                               stack.is(ModItems.QUETZALCOATLUS_EMBRYO);
+                               stack.is(ModItems.QUETZALCOATLUS_EMBRYO) ||
+                               stack.is(ModItems.DIMORPHODON_EMBRYO);
             return isEmbryo && stack.has(ModDataComponentTypes.DNA_QUALITY);
         }
         if (index == 1) return stack.is(Items.EGG) || stack.is(Items.TURTLE_EGG) || stack.is(Items.SNIFFER_EGG);
@@ -137,7 +138,8 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
                            embryo.is(ModItems.SPINOSAURUS_EMBRYO) || 
                            embryo.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO) ||
                            embryo.is(ModItems.PARASAUROLOPHUS_EMBRYO) ||
-                           embryo.is(ModItems.QUETZALCOATLUS_EMBRYO);
+                           embryo.is(ModItems.QUETZALCOATLUS_EMBRYO) ||
+                           embryo.is(ModItems.DIMORPHODON_EMBRYO);
                            
         boolean hasEmbryo = !embryo.isEmpty() && isEmbryo && embryo.has(ModDataComponentTypes.DNA_QUALITY);
         boolean hasEgg = !egg.isEmpty() && (egg.is(Items.EGG) || egg.is(Items.TURTLE_EGG) || egg.is(Items.SNIFFER_EGG));
@@ -175,6 +177,8 @@ public class FuserBlockEntity extends BlockEntity implements ImplementedInventor
                 result = new ItemStack(com.lucas.arch.registry.ModBlocks.PARASAUROLOPHUS_EGG_BLOCK);
             } else if (embryoStack.is(ModItems.QUETZALCOATLUS_EMBRYO)) {
                 result = new ItemStack(com.lucas.arch.registry.ModBlocks.QUETZALCOATLUS_EGG_BLOCK);
+            } else if (embryoStack.is(ModItems.DIMORPHODON_EMBRYO)) {
+                result = new ItemStack(com.lucas.arch.registry.ModBlocks.DIMORPHODON_EGG_BLOCK);
             } else {
                 result = new ItemStack(com.lucas.arch.registry.ModBlocks.ALLOSAURUS_EGG_BLOCK);
             }

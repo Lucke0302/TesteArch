@@ -8,6 +8,7 @@ import com.lucas.arch.block.BitterBerryBushBlock;
 import com.lucas.arch.block.CleansingTableBlock;
 import com.lucas.arch.block.CycadCenterBlock;
 import com.lucas.arch.block.CycadSaplingBlock;
+import com.lucas.arch.block.DimorphodonEggBlock;
 import com.lucas.arch.block.FuserBlock;
 import com.lucas.arch.block.PachycephalosaurusEggBlock;
 import com.lucas.arch.block.ParasaurolophusEggBlock;
@@ -17,6 +18,7 @@ import com.lucas.arch.block.SequoiaSaplingBlock;
 import com.lucas.arch.block.SynthesizerBlock;
 import com.lucas.arch.item.AllosaurusEggBlockItem;
 import com.lucas.arch.item.ArchBlockItem;
+import com.lucas.arch.item.DimorphodonEggBlockItem;
 import com.lucas.arch.item.PachycephalosaurusEggBlockItem;
 import com.lucas.arch.item.ParasaurolophusEggBlockItem;
 import com.lucas.arch.item.QuetzalcoatlusEggBlockItem;
@@ -138,6 +140,11 @@ public class ModBlocks {
             .noCollision().strength(0.0f).sound(SoundType.BONE_BLOCK).noOcclusion()),
         (block, itemProps) -> new QuetzalcoatlusEggBlockItem(block, itemProps, "F&A, Lucke0302", "Lucke0302"));
 
+    public static final Block DIMORPHODON_EGG_BLOCK = registerBlock("dimorphodon_egg_block",
+        properties -> new DimorphodonEggBlock(properties.mapColor(MapColor.SAND)
+            .noCollision().strength(0.0f).sound(SoundType.BONE_BLOCK).noOcclusion()),
+        (block, itemProps) -> new DimorphodonEggBlockItem(block, itemProps, "F&A, Lucke0302", "Lucke0302"));
+
     private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function, String designer, String programmer) {
         return registerBlock(name, function,
             (block, itemProps) -> new ArchBlockItem(block, itemProps, designer, programmer));
@@ -170,6 +177,7 @@ public class ModBlocks {
             output.accept(SPINOSAURUS_EGG_BLOCK);
             output.accept(PARASAUROLOPHUS_EGG_BLOCK);
             output.accept(QUETZALCOATLUS_EGG_BLOCK);
+            output.accept(DIMORPHODON_EGG_BLOCK);
         });
     }
 }

@@ -2,6 +2,7 @@ package com.lucas.arch.registry;
 
 import com.lucas.arch.ArcheologyReimagined;
 import com.lucas.arch.block.entity.CleansingTableBlockEntity;
+import com.lucas.arch.block.entity.DimorphodonEggBlockEntity;
 import com.lucas.arch.block.entity.FuserBlockEntity;
 import com.lucas.arch.block.entity.PachycephalosaurusEggBlockEntity;
 import com.lucas.arch.block.entity.ParasaurolophusEggBlockEntity;
@@ -89,6 +90,13 @@ public class ModBlockEntities {
         BuiltInRegistries.BLOCK_ENTITY_TYPE,
         Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "quetzalcoatlus_egg_be"),
         FabricBlockEntityTypeBuilder.create(QuetzalcoatlusEggBlockEntity::new, ModBlocks.QUETZALCOATLUS_EGG_BLOCK).build()
+    );
+
+    public static final BlockEntityType<DimorphodonEggBlockEntity> DIMORPHODON_EGG_BE =
+    Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "dimorphodon_egg_be"),
+        FabricBlockEntityTypeBuilder.create(DimorphodonEggBlockEntity::new, ModBlocks.DIMORPHODON_EGG_BLOCK).build()
     );
 
     public static void registerBlockEntities() {

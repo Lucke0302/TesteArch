@@ -71,8 +71,10 @@ public class ModItems {
           p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
     public static final Item PARASAUROLOPHUS_DNA = registerItem("parasaurolophus_dna",
           p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
-
     public static final Item QUETZALCOATLUS_DNA = registerItem("quetzalcoatlus_dna",
+          p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
+
+    public static final Item DIMORPHODON_DNA = registerItem("dimorphodon_dna",
           p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "F&A", "Lucke0302"));
 
     public static final Item FRAGMENTED_DNA = registerItem("fragmented_dna",
@@ -109,6 +111,9 @@ public class ModItems {
         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
     public static final Item QUETZALCOATLUS_EMBRYO = registerItem("quetzalcoatlus_embryo",
         p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
+    public static final Item DIMORPHODON_EMBRYO = registerItem("dimorphodon_embryo",
+        p -> new DnaItem(p.stacksTo(1).component(ModDataComponentTypes.DNA_QUALITY, 0), "EduGuter", "Lucke0302"));
+    
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(
@@ -185,6 +190,7 @@ public class ModItems {
             output.accept(PACHYCEPHALOSAURUS_DNA);
             output.accept(PARASAUROLOPHUS_DNA);
             output.accept(QUETZALCOATLUS_DNA);
+            output.accept(DIMORPHODON_DNA);
             output.accept(ENCYCLOPEDIA);
             output.accept(PROCESSING_BOARD);
             output.accept(THERMAL_MODULE);
@@ -198,6 +204,7 @@ public class ModItems {
             output.accept(PACHYCEPHALOSAURUS_EMBRYO);
             output.accept(PARASAUROLOPHUS_EMBRYO);
             output.accept(QUETZALCOATLUS_EMBRYO);
+            output.accept(DIMORPHODON_EMBRYO);
             output.accept(AMBER);
             output.accept(MOSQUITO_IN_AMBER);
             output.accept(EMPTY_SYRINGE);

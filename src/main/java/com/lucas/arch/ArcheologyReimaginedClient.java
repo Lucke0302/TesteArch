@@ -13,6 +13,7 @@ import com.lucas.arch.client.renderer.PachycephalosaurusRenderer;
 import com.lucas.arch.client.renderer.ParasaurolophusRenderer;
 import com.lucas.arch.client.renderer.SpinosaurusRenderer;
 import com.lucas.arch.client.renderer.QuetzalcoatlusRenderer;
+import com.lucas.arch.client.renderer.DimorphodonRenderer;
 import com.lucas.arch.registry.ModEntities;
 
 public class ArcheologyReimaginedClient implements ClientModInitializer {
@@ -35,6 +36,8 @@ public class ArcheologyReimaginedClient implements ClientModInitializer {
         EntityRenderers.register(ModEntities.PARASAUROLOPHUS, ParasaurolophusRenderer::new);
 
         EntityRenderers.register(ModEntities.QUETZALCOATLUS, QuetzalcoatlusRenderer::new);
+
+        EntityRenderers.register(ModEntities.DIMORPHODON, DimorphodonRenderer::new);
 
     }
 }

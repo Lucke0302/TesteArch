@@ -1,6 +1,7 @@
 package com.lucas.arch.registry;
 
 import com.lucas.arch.entity.AllosaurusEntity;
+import com.lucas.arch.entity.DimorphodonEntity;
 import com.lucas.arch.entity.PachycephalosaurusEntity;
 import com.lucas.arch.entity.ParasaurolophusEntity;
 import com.lucas.arch.entity.QuetzalcoatlusEntity;
@@ -58,6 +59,14 @@ public class ModEntities {
                 .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "quetzalcoatlus")))
     );
 
+    public static final EntityType<DimorphodonEntity> DIMORPHODON = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "dimorphodon"),
+        EntityType.Builder.of(DimorphodonEntity::new, MobCategory.CREATURE)
+                .sized(0.7f, 0.6f)
+                .build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), Identifier.fromNamespaceAndPath(ArcheologyReimagined.MOD_ID, "dimorphodon")))
+    );
+
     public static void registerEntities() {
         ArcheologyReimagined.LOGGER.info("Registering entities for " + ArcheologyReimagined.MOD_ID);
     }
@@ -68,5 +77,6 @@ public class ModEntities {
         FabricDefaultAttributeRegistry.register(SPINOSAURUS, SpinosaurusEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PARASAUROLOPHUS, ParasaurolophusEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(QUETZALCOATLUS, QuetzalcoatlusEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(DIMORPHODON, DimorphodonEntity.createAttributes());
     }
 }
