@@ -238,6 +238,28 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        
+        if (!this.level().isClientSide() && this.tickCount % 40 == 0) { // A cada 2 segundos
+            System.out.println("[QUETZAL DEBUG] --- STATUS DO QUETZAL ---");
+            System.out.println("  Voando: " + this.isFlying() + " | Mergulhando: " + this.isDiving());
+            System.out.println("  Dominant State (Feeling): " + this.getDominantState());
+            System.out.println("  Navigation Ativo: " + this.navigation.getClass().getSimpleName());
+            System.out.println("  MoveControl Ativo: " + this.moveControl.getClass().getSimpleName());
+            System.out.println("  Posição: " + this.position());
+            System.out.println("---------------------------------");
+        }
+        
+        if (!this.level().isClientSide()) {
+            if (this.isDiving() && this.tickCount >= this.diveEndTick) {
+                this.entityData.set(IS_DIVING, false);
+                this.setFlying(false);
+            }
+        }
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
 

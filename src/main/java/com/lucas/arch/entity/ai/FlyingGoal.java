@@ -122,6 +122,10 @@ public class FlyingGoal extends Goal {
 
     @Override
     public void tick() {
+        if (this.entity.tickCount % 20 == 0) {
+            System.out.println("[QUETZAL DEBUG] FlyingGoal tick() -> Mode ativo: " + this.mode + " | Altura atual: " + this.entity.getY());
+        }
+        
         switch (this.mode) {
             case TAKEOFF -> tickTakeoff();
             case FLYING -> tickFlying();
@@ -158,22 +162,21 @@ public class FlyingGoal extends Goal {
     }
 
     private void findNewFlyingTarget() {
+        System.out.println("[QUETZAL DEBUG] Buscando novo alvo de voo...");
         for (int attempt = 0; attempt < 8; attempt++) {
             double x = this.entity.getX() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
             double z = this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
-
             int groundY = this.entity.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, BlockPos.containing(x, 0, z)).getY();
-
             double y = groundY + this.entity.getFlightAltitude() + (this.entity.getRandom().nextDouble() - 0.5) * 6;
             y = Math.max(groundY + 2, Math.min(y, this.entity.level().getMaxY() - 5));
-
             BlockPos targetBlock = BlockPos.containing(x, y, z);
             if (this.entity.level().isEmptyBlock(targetBlock)) {
                 targetPos = new Vec3(x, y, z);
+                System.out.println("[QUETZAL DEBUG] Novo alvo ENCONTRADO na tentativa " + attempt + ": " + targetPos);
                 return;
             }
         }
-
+        
         double fallbackY = Math.min(
             this.entity.getY() + this.entity.getFlightAltitude() * 0.25,
             this.entity.level().getMaxY() - 5
@@ -183,6 +186,7 @@ public class FlyingGoal extends Goal {
             fallbackY,
             this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 24
         );
+        System.out.println("[QUETZAL DEBUG] Usando alvo FALLBACK: " + targetPos);
     }
 
     private void tickLanding() {

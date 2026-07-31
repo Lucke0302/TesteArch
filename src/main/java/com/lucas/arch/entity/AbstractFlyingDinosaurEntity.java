@@ -89,25 +89,28 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     }
 
     public void setFlying(boolean flying) {
+        System.out.println("[QUETZAL DEBUG] setFlying chamado. Novo valor: " + flying + " | Estava voando: " + this.entityData.get(IS_FLYING) + " | isClientSide: " + this.level().isClientSide());
+        
         boolean wasFlyingBefore = this.entityData.get(IS_FLYING);
         this.entityData.set(IS_FLYING, flying);
         if (flying) {
             this.setSleeping(false);
             this.setResting(false);
         }
-
         if (flying != wasFlyingBefore) {
             if (flying) {
                 this.setNoGravity(true);
                 this.navigation = this.flyingNavigation;
                 this.moveControl = this.flyingMoveControl;
                 this.setPose(Pose.STANDING);
+                System.out.println("[QUETZAL DEBUG] Trocado para FlyingNavigation e FlyingMoveControl");
             } else {
                 this.setNoGravity(false);
                 this.navigation = this.groundNavigation;
                 this.moveControl = this.groundMoveControl;
                 this.setResting(false);
                 this.setSleeping(false);
+                System.out.println("[QUETZAL DEBUG] Trocado para GroundNavigation e GroundMoveControl");
             }
             this.getNavigation().stop();
         }
@@ -127,6 +130,9 @@ public abstract class AbstractFlyingDinosaurEntity extends AbstractDinosaurEntit
     }
 
     public void steerTo(double x, double y, double z, double speedModifier) {
+        if (this.tickCount % 20 == 0) {
+            System.out.println("[QUETZAL DEBUG] steerTo() -> Direcionando para X: " + x + " Y: " + y + " Z: " + z + " | Distância até o alvo: " + this.distanceToSqr(x, y, z));
+        }
         this.moveControl.setWantedPosition(x, y, z, speedModifier);
     }
 

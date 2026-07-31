@@ -1,5 +1,6 @@
 package com.lucas.arch.entity.ai;
 
+import com.lucas.arch.entity.AbstractFlyingDinosaurEntity;
 import com.lucas.arch.entity.Feeling;
 import com.lucas.arch.entity.FeelingDrivenEntity;
 import com.lucas.arch.entity.OmnivoreDiet;
@@ -237,6 +238,8 @@ public class OmnivoreHungerGoal<T extends TamableAnimal & FeelingDrivenEntity & 
 
     @Override
     public void start() {
+        System.out.println("[QUETZAL DEBUG] OmnivoreHungerGoal START! Mode: " + this.activeMode + " | Dinossauro está voando agora? " + ((AbstractFlyingDinosaurEntity)this.dino).isFlying());
+
         this.unreachableTicks = 0;
         this.recalcTimer = 0;
         this.attackCooldown = 0;
@@ -269,6 +272,10 @@ public class OmnivoreHungerGoal<T extends TamableAnimal & FeelingDrivenEntity & 
 
     @Override
     public void tick() {
+        if (this.dino.tickCount % 20 == 0) {
+            System.out.println("[QUETZAL DEBUG] OmnivoreHungerGoal TICK! Mode: " + this.activeMode + " | UnreachableTicks: " + this.unreachableTicks);
+        }
+
         if (this.eatCooldown > 0) this.eatCooldown--;
 
         switch (this.activeMode) {
