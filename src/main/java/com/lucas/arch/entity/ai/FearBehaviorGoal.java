@@ -34,6 +34,12 @@ public class FearBehaviorGoal<T extends TamableAnimal & FeelingDrivenEntity> ext
     protected boolean canFuzzyActivate() {
         this.activeMode = BehaviorResolver.resolve(this.dino, Feeling.FEAR);
 
+        if (this.dino instanceof com.lucas.arch.entity.AbstractFlyingDinosaurEntity flyer
+            && flyer.isFlying()
+            && this.activeMode != BehaviorResolver.Behavior.HUNT_ATTACK) {
+            return false;
+        }
+
         AABB box = this.dino.getBoundingBox().inflate(searchRadius);
         List<LivingEntity> entities = this.dino.level().getEntitiesOfClass(LivingEntity.class, box, e ->
                 (e instanceof Player p && !p.isCreative() && !p.isSpectator() && !this.dino.isOwnedBy(p)) ||

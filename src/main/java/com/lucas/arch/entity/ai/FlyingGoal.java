@@ -35,6 +35,7 @@ public class FlyingGoal extends Goal {
     private static final int FLYING_DURATION_MIN = 200;
     private static final int FLYING_DURATION_MAX = 800;
     private int flyingEndTick = 0;
+    private static final float HIGH_STRESS_NO_FLY_THRESHOLD = 0.8f;
 
     private enum Mode {
         TAKEOFF, FLYING, LANDING
@@ -55,6 +56,10 @@ public class FlyingGoal extends Goal {
         if (!this.entity.isAlive()) return false;
         if (this.entity.isSleeping()) return false;
         if (this.entity.isResting()) return false;
+
+        if (this.entity.getFeeling(Feeling.STRESS) >= HIGH_STRESS_NO_FLY_THRESHOLD) {
+            return false;
+        }
 
         if (isFearDominant()) {
             return true;
@@ -77,6 +82,11 @@ public class FlyingGoal extends Goal {
             return this.entity.isFlying();
         }
 
+        if (this.entity.getFeeling(Feeling.STRESS) >= HIGH_STRESS_NO_FLY_THRESHOLD) {
+            this.mode = Mode.LANDING;
+            return true;
+        }
+
         if (isFearDominant()) {
             return true;
         }
@@ -90,8 +100,13 @@ public class FlyingGoal extends Goal {
 
     @Override
     public void start() {
-        this.mode = Mode.TAKEOFF;
         this.targetPos = null;
+        if (this.entity.isFlying()) {
+            this.mode = Mode.FLYING;
+            scheduleFlyingEnd();
+        } else {
+            this.mode = Mode.TAKEOFF;
+        }
         this.entity.setFlying(true);
     }
 
