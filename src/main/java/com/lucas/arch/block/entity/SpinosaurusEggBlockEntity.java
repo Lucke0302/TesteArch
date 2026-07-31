@@ -12,8 +12,7 @@ public class SpinosaurusEggBlockEntity extends AbstractDinosaurEggBlockEntity<Sp
         super(ModBlockEntities.SPINOSAURUS_EGG_BE, pos, state);
     }
 
-    @Override protected int getMinTicksPerPercent() { return 50; }
-    @Override protected int getMaxTicksPerPercent() { return 200; }
+    @Override protected float getHatchMultiplier() { return 1.2f; }
     @Override protected int getMaxHeatSources() { return 5; }
     @Override protected EntityType<SpinosaurusEntity> getEntityType() { return ModEntities.SPINOSAURUS; }
 }

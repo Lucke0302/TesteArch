@@ -12,8 +12,7 @@ public class PachycephalosaurusEggBlockEntity extends AbstractDinosaurEggBlockEn
         super(ModBlockEntities.PACHYCEPHALOSAURUS_EGG_BE, pos, state);
     }
 
-    @Override protected int getMinTicksPerPercent() { return 40; } 
-    @Override protected int getMaxTicksPerPercent() { return 160; }
+    @Override protected float getHatchMultiplier() { return 0.7f; }
     @Override protected int getMaxHeatSources() { return 4; }
     @Override protected EntityType<PachycephalosaurusEntity> getEntityType() { return ModEntities.PACHYCEPHALOSAURUS; }
 }

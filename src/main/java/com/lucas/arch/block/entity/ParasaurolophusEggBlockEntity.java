@@ -12,8 +12,7 @@ public class ParasaurolophusEggBlockEntity extends AbstractDinosaurEggBlockEntit
         super(ModBlockEntities.PARASAUROLOPHUS_EGG_BE, pos, state);
     }
 
-    @Override protected int getMinTicksPerPercent() { return 40; } 
-    @Override protected int getMaxTicksPerPercent() { return 160; }
+    @Override protected float getHatchMultiplier() { return 0.8f; }
     @Override protected int getMaxHeatSources() { return 4; }
     @Override protected EntityType<ParasaurolophusEntity> getEntityType() { return ModEntities.PARASAUROLOPHUS; }
 }

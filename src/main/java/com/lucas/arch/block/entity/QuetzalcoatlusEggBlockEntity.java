@@ -12,8 +12,7 @@ public class QuetzalcoatlusEggBlockEntity extends AbstractDinosaurEggBlockEntity
         super(ModBlockEntities.QUETZALCOATLUS_EGG_BE, pos, state);
     }
 
-    @Override protected int getMinTicksPerPercent() { return 60; }
-    @Override protected int getMaxTicksPerPercent() { return 220; }
+    @Override protected float getHatchMultiplier() { return 1.1f; }
     @Override protected int getMaxHeatSources() { return 5; }
     @Override protected EntityType<QuetzalcoatlusEntity> getEntityType() { return ModEntities.QUETZALCOATLUS; }
 }

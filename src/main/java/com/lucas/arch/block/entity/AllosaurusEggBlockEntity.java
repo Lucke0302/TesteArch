@@ -12,8 +12,7 @@ public class AllosaurusEggBlockEntity extends AbstractDinosaurEggBlockEntity<All
         super(ModBlockEntities.ALLOSAURUS_EGG_BE, pos, state);
     }
 
-    @Override protected int getMinTicksPerPercent() { return 50; }
-    @Override protected int getMaxTicksPerPercent() { return 200; }
+    @Override protected float getHatchMultiplier() { return 1.0f; }
     @Override protected int getMaxHeatSources() { return 5; }
     @Override protected EntityType<AllosaurusEntity> getEntityType() { return ModEntities.ALLOSAURUS; }
 }
