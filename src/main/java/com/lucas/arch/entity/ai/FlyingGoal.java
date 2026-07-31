@@ -23,6 +23,7 @@ public class FlyingGoal extends Goal {
     private static final int FLYING_DURATION_MIN = 200;
     private static final int FLYING_DURATION_MAX = 800;
     private int flyingEndTick = 0;
+    private int routeChangeTimer = 0;
     
     private static final float HIGH_STRESS_NO_FLY_THRESHOLD = 0.8f;
 
@@ -146,15 +147,17 @@ public class FlyingGoal extends Goal {
     }
 
     private void tickFlying() {
-        if (this.entity.horizontalCollision || this.entity.verticalCollision) {
-            this.stuckTicks = 60; 
+        this.routeChangeTimer++;
+
+        boolean arrived = targetPos != null && this.entity.distanceToSqr(targetPos) < 16.0;
+        boolean hitWall = this.entity.horizontalCollision || this.entity.verticalCollision;
+        boolean timeout = this.routeChangeTimer >= 100;
+
+        if (targetPos == null || arrived || hitWall || timeout) {
+            findNewFlyingTarget();
+            this.routeChangeTimer = 0; 
         }
 
-        if (targetPos == null || this.entity.distanceToSqr(targetPos) < 16.0 || this.stuckTicks >= 60) {
-            findNewFlyingTarget();
-            this.stuckTicks = 0;
-        }
-        
         if (targetPos != null) {
             this.entity.steerTo(targetPos.x, targetPos.y, targetPos.z, 1.0);
         }
