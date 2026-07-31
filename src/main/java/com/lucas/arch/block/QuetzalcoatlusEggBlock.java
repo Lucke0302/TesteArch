@@ -3,15 +3,13 @@ package com.lucas.arch.block;
 import com.lucas.arch.block.entity.QuetzalcoatlusEggBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class QuetzalcoatlusEggBlock extends Block implements EntityBlock {
+public class QuetzalcoatlusEggBlock extends AbstractDinosaurEggBlock {
 
     public QuetzalcoatlusEggBlock(Properties properties) {
         super(properties);
