@@ -77,37 +77,22 @@ public class FlyingGoal extends Goal {
         if (!this.entity.isAlive()) return false;
         if (this.entity.isSleeping()) return false;
 
+        if (this.mode == Mode.LANDING) {
+            return this.entity.isFlying();
+        }
+
         byte domState = this.entity.getDominantState();
         if (domState > 0) {
             Feeling dominant = Feeling.values()[domState - 1];
             if (dominant == Feeling.HUNGER) {
-                // Se a fome ainda estiver alta, continua voando
-                if (this.entity.getFeeling(Feeling.HUNGER) >= 0.5f) {
-                    return true;
-                }
-            }
-            if (dominant == Feeling.HUNGER && this.entity.getFeeling(Feeling.HUNGER) < 0.5f) {
-                // Se a fome baixou, pode pousar
-                return false;
+                this.mode = Mode.LANDING;
+                return true;
             }
             if (dominant == Feeling.ANGER &&
                 this.entity.getTrait(Trait.AGGRESSIVENESS) >= this.entity.getTrait(Trait.COWARDICE)) {
                 return false;
             }
             if (dominant == Feeling.CURIOSITY) return false;
-        }
-
-        if (this.mode == Mode.LANDING && !this.entity.isFlying()) {
-            return false;
-        }
-
-        if (this.mode == Mode.FLYING && this.entity.tickCount >= this.flyingEndTick) {
-            // Se estiver com fome, renova o tempo de voo
-            if (this.entity.getFeeling(Feeling.HUNGER) >= 0.6f) {
-                scheduleFlyingEnd();
-                return true;
-            }
-            return false;
         }
 
         return true;
