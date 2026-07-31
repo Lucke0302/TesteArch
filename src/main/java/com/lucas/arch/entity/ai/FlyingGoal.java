@@ -146,6 +146,10 @@ public class FlyingGoal extends Goal {
     }
 
     private void tickFlying() {
+        if (this.entity.horizontalCollision || this.entity.verticalCollision) {
+            this.stuckTicks = 60; 
+        }
+
         if (targetPos == null || this.entity.distanceToSqr(targetPos) < 16.0 || this.stuckTicks >= 60) {
             findNewFlyingTarget();
             this.stuckTicks = 0;
