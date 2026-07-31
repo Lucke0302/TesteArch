@@ -1,13 +1,15 @@
 package com.lucas.arch.entity.ai;
 
+import java.util.EnumSet;
+
 import com.lucas.arch.entity.AbstractFlyingDinosaurEntity;
 import com.lucas.arch.entity.Feeling;
 import com.lucas.arch.entity.Trait;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.EnumSet;
 
 /**
  * Goal de voo para dinossauros voadores (AbstractFlyingDinosaurEntity).
@@ -29,7 +31,7 @@ public class FlyingGoal extends Goal {
     private static final int FLYING_DURATION_MIN = 200;
     private static final int FLYING_DURATION_MAX = 800;
     private int flyingEndTick = 0;
-    private int flightTicks = 0; // para limitar duração
+    private int flightTicks = 0;
 
     private enum Mode {
         TAKEOFF, FLYING, LANDING
@@ -48,24 +50,17 @@ public class FlyingGoal extends Goal {
 
         byte domState = this.entity.getDominantState();
 
-        // FEAR dominante
         if (domState > 0 && Feeling.values()[domState - 1] == Feeling.FEAR) {
             return true;
         }
 
-        // STRESS muito alto
         if (this.entity.getFeeling(Feeling.STRESS) >= 0.8f) {
             return true;
         }
-
-        // FOME alta – ativa voo para procurar comida
         if (this.entity.getFeeling(Feeling.HUNGER) >= 0.8f) {
-            // Opcional: verificar se há comida nas proximidades (para evitar voo desnecessário)
-            // Se não houver comida, voa
             return true;
         }
 
-        // Voo casual em estado neutro
         if (domState == 0 && this.entity.tickCount >= this.nextTakeoffTick) {
             return this.entity.getRandom().nextFloat() < 0.2f;
         }
@@ -84,15 +79,32 @@ public class FlyingGoal extends Goal {
         byte domState = this.entity.getDominantState();
         if (domState > 0) {
             Feeling dominant = Feeling.values()[domState - 1];
+
             if (dominant == Feeling.HUNGER) {
+                if (this.entity.getFeeling(Feeling.HUNGER) < 0.5f) {
+                    this.mode = Mode.LANDING;
+                }
+                return true;
+            }
+
+            if (dominant == Feeling.ANGER &&
+                this.entity.getTrait(Trait.AGGRESSIVENESS) >= this.entity.getTrait(Trait.COWARDICE)) {
                 this.mode = Mode.LANDING;
                 return true;
             }
-            if (dominant == Feeling.ANGER &&
-                this.entity.getTrait(Trait.AGGRESSIVENESS) >= this.entity.getTrait(Trait.COWARDICE)) {
-                return false;
+
+            if (dominant == Feeling.CURIOSITY) {
+                this.mode = Mode.LANDING;
+                return true;
             }
-            if (dominant == Feeling.CURIOSITY) return false;
+        }
+
+        if (this.mode == Mode.FLYING && this.entity.tickCount >= this.flyingEndTick) {
+            if (this.entity.getFeeling(Feeling.HUNGER) >= 0.6f) {
+                scheduleFlyingEnd();
+                return true;
+            }
+            this.mode = Mode.LANDING;
         }
 
         return true;
@@ -114,6 +126,7 @@ public class FlyingGoal extends Goal {
             this.nextTakeoffTick = this.entity.tickCount + TAKEOFF_COOLDOWN_MIN
                 + this.entity.getRandom().nextInt(TAKEOFF_COOLDOWN_MAX - TAKEOFF_COOLDOWN_MIN);
         }
+        this.targetPos = null;
     }
 
     @Override
@@ -136,8 +149,6 @@ public class FlyingGoal extends Goal {
             return;
         }
 
-        // Pequeno deslocamento horizontal na direção em que o bicho já está olhando,
-        // pra evitar mirar exatamente em cima da própria posição (yaw instável / giro no lugar).
         double yawRad = Math.toRadians(this.entity.getYRot());
         double forwardX = -Math.sin(yawRad) * 1.5;
         double forwardZ = Math.cos(yawRad) * 1.5;
@@ -158,14 +169,14 @@ public class FlyingGoal extends Goal {
     private void findNewFlyingTarget() {
         double x = this.entity.getX() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
         double z = this.entity.getZ() + (this.entity.getRandom().nextDouble() - 0.5) * 24;
-        
-        int groundY = this.entity.level().getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, net.minecraft.core.BlockPos.containing(x, 0, z)).getY();
-        
+
+        int groundY = this.entity.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, BlockPos.containing(x, 0, z)).getY();
+
         double y = groundY + this.entity.getFlightAltitude() + (this.entity.getRandom().nextDouble() - 0.5) * 6;
-        
+
         y = Math.max(groundY + 2, Math.min(y, this.entity.level().getMaxY() - 5));
 
-        net.minecraft.core.BlockPos targetBlock = net.minecraft.core.BlockPos.containing(x, y, z);
+        BlockPos targetBlock = BlockPos.containing(x, y, z);
         if (this.entity.level().isEmptyBlock(targetBlock)) {
             targetPos = new Vec3(x, y, z);
         } else {
@@ -178,14 +189,19 @@ public class FlyingGoal extends Goal {
             return;
         }
 
-        double groundY = this.entity.blockPosition().getY();
-        if (this.entity.getY() <= groundY + 1.0) {
+        int groundY = this.entity.level().getHeightmapPos(
+            Heightmap.Types.MOTION_BLOCKING,
+            this.entity.blockPosition()
+        ).getY();
+
+        if (this.entity.getY() <= groundY + 0.5) {
             this.entity.setFlying(false);
             this.entity.getNavigation().stop();
             return;
         }
 
-        Vec3 landTarget = new Vec3(this.entity.getX(), this.entity.getY() - 2, this.entity.getZ());
+        double nextY = Math.max(groundY, this.entity.getY() - 2);
+        Vec3 landTarget = new Vec3(this.entity.getX(), nextY, this.entity.getZ());
         this.entity.steerTo(landTarget.x, landTarget.y, landTarget.z, 0.8);
     }
 
