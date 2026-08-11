@@ -89,7 +89,6 @@ public class OmnivoreHungerGoal<T extends TamableAnimal & FeelingDrivenEntity & 
     protected boolean canFuzzyActivate() {
         this.activeBehavior = BehaviorResolver.resolve(this.dino, Feeling.HUNGER);
 
-        // Se o resolver diz BEG_OWNER, tenta comida no chão primeiro (fallback)
         if (this.activeBehavior == BehaviorResolver.Behavior.BEG_OWNER) {
             if (acquireGroundFood()) {
                 this.activeMode = Mode.SEEK_GROUND_FOOD;
@@ -106,20 +105,15 @@ public class OmnivoreHungerGoal<T extends TamableAnimal & FeelingDrivenEntity & 
             return false;
         }
 
-        // HUNT_ATTACK vs SEEK_GROUND_FOOD: o BehaviorResolver já decidiu qual
-        // é o comportamento preferido baseado nas traits. Mas se não houver alvo
-        // disponível para o preferido, faz fallback para o outro.
         if (this.activeBehavior == BehaviorResolver.Behavior.HUNT_ATTACK) {
             if (acquireHuntTarget()) {
                 this.activeMode = Mode.HUNT_ATTACK;
                 return true;
             }
-            // Fallback: se não achou presa, tenta comida no chão
             if (acquireGroundFood()) {
                 this.activeMode = Mode.SEEK_GROUND_FOOD;
                 return true;
             }
-            // Fallback: pastagem
             if (this.canGraze && acquireGrazeTarget()) {
                 this.activeMode = Mode.GRAZE;
                 return true;
@@ -127,12 +121,11 @@ public class OmnivoreHungerGoal<T extends TamableAnimal & FeelingDrivenEntity & 
             return false;
         }
 
-        // SEEK_GROUND_FOOD (inclui COWARDICE e CURIOSITY)
         if (acquireGroundFood()) {
             this.activeMode = Mode.SEEK_GROUND_FOOD;
             return true;
         }
-        // Fallback: tenta caçar se não achou comida no chão
+
         if (acquireHuntTarget()) {
             this.activeMode = Mode.HUNT_ATTACK;
             return true;
@@ -291,12 +284,12 @@ public class OmnivoreHungerGoal<T extends TamableAnimal & FeelingDrivenEntity & 
         this.dino.getLookControl().setLookAt(this.huntTarget, 30.0F, 30.0F);
 
         double distSq = this.dino.distanceToSqr(this.huntTarget);
-        double reach = (this.dino.getBbWidth() * 2.0F * this.dino.getBbWidth() * 2.0F)
-                + this.huntTarget.getBbWidth() + 1.5F;
+        double reachLinear = this.dino.getBbWidth() + this.huntTarget.getBbWidth() + 1.5F;
+        double reachSq = reachLinear * reachLinear;
 
         if (this.attackCooldown > 0) this.attackCooldown--;
 
-        if (distSq <= reach) {
+        if (distSq <= reachSq) {
             this.unreachableTicks = 0;
             if (this.attackCooldown <= 0 && this.dino.level() instanceof ServerLevel serverLevel) {
                 this.dino.doHurtTarget(serverLevel, this.huntTarget);

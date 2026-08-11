@@ -10,7 +10,6 @@ import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
 import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
 import com.lucas.arch.entity.ai.DinosaurTemptGoal;
 import com.lucas.arch.entity.ai.FearBehaviorGoal;
-import com.lucas.arch.entity.ai.FlyingGoal;
 import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
 import com.lucas.arch.entity.ai.OmnivoreHungerGoal;
 import com.lucas.arch.entity.ai.SleepBehaviorGoal;
@@ -122,6 +121,7 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
         return entity instanceof net.minecraft.world.entity.animal.fish.AbstractFish
             || entity instanceof net.minecraft.world.entity.animal.chicken.Chicken
             || (entity instanceof Player p && !p.isCreative() && !p.isSpectator()
+                && !this.isOwnedBy(p)
                 && p.getMainHandItem().is(ModTags.Items.CARNIVORE_FOOD));
     }
 
@@ -273,14 +273,10 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
 
         this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
         
-        // 1 e 2: Sobrevivência básica (Fome e Defesa)
         this.goalSelector.addGoal(1, new OmnivoreHungerGoal<>(this)); 
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this));
         this.goalSelector.addGoal(3, new FearBehaviorGoal<>(this));
-        
-        this.goalSelector.addGoal(4, new FlyingGoal(this));
-        
-        // 5 em diante: Interação e comportamentos passivos
+
         this.goalSelector.addGoal(5, new DinosaurTemptGoal<>(this, 1.1D, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
         this.goalSelector.addGoal(6, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
         this.goalSelector.addGoal(7, new CuriosityBehaviorGoal<>(this));
