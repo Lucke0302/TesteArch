@@ -83,11 +83,12 @@ public class FuserMenu extends AbstractContainerMenu {
                 }
                 slot.onQuickCraft(originalStack, newStack);
             } else {
-                boolean isEmbryo = originalStack.is(ModItems.ALLOSAURUS_EMBRYO) || 
-                                   originalStack.is(ModItems.SPINOSAURUS_EMBRYO) || 
+                boolean isEmbryo = originalStack.is(ModItems.ALLOSAURUS_EMBRYO) ||
+                                   originalStack.is(ModItems.SPINOSAURUS_EMBRYO) ||
                                    originalStack.is(ModItems.PACHYCEPHALOSAURUS_EMBRYO) ||
                                    originalStack.is(ModItems.PARASAUROLOPHUS_EMBRYO) ||
-                                   originalStack.is(ModItems.QUETZALCOATLUS_EMBRYO);
+                                   originalStack.is(ModItems.QUETZALCOATLUS_EMBRYO) ||
+                                   originalStack.is(ModItems.DIMORPHODON_EMBRYO);
 
                 if (isEmbryo && originalStack.has(ModDataComponentTypes.DNA_QUALITY)) {
                     if (!this.moveItemStackTo(originalStack, 0, 1, false)) return ItemStack.EMPTY;

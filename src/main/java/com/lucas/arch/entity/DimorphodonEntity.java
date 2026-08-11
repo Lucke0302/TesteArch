@@ -6,13 +6,13 @@ import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.state.AnimationTest;
 import com.lucas.arch.entity.ai.AngerBehaviorGoal;
+import com.lucas.arch.entity.ai.CarnivoreHungerGoal;
 import com.lucas.arch.entity.ai.CuriosityBehaviorGoal;
 import com.lucas.arch.entity.ai.DinosaurFollowOwnerGoal;
 import com.lucas.arch.entity.ai.DinosaurTemptGoal;
 import com.lucas.arch.entity.ai.FearBehaviorGoal;
 import com.lucas.arch.entity.ai.FlyingGoal;
 import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
-import com.lucas.arch.entity.ai.CarnivoreHungerGoal;
 import com.lucas.arch.entity.ai.SleepBehaviorGoal;
 import com.lucas.arch.registry.ModTags;
 import net.minecraft.core.component.DataComponents;
@@ -37,11 +37,11 @@ import net.minecraft.world.level.Level;
 
 public class DimorphodonEntity extends AbstractFlyingDinosaurEntity implements CarnivoreDiet {
     
-    private static final int[] COLORS = { 0xFF5A4A3C, 0xFF4C5E44, 0xFF7A4B3A }; 
-    public DimorphodonEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
-        super(entityType, level);
-    }
-
+    private static final int[] COLORS = { 0xFF5A4A3C, 0xFF4C5E44, 0xFF7A4B3A };
+    
+    // ========================================================================
+    // Status Base (Mantidos do Dimorphodon Original)
+    // ========================================================================
     @Override protected float getBaseHealth() { return 20.0f; }
     @Override protected float getBaseAttackDamage() { return 4.0f; }
     @Override protected float getHitboxScaleRatio() { return 1.0f; }
@@ -51,18 +51,22 @@ public class DimorphodonEntity extends AbstractFlyingDinosaurEntity implements C
     @Override protected float getAdultSpawnScale() { return 0.8f; }
     @Override protected String getColorNbtKey() { return "DimorphodonColor"; }
     @Override protected String getScaleNbtKey() { return "DimorphodonScale"; }
-    
     @Override protected float getMinEnclosureRadius() { return 10f; }
-    
     @Override public float getFlightAltitude() { return 6f; }
-
     @Override protected boolean isDiurnal() { return true; }
+
+    public DimorphodonEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
+        super(entityType, level);
+    }
 
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(20.0, 0.25, 4.0)
                 .add(Attributes.FLYING_SPEED, 0.6);
     }
 
+    // ========================================================================
+    // Lógica de Voo/Mergulho
+    // ========================================================================
     @Override
     public boolean hasDiveAnimation() {
         return true;
@@ -73,6 +77,17 @@ public class DimorphodonEntity extends AbstractFlyingDinosaurEntity implements C
         if (!this.level().isClientSide()) {
             this.entityData.set(IS_DIVING, true);
             this.diveEndTick = this.tickCount + 30; 
+        }
+    }
+    
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level().isClientSide()) {
+            if (this.isDiving() && this.tickCount >= this.diveEndTick) {
+                this.entityData.set(IS_DIVING, false);
+                this.setFlying(false);
+            }
         }
     }
 
@@ -131,73 +146,90 @@ public class DimorphodonEntity extends AbstractFlyingDinosaurEntity implements C
         return super.mobInteract(player, hand);
     }
 
+    // ========================================================================
+    // Ciclo de Animação e Postura
+    // ========================================================================
+    private boolean isStanding = false;
+    private int standEndTick = 0;
+    private int nextStandTick = 0;
+    private static final int STAND_MIN_HOLD_TICKS = 60;
+    private static final int STAND_HOLD_VARIANCE_TICKS = 80;
+    private static final int STAND_MIN_COOLDOWN_TICKS = 100;
+    private static final int STAND_COOLDOWN_VARIANCE_TICKS = 300;
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>("main_controller", 5, this::movementPredicate));
-        
         controllers.add(new AnimationController<DimorphodonEntity>("attack_controller", 0, state -> PlayState.STOP)
             .triggerableAnim("attack", RawAnimation.begin().thenPlay("animation.dimorphodon.attack")));
-            
-        controllers.add(new AnimationController<DimorphodonEntity>("survival_controller", 0, state -> PlayState.STOP)
-            .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.dimorphodon.eat"))
-            .triggerableAnim("drink", RawAnimation.begin().thenPlay("animation.dimorphodon.drink")));
-            
-        controllers.add(new AnimationController<DimorphodonEntity>("flight_action_controller", 0, state -> PlayState.STOP)
-            .triggerableAnim("dive", RawAnimation.begin().thenPlay("animation.dimorphodon.dive"))
-            .triggerableAnim("takeoff", RawAnimation.begin().thenPlay("animation.dimorphodon.takeoff")));
-            
-        controllers.add(new AnimationController<DimorphodonEntity>("social_controller", 0, state -> PlayState.STOP)
-            .triggerableAnim("call", RawAnimation.begin().thenPlay("animation.dimorphodon.call"))
-            .triggerableAnim("speak", RawAnimation.begin().thenPlay("animation.dimorphodon.speak"))
-            .triggerableAnim("sit", RawAnimation.begin().thenPlay("animation.dimorphodon.sit")));
-
-        controllers.add(new AnimationController<DimorphodonEntity>("climb_controller", 0, state -> PlayState.STOP)
-            .triggerableAnim("climb", RawAnimation.begin().thenPlay("animation.dimorphodon.climb"))
-            .triggerableAnim("climb_idle", RawAnimation.begin().thenPlay("animation.dimorphodon.!climb_idle")));
+        controllers.add(new AnimationController<DimorphodonEntity>("eat_controller", 0, state -> PlayState.STOP)
+            .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.dimorphodon.eat")));
+        controllers.add(new AnimationController<DimorphodonEntity>("dive_controller", 0, state -> PlayState.STOP)
+            .triggerableAnim("dive", RawAnimation.begin().thenPlay("animation.dimorphodon.dive")));
     }
 
     private PlayState movementPredicate(AnimationTest<DimorphodonEntity> event) {
         if (this.isDiving()) {
             return event.setAndContinue(RawAnimation.begin().thenPlay("animation.dimorphodon.dive"));
         }
-        
         if (this.isSleeping() || this.isResting()) {
             return event.setAndContinue(RawAnimation.begin().thenLoop("animation.dimorphodon.sleep_1"));
         }
-        
         if (this.isFlying()) {
-            if (event.isMoving() && this.getDeltaMovement().lengthSqr() > 0.5) {
-                return event.setAndContinue(RawAnimation.begin().thenLoop("animation.dimorphodon.fly_fast"));
-            }
-            if (!event.isMoving()) {
-                return event.setAndContinue(RawAnimation.begin().thenLoop("animation.dimorphodon.idle_air"));
-            }
             return event.setAndContinue(RawAnimation.begin().thenLoop("animation.dimorphodon.fly"));
         }
         
-        if (this.isInWater()) {
-            return event.setAndContinue(RawAnimation.begin().thenLoop("animation.dimorphodon.swim"));
-        }
-        
-        if (event.isMoving()) {
-            if (this.isSprinting()) { 
-                return event.setAndContinue(RawAnimation.begin().thenLoop("animation.dimorphodon.run"));
-            }
+        boolean isMoving = event.isMoving();
+        Feeling dominant = getDominantFeeling();
+        updateStandCycle(dominant, isMoving);
+
+        if (isMoving) {
             return event.setAndContinue(RawAnimation.begin().thenLoop("animation.dimorphodon.walk"));
         }
-        
         return event.setAndContinue(RawAnimation.begin().thenLoop("animation.dimorphodon.idle"));
     }
 
-    // --- Goals ---
+    private Feeling getDominantFeeling() {
+        byte stateByte = this.getDominantState();
+        if (stateByte > 0 && stateByte <= Feeling.values().length) {
+            return Feeling.values()[stateByte - 1];
+        }
+        return null;
+    }
+    
+    private void updateStandCycle(Feeling dominantFeeling, boolean isMoving) {
+        boolean eligible = dominantFeeling == null && !isMoving && !this.isFlying();
+        
+        if (this.isStanding) {
+            if (!eligible || this.tickCount >= this.standEndTick) {
+                this.isStanding = false;
+                this.nextStandTick = this.tickCount + STAND_MIN_COOLDOWN_TICKS
+                    + this.random.nextInt(STAND_COOLDOWN_VARIANCE_TICKS);
+            }
+            return;
+        }
+        
+        if (eligible && this.tickCount >= this.nextStandTick) {
+            this.isStanding = true;
+            this.standEndTick = this.tickCount + STAND_MIN_HOLD_TICKS
+                + this.random.nextInt(STAND_HOLD_VARIANCE_TICKS);
+        }
+    }
+
+    // ========================================================================
+    // Goals (IA)
+    // ========================================================================
     @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new SleepBehaviorGoal<>(this));
+        
         this.goalSelector.addGoal(1, new CarnivoreHungerGoal<>(this)); 
         this.goalSelector.addGoal(2, new AngerBehaviorGoal<>(this));
         this.goalSelector.addGoal(3, new FearBehaviorGoal<>(this));
+        
         this.goalSelector.addGoal(4, new FlyingGoal(this));
+        
         this.goalSelector.addGoal(5, new DinosaurTemptGoal<>(this, 1.1D, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.CARNIVORE_FOOD)), false));
         this.goalSelector.addGoal(6, new DinosaurFollowOwnerGoal(this, 1.2D, 24.0F, 8.0F));
         this.goalSelector.addGoal(7, new CuriosityBehaviorGoal<>(this));

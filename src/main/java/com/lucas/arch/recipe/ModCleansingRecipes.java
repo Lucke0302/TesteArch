@@ -89,13 +89,14 @@ public class ModCleansingRecipes {
     }
 
     public static Item rollReptileDna(net.minecraft.util.RandomSource random) {
-        int roll = random.nextInt(5);
+        int roll = random.nextInt(6);
         return switch(roll) {
             case 0 -> ModItems.ALLOSAURUS_DNA;
             case 1 -> ModItems.SPINOSAURUS_DNA;
             case 2 -> ModItems.PACHYCEPHALOSAURUS_DNA;
             case 3 -> ModItems.QUETZALCOATLUS_DNA;
-            case 4 -> ModItems.QUETZALCOATLUS_DNA;
+            case 4 -> ModItems.PARASAUROLOPHUS_DNA;
+            case 5 -> ModItems.DIMORPHODON_DNA;
             default -> ModItems.DEFAULT_REPTILE_DNA;
         };
     }
