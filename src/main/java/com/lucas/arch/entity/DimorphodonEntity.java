@@ -39,9 +39,6 @@ public class DimorphodonEntity extends AbstractFlyingDinosaurEntity implements C
     
     private static final int[] COLORS = { 0xFF5A4A3C, 0xFF4C5E44, 0xFF7A4B3A };
     
-    // ========================================================================
-    // Status Base (Mantidos do Dimorphodon Original)
-    // ========================================================================
     @Override protected float getBaseHealth() { return 20.0f; }
     @Override protected float getBaseAttackDamage() { return 4.0f; }
     @Override protected float getHitboxScaleRatio() { return 1.0f; }
@@ -63,6 +60,8 @@ public class DimorphodonEntity extends AbstractFlyingDinosaurEntity implements C
         return baseAttributes(20.0, 0.25, 4.0)
                 .add(Attributes.FLYING_SPEED, 0.6);
     }
+
+    @Override protected float getBabyScale() { return 0.35f; }
 
     // ========================================================================
     // Lógica de Voo/Mergulho

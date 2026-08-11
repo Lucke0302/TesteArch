@@ -88,6 +88,8 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
     protected abstract String getColorNbtKey();
     protected abstract String getScaleNbtKey();
     protected abstract float getMinEnclosureRadius();
+    
+    protected abstract float getBabyScale();
 
     // --- Sistema de Estresse por Raio de Jaula (sem alterações) ---
     protected float scanHorizontalRadius(int yLevel) {
@@ -282,7 +284,8 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
 
     public void updateStats() {
         float ageMultiplier = this.ageTier.getScaleMultiplier();
-        float effectiveScale = this.baseScale * ageMultiplier;
+        float babyScale = getBabyScale();
+        float effectiveScale = babyScale + (this.baseScale - babyScale) * ageMultiplier;
 
         if (this.getAttribute(Attributes.SCALE) != null) this.getAttribute(Attributes.SCALE).setBaseValue(effectiveScale);
         this.entityData.set(SCALE, effectiveScale);

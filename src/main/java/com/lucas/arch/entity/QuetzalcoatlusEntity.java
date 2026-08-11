@@ -71,6 +71,8 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
         return true;
     }
 
+    @Override protected float getBabyScale() { return 0.5f; }
+
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(50.0, 0.22, 8.0)
                 .add(Attributes.FLYING_SPEED, 0.5);
@@ -86,20 +88,6 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
         if (!this.level().isClientSide()) {
             this.entityData.set(IS_DIVING, true);
             this.diveEndTick = this.tickCount + 40; 
-        }
-    }
-
-    @Override
-    public void updateStats() {
-        super.updateStats();
-
-        if (this.getAgeTier() == AgeTier.BABY) {
-            float customBabyScale = this.baseScale * (0.5f / getAdultSpawnScale());
-
-            if (this.getAttribute(Attributes.SCALE) != null) {
-                this.getAttribute(Attributes.SCALE).setBaseValue(customBabyScale);
-            }
-            this.entityData.set(SCALE, customBabyScale);
         }
     }
 

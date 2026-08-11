@@ -58,6 +58,8 @@ public class SpinosaurusEntity extends AbstractDinosaurEntity implements Carnivo
     @Override protected String getScaleNbtKey() { return "SpinosaurusScale"; }
     @Override protected float getMinEnclosureRadius() { return 30f; }
 
+    @Override protected float getBabyScale() { return 0.6f; }
+
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(90.0, 0.28, 16.0);
     }

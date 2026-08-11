@@ -53,6 +53,8 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
     @Override protected String getScaleNbtKey() { return "ParasaurScale"; }
     @Override protected float getMinEnclosureRadius() { return 15f; }
 
+    @Override protected float getBabyScale() { return 0.45f; }
+
     private int standAnimStartTick = -1;
     private int standMinEndTick = 0;
     private int standCooldownEndTick = 0;

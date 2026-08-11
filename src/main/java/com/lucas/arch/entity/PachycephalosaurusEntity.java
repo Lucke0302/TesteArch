@@ -52,6 +52,8 @@ public class PachycephalosaurusEntity extends AbstractDinosaurEntity implements 
     @Override protected String getScaleNbtKey() { return "PachyScale"; }
     @Override protected float getMinEnclosureRadius() { return 12f; }
 
+    @Override protected float getBabyScale() { return 0.3f; }
+
     public static AttributeSupplier.Builder createAttributes() {
         return baseAttributes(60.0, 0.28, 6.0);
     }
