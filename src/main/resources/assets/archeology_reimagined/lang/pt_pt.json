@@ -23,6 +23,8 @@
   "item.archeology_reimagined.allosaurus_embryo": "Embrião de Alossauro",
   "item.archeology_reimagined.spinosaurus_embryo": "Embrião de Espinossauro",
   "item.archeology_reimagined.pachycephalosaurus_embryo": "Embrião de Paquicefalossauro",
+  "item.archeology_reimagined.parasaurolophus_embryo": "Embrião de Parassaurolofo",
+  "item.archeology_reimagined.dimorphodon_embryo": "Embrião de Dimorfodon",
 
   "tooltip.archeology_reimagined.dna_quality": "§7Qualidade do DNA: %s",
   
@@ -101,6 +103,12 @@
   "item.archeology_reimagined.quetzalcoatlus_embryo": "Embrião de Quetzalcoatlus",
   "block.archeology_reimagined.quetzalcoatlus_egg_block": "Ovo de Quetzalcoatlus",
   "item.archeology_reimagined.quetzalcoatlus_egg_block": "Ovo de Quetzalcoatlus",
+
+  
+  "entity.archeology_reimagined.dimorphodon": "Dimorfodon",
+  "item.archeology_reimagined.dimorphodon_dna": "DNA de Dimorfodon",
+  "block.archeology_reimagined.dimorphodon_egg_block": "Ovo de Dimorfodon",
+  "item.archeology_reimagined.dimorphodon_egg_block": "Ovo de Dimorfodon",
 
   "feeling.archeology_reimagined.stress": "Stress"
 }
