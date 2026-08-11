@@ -202,7 +202,7 @@ public class CleansingTableBlockEntity extends BlockEntity implements Implemente
             case "pachycephalosaurus" -> ModItems.PACHYCEPHALOSAURUS_DNA;
             case "parasaurolophus" -> ModItems.PARASAUROLOPHUS_DNA;
             case "quetzalcoatlus" -> ModItems.QUETZALCOATLUS_DNA;
-            case "dimorphodon" -> ModItems.DIMORPHODON_DNA;
+            //case "dimorphodon" -> ModItems.DIMORPHODON_DNA;
             default -> null;
         };
     }

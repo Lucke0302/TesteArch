@@ -12,13 +12,16 @@ import com.lucas.arch.entity.ai.DinosaurTemptGoal;
 import com.lucas.arch.entity.ai.FearBehaviorGoal;
 import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
 import com.lucas.arch.entity.ai.SleepBehaviorGoal;
+import com.lucas.arch.registry.ModSounds;
 import com.lucas.arch.registry.ModTags;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -128,6 +131,21 @@ public class SpinosaurusEntity extends AbstractDinosaurEntity implements Carnivo
             .triggerableAnim("attack", RawAnimation.begin().thenPlay("animation.spinosaurus.attack")));
         controllers.add(new AnimationController<SpinosaurusEntity>("eat_controller", 0, state -> PlayState.STOP)
             .triggerableAnim("eat", RawAnimation.begin().thenPlay("animation.spinosaurus.eat")));
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return ModSounds.SPINO_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return ModSounds.SPINO_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return ModSounds.SPINO_DEATH;
     }
 
     @Override

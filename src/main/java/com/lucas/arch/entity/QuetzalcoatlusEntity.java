@@ -14,13 +14,16 @@ import com.lucas.arch.entity.ai.FlyingGoal;
 import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
 import com.lucas.arch.entity.ai.OmnivoreHungerGoal;
 import com.lucas.arch.entity.ai.SleepBehaviorGoal;
+import com.lucas.arch.registry.ModSounds;
 import com.lucas.arch.registry.ModTags;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -247,6 +250,21 @@ public class QuetzalcoatlusEntity extends AbstractFlyingDinosaurEntity implement
                 this.setFlying(false);
             }
         }
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return ModSounds.QUETZAL_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return ModSounds.QUETZAL_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return ModSounds.QUETZAL_DEATH;
     }
 
     @Override

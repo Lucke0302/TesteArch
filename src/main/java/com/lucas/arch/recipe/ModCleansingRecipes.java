@@ -95,6 +95,7 @@ public class ModCleansingRecipes {
             case 1 -> ModItems.SPINOSAURUS_DNA;
             case 2 -> ModItems.PACHYCEPHALOSAURUS_DNA;
             case 3 -> ModItems.QUETZALCOATLUS_DNA;
+            case 4 -> ModItems.QUETZALCOATLUS_DNA;
             default -> ModItems.DEFAULT_REPTILE_DNA;
         };
     }

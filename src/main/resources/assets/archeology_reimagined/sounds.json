@@ -2,20 +2,120 @@
   "entity.allosaurus.ambient": {
     "category": "hostile",
     "sounds": [
-      "archeology_reimagined:entity/allosaurus/ambient1",
-      "archeology_reimagined:entity/allosaurus/ambient2",
-      "archeology_reimagined:entity/allosaurus/ambient3"
+      "archeology_reimagined:entity/allosaurus/allosaurus_ambient1",
+      "archeology_reimagined:entity/allosaurus/allosaurus_ambient2",
+      "archeology_reimagined:entity/allosaurus/allosaurus_ambient3"
     ]
   },
   "entity.allosaurus.hurt": {
     "category": "hostile",
     "sounds": [ 
-        "archeology_reimagined:entity/allosaurus/hurt1",
-        "archeology_reimagined:entity/allosaurus/hurt2"
+        "archeology_reimagined:entity/allosaurus/allosaurus_hurt1",
+        "archeology_reimagined:entity/allosaurus/allosaurus_hurt2"
     ]
   },
   "entity.allosaurus.death": {
     "category": "hostile",
-    "sounds": [ "archeology_reimagined:entity/allosaurus/death" ]
+    "sounds": [ 
+        "archeology_reimagined:entity/allosaurus/allosaurus_death" 
+    ]
+  },
+
+  "entity.spinosaurus.ambient": {
+    "category": "hostile",
+    "sounds": [
+      "archeology_reimagined:entity/spinosaurus/spinosaurus_ambient1",
+      "archeology_reimagined:entity/spinosaurus/spinosaurus_ambient2",
+      "archeology_reimagined:entity/spinosaurus/spinosaurus_ambient3",
+      "archeology_reimagined:entity/spinosaurus/spinosaurus_ambient4",
+      "archeology_reimagined:entity/spinosaurus/spinosaurus_ambient5",
+      "archeology_reimagined:entity/spinosaurus/spinosaurus_ambient6"
+    ]
+  },
+  "entity.spinosaurus.hurt": {
+    "category": "hostile",
+    "sounds": [ 
+        "archeology_reimagined:entity/spinosaurus/spinosaurus_hurt1",
+        "archeology_reimagined:entity/spinosaurus/spinosaurus_hurt2",
+        "archeology_reimagined:entity/spinosaurus/spinosaurus_hurt3"
+    ]
+  },
+  "entity.spinosaurus.death": {
+    "category": "hostile",
+    "sounds": [ 
+        "archeology_reimagined:entity/spinosaurus/spinosaurus_death" 
+    ]
+  },
+
+  "entity.quetzalcoatlus.ambient": {
+    "category": "hostile",
+    "sounds": [
+      "archeology_reimagined:entity/quetzalcoatlus/quetzalcoatlus_ambient1",
+      "archeology_reimagined:entity/quetzalcoatlus/quetzalcoatlus_ambient2",
+      "archeology_reimagined:entity/quetzalcoatlus/quetzalcoatlus_ambient3",
+      "archeology_reimagined:entity/quetzalcoatlus/quetzalcoatlus_ambient4"
+    ]
+  },
+  "entity.quetzalcoatlus.hurt": {
+    "category": "hostile",
+    "sounds": [ 
+        "archeology_reimagined:entity/quetzalcoatlus/quetzalcoatlus_hurt1",
+        "archeology_reimagined:entity/quetzalcoatlus/quetzalcoatlus_hurt2",
+        "archeology_reimagined:entity/quetzalcoatlus/quetzalcoatlus_hurt3"
+    ]
+  },
+  "entity.quetzalcoatlus.death": {
+    "category": "hostile",
+    "sounds": [ 
+        "archeology_reimagined:entity/quetzalcoatlus/quetzalcoatlus_death" 
+    ]
+  },
+
+  "entity.parasaurolophus.ambient": {
+    "category": "neutral",
+    "sounds": [
+      "archeology_reimagined:entity/parasaurolophus/parasaurolophus_ambient1",
+      "archeology_reimagined:entity/parasaurolophus/parasaurolophus_ambient2",
+      "archeology_reimagined:entity/parasaurolophus/parasaurolophus_ambient3",
+      "archeology_reimagined:entity/parasaurolophus/parasaurolophus_ambient4",
+      "archeology_reimagined:entity/parasaurolophus/parasaurolophus_ambient5"
+    ]
+  },
+  "entity.parasaurolophus.hurt": {
+    "category": "neutral",
+    "sounds": [ 
+        "archeology_reimagined:entity/parasaurolophus/parasaurolophus_hurt1",
+        "archeology_reimagined:entity/parasaurolophus/parasaurolophus_hurt2",
+        "archeology_reimagined:entity/parasaurolophus/parasaurolophus_hurt3"
+    ]
+  },
+  "entity.parasaurolophus.death": {
+    "category": "neutral",
+    "sounds": [ 
+        "archeology_reimagined:entity/parasaurolophus/parasaurolophus_death1",
+        "archeology_reimagined:entity/parasaurolophus/parasaurolophus_death2"
+    ]
+  },
+
+  "entity.pachycephalosaurus.ambient": {
+    "category": "neutral",
+    "sounds": [
+      "archeology_reimagined:entity/pachycephalosaurus/pachycephalosaurus_ambient1",
+      "archeology_reimagined:entity/pachycephalosaurus/pachycephalosaurus_ambient2",
+      "archeology_reimagined:entity/pachycephalosaurus/pachycephalosaurus_ambient3"
+    ]
+  },
+  "entity.pachycephalosaurus.hurt": {
+    "category": "neutral",
+    "sounds": [ 
+        "archeology_reimagined:entity/pachycephalosaurus/pachycephalosaurus_hurt1",
+        "archeology_reimagined:entity/pachycephalosaurus/pachycephalosaurus_hurt2"
+    ]
+  },
+  "entity.pachycephalosaurus.death": {
+    "category": "neutral",
+    "sounds": [ 
+        "archeology_reimagined:entity/pachycephalosaurus/pachycephalosaurus_death" 
+    ]
   }
 }

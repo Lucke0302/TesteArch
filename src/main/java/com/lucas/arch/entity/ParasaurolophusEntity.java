@@ -13,12 +13,15 @@ import com.lucas.arch.entity.ai.FearBehaviorGoal;
 import com.lucas.arch.entity.ai.HerbivoreHungerGoal;
 import com.lucas.arch.entity.ai.NeutralBehaviorGoal;
 import com.lucas.arch.entity.ai.SleepBehaviorGoal;
+import com.lucas.arch.registry.ModSounds;
 import com.lucas.arch.registry.ModTags;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -216,6 +219,21 @@ public class ParasaurolophusEntity extends AbstractDinosaurEntity implements Her
             this.lookAroundEndTick = this.tickCount + LOOK_AROUND_MIN_HOLD_TICKS
                 + this.random.nextInt(LOOK_AROUND_HOLD_VARIANCE_TICKS);
         }
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return ModSounds.PARASAUR_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return ModSounds.PARASAUR_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return ModSounds.PARASAUR_DEATH;
     }
 
     // ========================================================================
