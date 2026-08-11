@@ -130,32 +130,36 @@ public class FlyingGoal extends Goal {
     private void tickTakeoff() {
         double targetY = this.entity.blockPosition().getY() + this.entity.getFlightAltitude();
         targetY = Math.min(targetY, this.entity.level().getMaxY() - 5);
-        
-        if (this.entity.getY() >= targetY - 1.0) {
+
+        if (this.entity.getY() >= targetY - 1.0 || this.entity.verticalCollision || this.stuckTicks >= 40) {
             this.mode = Mode.FLYING;
             this.entity.setFlying(true);
-            scheduleFlyingEnd();
+            scheduleFlyingEnd(); 
+            this.stuckTicks = 0; 
             return;
         }
-        
+
         double yawRad = Math.toRadians(this.entity.getYRot());
         double forwardX = -Math.sin(yawRad) * 1.5;
         double forwardZ = Math.cos(yawRad) * 1.5;
         Vec3 takeoffTarget = new Vec3(this.entity.getX() + forwardX, targetY, this.entity.getZ() + forwardZ);
-        
+
         this.entity.steerTo(takeoffTarget.x, takeoffTarget.y, takeoffTarget.z, 1.0);
     }
 
     private void tickFlying() {
         this.routeChangeTimer++;
-
         boolean arrived = targetPos != null && this.entity.distanceToSqr(targetPos) < 16.0;
         boolean hitWall = this.entity.horizontalCollision || this.entity.verticalCollision;
         boolean timeout = this.routeChangeTimer >= 100;
 
+        if (hitWall) {
+            this.flyingEndTick -= 60; 
+        }
+
         if (targetPos == null || arrived || hitWall || timeout) {
             findNewFlyingTarget();
-            this.routeChangeTimer = 0; 
+            this.routeChangeTimer = 0;
         }
 
         if (targetPos != null) {
