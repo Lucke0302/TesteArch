@@ -44,8 +44,9 @@ public class DimorphodonEntity extends AbstractFlyingDinosaurEntity implements C
     @Override protected float getHitboxScaleRatio() { return 1.0f; }
     @Override protected float getMaxSafeHitboxScale() { return 2.0f; }
     @Override protected int[] getColorPalette() { return COLORS; }
-    @Override protected float[] getSpawnScaleRange() { return new float[]{0.6f, 0.9f}; }
-    @Override protected float getAdultSpawnScale() { return 0.8f; }
+    @Override protected float[] getSpawnScaleRange() { return new float[]{1.0f, 1.4f}; }
+    @Override protected float getAdultSpawnScale() { return 1.2f; }
+    @Override protected float getBabyScale() { return 0.3f; }
     @Override protected String getColorNbtKey() { return "DimorphodonColor"; }
     @Override protected String getScaleNbtKey() { return "DimorphodonScale"; }
     @Override protected float getMinEnclosureRadius() { return 10f; }
@@ -60,8 +61,6 @@ public class DimorphodonEntity extends AbstractFlyingDinosaurEntity implements C
         return baseAttributes(20.0, 0.25, 4.0)
                 .add(Attributes.FLYING_SPEED, 0.6);
     }
-
-    @Override protected float getBabyScale() { return 0.35f; }
 
     // ========================================================================
     // Lógica de Voo/Mergulho
