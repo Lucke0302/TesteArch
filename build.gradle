@@ -24,6 +24,10 @@ repositories {
 		url = "https://api.modrinth.com/maven"
 		content { includeGroup("maven.modrinth") }
 	}
+	maven {
+		name = "KliKli"
+		url = "https://maven.klikli-dev.com/"
+	}
 }
 
 fabricApi {
@@ -37,6 +41,7 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "com.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"	
+	implementation "maven.modrinth:692GClaE:${project.modonomicon_version}"
 	
 	runtimeOnly "maven.modrinth:sodium:${project.sodium_version}"
 	runtimeOnly "maven.modrinth:lithium:${project.lithium_version}"
