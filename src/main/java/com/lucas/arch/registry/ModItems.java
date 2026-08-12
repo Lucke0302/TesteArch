@@ -81,8 +81,14 @@ public class ModItems {
           p -> new ArchItem(p, "F&A, Lucke0302", "Lucke0302"));
 
     // --- Itens Exclusivos / Novos Designs ---
-    public static final Item ENCYCLOPEDIA = registerItem("encyclopedia", 
-         p -> new EncyclopediaItem(p.stacksTo(1), "Lucke0302", "Lucke0302"));
+    public static final Item ENCYCLOPEDIA = registerItem("encyclopedia",
+        p -> new EncyclopediaItem(
+            p,
+            "Lucke0302",
+            "Lucke0302",
+            Identifier.fromNamespaceAndPath("archeology_reimagined", "dinopedia")
+        )
+    );
 
     public static final Item PROCESSING_BOARD = registerItem("processing_board", 
         p -> new ArchItem(p, "Lucke0302", "Lucke0302")); 

@@ -26,18 +26,19 @@ public class EncyclopediaItem extends ArchItem {
     }
 
     private Book getBookFor(ItemStack stack) {
-        if (!stack.has((DataComponentType) DataComponentRegistry.BOOK_ID.get())) {
-            stack.set((DataComponentType) DataComponentRegistry.BOOK_ID.get(), this.bookId);
+        DataComponentType<Identifier> bookIdComponent = DataComponentRegistry.BOOK_ID.get();
+        if (!stack.has(bookIdComponent)) {
+            stack.set(bookIdComponent, this.bookId);
         }
 
-        Identifier res = stack.get((DataComponentType) DataComponentRegistry.BOOK_ID.get());
+        Identifier res = stack.get(bookIdComponent);
         return res == null ? null : BookDataManager.get().getBook(res);
     }
 
     @Override
     public @NotNull InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
-        itemInHand.set((DataComponentType) DataComponentRegistry.BOOK_OPEN.get(), true);
+        itemInHand.set(DataComponentRegistry.BOOK_OPEN.get(), true);
 
         if (level.isClientSide()) {
             Book book = this.getBookFor(itemInHand);

@@ -131,5 +131,5 @@
   
   "book.archeology_reimagined.allosaurus.lore": "O Allosaurus foi recriado com sucesso. Extremamente territorial, este carnívoro exige contenção rigorosa.",
   "book.archeology_reimagined.stats.title": "Ficha Técnica",
-  "book.archeology_reimagined.allosaurus.stats": "$(bold)Dieta:$(reset) Carnívoro\n$(bold)Recinto Mínimo:$(reset) 20 blocos\n$(bold)Traits Principais:$(reset) Agressividade, Gula\n\nPara clonar este animal, processe seu DNA no Sintetizador."
+  "book.archeology_reimagined.allosaurus.stats": "- **Dieta:** Carnívoro\n- **Recinto Mínimo:** 20 blocos\n- **Traits Principais:** Agressividade, Gula\n\nPara clonar este animal, processe seu DNA no Sintetizador."
 }

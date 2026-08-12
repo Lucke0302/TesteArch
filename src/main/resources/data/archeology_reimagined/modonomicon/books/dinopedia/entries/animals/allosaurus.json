@@ -16,7 +16,7 @@
       "id": "archeology_reimagined:allosaurus/lore",
       "entity_id": "archeology_reimagined:allosaurus",
       "entity_name": "entry.archeology_reimagined.allosaurus.name",
-      "scale": 0.8,
+      "scale": 0.5,
       "text": "book.archeology_reimagined.allosaurus.lore"
     },
     {
