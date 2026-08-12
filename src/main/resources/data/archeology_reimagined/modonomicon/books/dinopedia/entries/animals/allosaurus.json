@@ -1,8 +1,13 @@
 {
-  "type": "modonomicon:entry",
+  "type": "modonomicon:content",
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "hide_while_locked": false,
   "name": "entry.archeology_reimagined.allosaurus.name",
   "description": "entry.archeology_reimagined.allosaurus.desc",
-  "icon": "archeology_reimagined:allosaurus_dna",
+  "icon": {
+    "item": "archeology_reimagined:allosaurus_dna"
+  },
   "category": "archeology_reimagined:animals",
   "x": 0,
   "y": 0,
@@ -16,7 +21,9 @@
     {
       "type": "modonomicon:text",
       "title": "book.archeology_reimagined.stats.title",
-      "text": "book.archeology_reimagined.allosaurus.stats"
+      "text": "book.archeology_reimagined.allosaurus.stats",
+      "show_title_separator": true,
+      "use_markdown_in_title": false
     }
   ]
 }
