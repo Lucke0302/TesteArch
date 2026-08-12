@@ -1,8 +1,6 @@
 {
   "name": "category.archeology_reimagined.animals.name",
-  "icon": {
-    "item": "archeology_reimagined:default_reptile_dna"
-  },
+  "icon": "archeology_reimagined:default_reptile_dna",
   "sort_number": 0,
   "background": "modonomicon:textures/gui/dark_slate_background.png"
 }

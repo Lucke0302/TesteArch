@@ -1,25 +1,27 @@
 {
   "type": "modonomicon:content",
+  "id": "archeology_reimagined:allosaurus",
   "background_u_index": 0,
   "background_v_index": 0,
   "hide_while_locked": false,
   "name": "entry.archeology_reimagined.allosaurus.name",
   "description": "entry.archeology_reimagined.allosaurus.desc",
-  "icon": {
-    "item": "archeology_reimagined:allosaurus_dna"
-  },
+  "icon": "archeology_reimagined:allosaurus_dna",
   "category": "archeology_reimagined:animals",
   "x": 0,
   "y": 0,
   "pages": [
     {
       "type": "modonomicon:entity",
+      "id": "archeology_reimagined:allosaurus/lore",
       "entity_id": "archeology_reimagined:allosaurus",
+      "entity_name": "entry.archeology_reimagined.allosaurus.name",
       "scale": 0.8,
       "text": "book.archeology_reimagined.allosaurus.lore"
     },
     {
       "type": "modonomicon:text",
+      "id": "archeology_reimagined:allosaurus/stats",
       "title": "book.archeology_reimagined.stats.title",
       "text": "book.archeology_reimagined.allosaurus.stats",
       "show_title_separator": true,
