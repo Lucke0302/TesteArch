@@ -1,0 +1,33 @@
+{
+  "type": "modonomicon:content",
+  "id": "archeology_reimagined:fuser",
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "name": "entry.archeology_reimagined.fuser.name",
+  "description": "entry.archeology_reimagined.fuser.desc",
+  "icon": "archeology_reimagined:fuser",
+  "category": "archeology_reimagined:machines",
+  "x": 2,
+  "y": 0,
+  "pages": [
+    {
+      "type": "modonomicon:spotlight",
+      "id": "archeology_reimagined:fuser/spotlight",
+      "title": "entry.archeology_reimagined.fuser.name",
+      "item": "archeology_reimagined:fuser",
+      "text": "book.archeology_reimagined.fuser.intro"
+    },
+    {
+      "type": "modonomicon:text",
+      "id": "archeology_reimagined:fuser/info",
+      "title": "book.archeology_reimagined.stats.title",
+      "text": "book.archeology_reimagined.fuser.info",
+      "show_title_separator": true
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "id": "archeology_reimagined:fuser/recipe",
+      "recipe_id_1": "archeology_reimagined:fuser"
+    }
+  ]
+}

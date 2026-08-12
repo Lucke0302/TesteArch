@@ -2,5 +2,5 @@
   "name": "category.archeology_reimagined.animals.name",
   "icon": "archeology_reimagined:default_reptile_dna",
   "sort_number": 0,
-  "entry_textures": "modonomicon:textures/gui/entry_textures.png"
+  "entry_textures": "archeology_reimagined:textures/gui/transparent_entry.png"
 }

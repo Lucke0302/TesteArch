@@ -156,5 +156,27 @@
   "entry.archeology_reimagined.dimorphodon.name": "Dimorphodon",
   "entry.archeology_reimagined.dimorphodon.desc": "Pequeno, ágil e dentuço.",
   "book.archeology_reimagined.dimorphodon.lore": "Um pterossauro de pequeno porte com um crânio desproporcional. Extremamente ágil, exige contenção rígida e fechada para evitar fugas aéreas.",
-  "book.archeology_reimagined.dimorphodon.stats": "- **Dieta:** Carnívoro\n- **Recinto Mínimo:** 10 blocos\n- **Altitude de Voo:** 6 blocos\n\nPara clonar este animal, processe seu DNA no Sintetizador."
+  "book.archeology_reimagined.dimorphodon.stats": "- **Dieta:** Carnívoro\n- **Recinto Mínimo:** 10 blocos\n- **Altitude de Voo:** 6 blocos\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+
+  "category.archeology_reimagined.machines.name": "Equipamentos",
+
+  "entry.archeology_reimagined.cleansing_table.name": "Mesa de Limpeza",
+  "entry.archeology_reimagined.cleansing_table.desc": "Purifica fósseis.",
+  "book.archeology_reimagined.cleansing_table.intro": "A Mesa de Limpeza é o primeiro passo da clonagem. Ela utiliza água e calor para remover impurezas da rocha e isolar o material genético do fóssil.",
+  "book.archeology_reimagined.cleansing_table.info": "**Entrada:**\n- Fósseis ou Âmbar\n- Água (Balde)\n- Combustível (Carvão, Lava, etc)\n\n**Saída:**\n- DNA (20% de chance)\n- DNA Fragmentado\n- Materiais comuns (Osso, Cascalho)",
+
+  "entry.archeology_reimagined.synthesizer.name": "Sintetizador",
+  "entry.archeology_reimagined.synthesizer.desc": "Sintetiza embriões.",
+  "book.archeology_reimagined.synthesizer.intro": "O Sintetizador é responsável por processar o DNA purificado juntamente com matéria orgânica para criar um embrião viável.",
+  "book.archeology_reimagined.synthesizer.info": "**Entrada:**\n- DNA de Dinossauro\n- Combustível Orgânico\n\n**Saída:**\n- Embrião da respectiva espécie\n\n*Dica: A qualidade do combustível orgânico (Básico, Médio ou Avançado) impacta diretamente na vitalidade do embrião.*",
+
+  "entry.archeology_reimagined.fuser.name": "Fusor",
+  "entry.archeology_reimagined.fuser.desc": "Funde embriões em ovos biológicos.",
+  "book.archeology_reimagined.fuser.intro": "O Fusor combina um embrião sintético com um óvulo natural hospedeiro, criando um ovo de dinossauro pronto para ser chocado.",
+  "book.archeology_reimagined.fuser.info": "**Entrada:**\n- Embrião de Dinossauro\n- Ovo Vanilla (Galinha, Tartaruga ou Sniffer)\n- Combustível Orgânico\n\n**Saída:**\n- Ovo de Dinossauro Block\n\n*Dica: Ovos maiores (como o do Sniffer) garantem um bônus vital na sobrevivência do feto.*",
+
+  "entry.archeology_reimagined.biocatalyzer.name": "Biocatalisador",
+  "entry.archeology_reimagined.biocatalyzer.desc": "Equipamento de química avançada.",
+  "book.archeology_reimagined.biocatalyzer.intro": "O Biocatalisador permite manipular a genética falha e destilar toxinas para uso no controle dos animais.",
+  "book.archeology_reimagined.biocatalyzer.info": "**Para Dardos:**\n- Dardo Vazio + Frasco de Bagas\n- Requer: Biopropelente\n\n**Para Seringas:**\n- Seringa Vazia + DNA Fragmentado\n- Requer: Combustível Avançado"
 }
