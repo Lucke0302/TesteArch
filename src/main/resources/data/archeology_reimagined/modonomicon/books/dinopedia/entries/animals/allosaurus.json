@@ -1,8 +1,9 @@
 {
+  "type": "modonomicon:entry",
   "name": "entry.archeology_reimagined.allosaurus.name",
   "description": "entry.archeology_reimagined.allosaurus.desc",
   "icon": "archeology_reimagined:allosaurus_dna",
-  "category": "archeology_reimagined:animais",
+  "category": "archeology_reimagined:animals",
   "x": 0,
   "y": 0,
   "pages": [
