@@ -1,0 +1,7 @@
+{
+  "name": "book.archeology_reimagined.dinopedia.name",
+  "tooltip": "book.archeology_reimagined.dinopedia.tooltip",
+  "model": "archeology_reimagined:encyclopedia",
+  "generate_book_item": false,
+  "custom_book_item": "archeology_reimagined:encyclopedia"
+}

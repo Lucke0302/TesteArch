@@ -1,0 +1,21 @@
+{
+  "name": "entry.archeology_reimagined.allosaurus.name",
+  "description": "entry.archeology_reimagined.allosaurus.desc",
+  "icon": "archeology_reimagined:allosaurus_dna",
+  "category": "archeology_reimagined:animais",
+  "x": 0,
+  "y": 0,
+  "pages": [
+    {
+      "type": "modonomicon:entity",
+      "entity_id": "archeology_reimagined:allosaurus",
+      "scale": 0.8,
+      "text": "book.archeology_reimagined.allosaurus.lore"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "book.archeology_reimagined.stats.title",
+      "text": "book.archeology_reimagined.allosaurus.stats"
+    }
+  ]
+}

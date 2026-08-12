@@ -110,5 +110,17 @@
   "block.archeology_reimagined.dimorphodon_egg_block": "Ovo de Dimorfodon",
   "item.archeology_reimagined.dimorphodon_egg_block": "Ovo de Dimorfodon",
 
-  "feeling.archeology_reimagined.stress": "Stress"
+  "feeling.archeology_reimagined.stress": "Stress",
+
+  "book.archeology_reimagined.dinopedia.name": "Dinopédia",
+  "book.archeology_reimagined.dinopedia.tooltip": "Um guia completo de engenharia genética.",
+  
+  "category.archeology_reimagined.animais.name": "Fauna Extinta",
+  
+  "entry.archeology_reimagined.allosaurus.name": "Allosaurus",
+  "entry.archeology_reimagined.allosaurus.desc": "Superpredador do Jurássico.",
+  
+  "book.archeology_reimagined.allosaurus.lore": "O Allosaurus foi recriado com sucesso. Extremamente territorial, este carnívoro exige contenção rigorosa.",
+  "book.archeology_reimagined.stats.title": "Ficha Técnica",
+  "book.archeology_reimagined.allosaurus.stats": "$(bold)Dieta:$(reset) Carnívoro\n$(bold)Recinto Mínimo:$(reset) 20 blocos\n$(bold)Traits Principais:$(reset) Agressividade, Gula\n\nPara clonar este animal, processe seu DNA no Sintetizador."
 }
