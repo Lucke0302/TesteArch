@@ -126,10 +126,35 @@
   
   "category.archeology_reimagined.animals.name": "Fauna Extinta",
   
-  "entry.archeology_reimagined.allosaurus.name": "Allosaurus",
+  "entry.archeology_reimagined.allosaurus.name": "Alossauro",
   "entry.archeology_reimagined.allosaurus.desc": "Superpredador do Jurássico.",
   
-  "book.archeology_reimagined.allosaurus.lore": "O Allosaurus foi recriado com sucesso. Extremamente territorial, este carnívoro exige contenção rigorosa.",
+  "book.archeology_reimagined.allosaurus.lore": "O Alossauro foi recriado com sucesso. Extremamente territorial, este carnívoro exige contenção rigorosa.",
   "book.archeology_reimagined.stats.title": "Ficha Técnica",
-  "book.archeology_reimagined.allosaurus.stats": "- **Dieta:** Carnívoro\n- **Recinto Mínimo:** 20 blocos\n- **Traits Principais:** Agressividade, Gula\n\nPara clonar este animal, processe seu DNA no Sintetizador."
+  "book.archeology_reimagined.allosaurus.stats": "- **Dieta:** Carnívoro\n- **Recinto Mínimo:** 20 blocos\n- **Traits Principais:** Agressividade, Gula\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+
+  "entry.archeology_reimagined.spinosaurus.name": "Spinosaurus",
+  "entry.archeology_reimagined.spinosaurus.desc": "Colossal predador semi-aquático.",
+  "book.archeology_reimagined.spinosaurus.lore": "O maior carnívoro já recriado. Com sua imponente vela dorsal, o Spinosaurus é um predador formidável que divide seu tempo entre a terra firme e águas profundas.",
+  "book.archeology_reimagined.spinosaurus.stats": "- **Dieta:** Carnívoro (Piscívoro)\n- **Recinto Mínimo:** 30 blocos\n- **Traits Principais:** Agressividade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+
+  "entry.archeology_reimagined.pachycephalosaurus.name": "Pachycephalosaurus",
+  "entry.archeology_reimagined.pachycephalosaurus.desc": "Herbívoro de crânio espesso.",
+  "book.archeology_reimagined.pachycephalosaurus.lore": "Reconhecido pelo seu domo ósseo craniano que pode chegar a 25cm de espessura. Apesar de herbívoro, é surpreendentemente agressivo e territorial.",
+  "book.archeology_reimagined.pachycephalosaurus.stats": "- **Dieta:** Herbívoro\n- **Recinto Mínimo:** 12 blocos\n- **Traits Principais:** Agressividade, Curiosidade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+
+  "entry.archeology_reimagined.parasaurolophus.name": "Parasaurolophus",
+  "entry.archeology_reimagined.parasaurolophus.desc": "O músico do Cretáceo.",
+  "book.archeology_reimagined.parasaurolophus.lore": "Famoso pela sua crista tubular, usada para emitir sons complexos de comunicação. É um herbívoro dócil e social, preferindo fugir ao menor sinal de perigo.",
+  "book.archeology_reimagined.parasaurolophus.stats": "- **Dieta:** Herbívoro\n- **Recinto Mínimo:** 15 blocos\n- **Traits Principais:** Covardia, Curiosidade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+
+  "entry.archeology_reimagined.quetzalcoatlus.name": "Quetzalcoatlus",
+  "entry.archeology_reimagined.quetzalcoatlus.desc": "Gigante dos céus.",
+  "book.archeology_reimagined.quetzalcoatlus.lore": "Um dos maiores animais voadores de todos os tempos. Uma verdadeira maravilha da genética, este colossal pterossauro precisa de enorme espaço vertical.",
+  "book.archeology_reimagined.quetzalcoatlus.stats": "- **Dieta:** Onívoro\n- **Recinto Mínimo:** 25 blocos\n- **Altitude de Voo:** 12 blocos\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+
+  "entry.archeology_reimagined.dimorphodon.name": "Dimorphodon",
+  "entry.archeology_reimagined.dimorphodon.desc": "Pequeno, ágil e dentuço.",
+  "book.archeology_reimagined.dimorphodon.lore": "Um pterossauro de pequeno porte com um crânio desproporcional. Extremamente ágil, exige contenção rígida e fechada para evitar fugas aéreas.",
+  "book.archeology_reimagined.dimorphodon.stats": "- **Dieta:** Carnívoro\n- **Recinto Mínimo:** 10 blocos\n- **Altitude de Voo:** 6 blocos\n\nPara clonar este animal, processe seu DNA no Sintetizador."
 }

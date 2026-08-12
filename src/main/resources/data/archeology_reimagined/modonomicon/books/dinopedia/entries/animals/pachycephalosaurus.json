@@ -1,0 +1,30 @@
+{
+  "type": "modonomicon:content",
+  "id": "archeology_reimagined:pachycephalosaurus",
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "name": "entry.archeology_reimagined.pachycephalosaurus.name",
+  "description": "entry.archeology_reimagined.pachycephalosaurus.desc",
+  "icon": "archeology_reimagined:pachycephalosaurus_dna",
+  "category": "archeology_reimagined:animals",
+  "x": 0,
+  "y": 1,
+  "pages": [
+    {
+      "type": "modonomicon:entity",
+      "id": "archeology_reimagined:pachycephalosaurus/lore",
+      "entity_id": "archeology_reimagined:pachycephalosaurus",
+      "entity_name": "entry.archeology_reimagined.pachycephalosaurus.name",
+      "scale": 0.4,
+      "text": "book.archeology_reimagined.pachycephalosaurus.lore"
+    },
+    {
+      "type": "modonomicon:text",
+      "id": "archeology_reimagined:pachycephalosaurus/stats",
+      "title": "book.archeology_reimagined.stats.title",
+      "text": "book.archeology_reimagined.pachycephalosaurus.stats",
+      "show_title_separator": true,
+      "use_markdown_in_title": false
+    }
+  ]
+}

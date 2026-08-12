@@ -1,0 +1,30 @@
+{
+  "type": "modonomicon:content",
+  "id": "archeology_reimagined:parasaurolophus",
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "name": "entry.archeology_reimagined.parasaurolophus.name",
+  "description": "entry.archeology_reimagined.parasaurolophus.desc",
+  "icon": "archeology_reimagined:parasaurolophus_dna",
+  "category": "archeology_reimagined:animals",
+  "x": 1,
+  "y": 1,
+  "pages": [
+    {
+      "type": "modonomicon:entity",
+      "id": "archeology_reimagined:parasaurolophus/lore",
+      "entity_id": "archeology_reimagined:parasaurolophus",
+      "entity_name": "entry.archeology_reimagined.parasaurolophus.name",
+      "scale": 0.4,
+      "text": "book.archeology_reimagined.parasaurolophus.lore"
+    },
+    {
+      "type": "modonomicon:text",
+      "id": "archeology_reimagined:parasaurolophus/stats",
+      "title": "book.archeology_reimagined.stats.title",
+      "text": "book.archeology_reimagined.parasaurolophus.stats",
+      "show_title_separator": true,
+      "use_markdown_in_title": false
+    }
+  ]
+}

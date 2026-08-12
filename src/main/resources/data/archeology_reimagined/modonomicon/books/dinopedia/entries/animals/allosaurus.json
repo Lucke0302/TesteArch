@@ -13,9 +13,10 @@
   "pages": [
     {
       "type": "modonomicon:entity",
-      "id": "archeology_reimagined:allosaurus/lore",
+      "id": "archeology_reimagined:allosaurus/lore_baby",
       "entity_id": "archeology_reimagined:allosaurus",
       "entity_name": "entry.archeology_reimagined.allosaurus.name",
+      "nbt": "{AgeTier: 'BABY'}",
       "scale": 0.5,
       "text": "book.archeology_reimagined.allosaurus.lore"
     },

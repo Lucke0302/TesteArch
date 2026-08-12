@@ -1,0 +1,30 @@
+{
+  "type": "modonomicon:content",
+  "id": "archeology_reimagined:dimorphodon",
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "name": "entry.archeology_reimagined.dimorphodon.name",
+  "description": "entry.archeology_reimagined.dimorphodon.desc",
+  "icon": "archeology_reimagined:dimorphodon_dna",
+  "category": "archeology_reimagined:animals",
+  "x": 1,
+  "y": 2,
+  "pages": [
+    {
+      "type": "modonomicon:entity",
+      "id": "archeology_reimagined:dimorphodon/lore",
+      "entity_id": "archeology_reimagined:dimorphodon",
+      "entity_name": "entry.archeology_reimagined.dimorphodon.name",
+      "scale": 0.7,
+      "text": "book.archeology_reimagined.dimorphodon.lore"
+    },
+    {
+      "type": "modonomicon:text",
+      "id": "archeology_reimagined:dimorphodon/stats",
+      "title": "book.archeology_reimagined.stats.title",
+      "text": "book.archeology_reimagined.dimorphodon.stats",
+      "show_title_separator": true,
+      "use_markdown_in_title": false
+    }
+  ]
+}

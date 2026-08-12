@@ -1,0 +1,30 @@
+{
+  "type": "modonomicon:content",
+  "id": "archeology_reimagined:spinosaurus",
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "name": "entry.archeology_reimagined.spinosaurus.name",
+  "description": "entry.archeology_reimagined.spinosaurus.desc",
+  "icon": "archeology_reimagined:spinosaurus_dna",
+  "category": "archeology_reimagined:animals",
+  "x": 1,
+  "y": 0,
+  "pages": [
+    {
+      "type": "modonomicon:entity",
+      "id": "archeology_reimagined:spinosaurus/lore",
+      "entity_id": "archeology_reimagined:spinosaurus",
+      "entity_name": "entry.archeology_reimagined.spinosaurus.name",
+      "scale": 0.4,
+      "text": "book.archeology_reimagined.spinosaurus.lore"
+    },
+    {
+      "type": "modonomicon:text",
+      "id": "archeology_reimagined:spinosaurus/stats",
+      "title": "book.archeology_reimagined.stats.title",
+      "text": "book.archeology_reimagined.spinosaurus.stats",
+      "show_title_separator": true,
+      "use_markdown_in_title": false
+    }
+  ]
+}
