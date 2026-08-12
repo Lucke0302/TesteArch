@@ -60,7 +60,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
 
     protected final EnumMap<Trait, Float> traits = new EnumMap<>(Trait.class);
     protected final EnumMap<Feeling, Float> feelings = new EnumMap<>(Feeling.class);
-    protected AgeTier ageTier = AgeTier.BABY;
+    protected AgeTier ageTier = AgeTier.ADULT;
     protected float baseScale;
     protected float humanAffinity = 0.5f;
     protected float geneticStatMultiplier = 1.0f;
@@ -165,7 +165,7 @@ public abstract class AbstractDinosaurEntity extends TamableAnimal implements Ge
         builder.define(SCALE, 1.0f);
         builder.define(DOMINANT_STATE, (byte) 0);
         builder.define(IS_MALE, true);
-        builder.define(AGE_TIER_SYNC, (byte) AgeTier.BABY.ordinal());
+        builder.define(AGE_TIER_SYNC, (byte) AgeTier.ADULT.ordinal());
         builder.define(IS_SLEEPING_SYNC, false);
         builder.define(IS_RESTING_SYNC, false);
     }
