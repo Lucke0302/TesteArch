@@ -1,8 +1,7 @@
 {
   "type": "modonomicon:content",
   "id": "archeology_reimagined:dimorphodon",
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": "archeology_reimagined:textures/gui/transparent_entry.png",
   "name": "entry.archeology_reimagined.dimorphodon.name",
   "description": "entry.archeology_reimagined.dimorphodon.desc",
   "icon": "archeology_reimagined:dimorphodon_dna",
