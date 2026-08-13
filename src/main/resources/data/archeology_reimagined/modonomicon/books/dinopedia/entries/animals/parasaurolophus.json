@@ -1,7 +1,7 @@
 {
   "type": "modonomicon:content",
   "id": "archeology_reimagined:parasaurolophus",
-  "background": "archeology_reimagined:textures/gui/transparent_entry.png",
+  "background": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
   "name": "entry.archeology_reimagined.parasaurolophus.name",
   "description": "entry.archeology_reimagined.parasaurolophus.desc",
   "icon": "archeology_reimagined:parasaurolophus_dna",

@@ -1,8 +1,7 @@
 {
   "type": "modonomicon:content",
   "id": "archeology_reimagined:cleansing_table",
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
   "name": "entry.archeology_reimagined.cleansing_table.name",
   "description": "entry.archeology_reimagined.cleansing_table.desc",
   "icon": "archeology_reimagined:cleansing_table",

@@ -1,8 +1,7 @@
 {
   "type": "modonomicon:content",
   "id": "archeology_reimagined:fuser",
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
   "name": "entry.archeology_reimagined.fuser.name",
   "description": "entry.archeology_reimagined.fuser.desc",
   "icon": "archeology_reimagined:fuser",
