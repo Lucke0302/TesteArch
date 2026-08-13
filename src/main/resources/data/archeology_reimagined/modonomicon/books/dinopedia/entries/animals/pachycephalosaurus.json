@@ -1,7 +1,7 @@
 {
   "type": "modonomicon:content",
   "id": "archeology_reimagined:pachycephalosaurus",
-  "background": "archeology_reimagined:textures/gui/transparent_entry.png",
+  "background": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
   "name": "entry.archeology_reimagined.pachycephalosaurus.name",
   "description": "entry.archeology_reimagined.pachycephalosaurus.desc",
   "icon": "archeology_reimagined:pachycephalosaurus_dna",

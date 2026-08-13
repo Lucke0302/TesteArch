@@ -1,6 +1,5 @@
 {
   "name": "category.archeology_reimagined.machines.name",
   "icon": "archeology_reimagined:cleansing_table",
-  "sort_number": 1,
-  "entry_textures": "modonomicon:textures/gui/entry_textures.png"
+  "sort_number": 1
 }
