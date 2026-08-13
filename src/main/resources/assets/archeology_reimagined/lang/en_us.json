@@ -163,7 +163,7 @@
   "entry.archeology_reimagined.cleansing_table.name": "Cleansing Table",
   "entry.archeology_reimagined.cleansing_table.desc": "Purifies fossils.",
   "book.archeology_reimagined.cleansing_table.intro": "The Cleansing Table is the first step of cloning. It uses water and heat to remove impurities from the rock and isolate the genetic material from the fossil.",
-  "book.archeology_reimagined.cleansing_table.info": "**Input:**\n- Fossils or Amber\n- Water (Bucket)\n- Fuel (Coal, Lava, etc)\n\n**Output:**\n- DNA (20% chance)\n- Fragmented DNA\n- Common materials (Bone, Gravel)",
+  "book.archeology_reimagined.cleansing_table.info": "**Input:** \n- Fossils or Amber\n- Water (Bucket)\n- Fuel (Coal, Lava, etc)\n\n**Output:**\n- DNA (20% chance)\n- Fragmented DNA\n- Common materials (Bone, Gravel)",
   
   "entry.archeology_reimagined.synthesizer.name": "Synthesizer",
   "entry.archeology_reimagined.synthesizer.desc": "Synthesizes embryos.",

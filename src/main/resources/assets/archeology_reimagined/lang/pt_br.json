@@ -163,7 +163,7 @@
   "entry.archeology_reimagined.cleansing_table.name": "Mesa de Limpeza",
   "entry.archeology_reimagined.cleansing_table.desc": "Purifica fósseis.",
   "book.archeology_reimagined.cleansing_table.intro": "A Mesa de Limpeza é o primeiro passo da clonagem. Ela utiliza água e calor para remover impurezas da rocha e isolar o material genético do fóssil.",
-  "book.archeology_reimagined.cleansing_table.info": "**Entrada:**\n- Fósseis ou Âmbar\n- Água (Balde)\n- Combustível (Carvão, Lava, etc)\n\n**Saída:**\n- DNA (20% de chance)\n- DNA Fragmentado\n- Materiais comuns (Osso, Cascalho)",
+  "book.archeology_reimagined.cleansing_table.info": "**Entrada:** \n- Fósseis ou Âmbar\n- Água (Balde)\n- Combustível (Carvão, Lava, etc)\n\n**Saída:**\n- DNA (20% de chance)\n- DNA Fragmentado\n- Materiais comuns (Osso, Cascalho)",
 
   "entry.archeology_reimagined.synthesizer.name": "Sintetizador",
   "entry.archeology_reimagined.synthesizer.desc": "Sintetiza embriões.",
