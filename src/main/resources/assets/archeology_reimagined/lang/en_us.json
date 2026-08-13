@@ -163,22 +163,22 @@
   "entry.archeology_reimagined.cleansing_table.name": "Cleansing Table",
   "entry.archeology_reimagined.cleansing_table.desc": "Purifies fossils.",
   "book.archeology_reimagined.cleansing_table.intro": "The Cleansing Table is the first step of cloning. It uses water and heat to remove impurities from the rock and isolate the genetic material from the fossil.",
-  "book.archeology_reimagined.cleansing_table.info": "**Input:** \n- Fossils or Amber\n- Water (Bucket)\n- Fuel (Coal, Lava, etc)\n\n**Output:**\n- DNA (20% chance)\n- Fragmented DNA\n- Common materials (Bone, Gravel)",
+  "book.archeology_reimagined.cleansing_table.info": "### Input\n- Fossils or Amber\n- Water (Bucket)\n- Fuel (Coal, Lava, etc)\n\n### Output\n- DNA (20% chance)\n- Fragmented DNA\n- Common materials (Bone, Gravel)",
   
   "entry.archeology_reimagined.synthesizer.name": "Synthesizer",
   "entry.archeology_reimagined.synthesizer.desc": "Synthesizes embryos.",
   "book.archeology_reimagined.synthesizer.intro": "The Synthesizer is responsible for processing purified DNA along with organic matter to create a viable embryo.",
-  "book.archeology_reimagined.synthesizer.info": "**Input:**\n- Dinosaur DNA\n- Organic Fuel\n\n**Output:**\n- Embryo of the respective species\n\n*Tip: The quality of the organic fuel (Basic, Medium, or Advanced) directly impacts the vitality of the embryo.*",
+  "book.archeology_reimagined.synthesizer.info": "### Input\n- Dinosaur DNA\n- Organic Fuel\n\n### Output\n- Embryo of the respective species\n\n*Tip: The quality of the organic fuel (Basic, Medium, or Advanced) directly impacts the vitality of the embryo.*",
   
   "entry.archeology_reimagined.fuser.name": "Fuser",
   "entry.archeology_reimagined.fuser.desc": "Fuses embryos into biological eggs.",
   "book.archeology_reimagined.fuser.intro": "The Fuser combines a synthetic embryo with a natural host egg, creating a dinosaur egg ready to be hatched.",
-  "book.archeology_reimagined.fuser.info": "**Input:**\n- Dinosaur Embryo\n- Vanilla Egg (Chicken, Turtle, or Sniffer)\n- Organic Fuel\n\n**Output:**\n- Dinosaur Egg Block\n\n*Tip: Larger eggs (such as the Sniffer's) guarantee a vital bonus to the fetus's survival.*",
+  "book.archeology_reimagined.fuser.info": "### Input\n- Dinosaur Embryo\n- Vanilla Egg (Chicken, Turtle, or Sniffer)\n- Organic Fuel\n\n### Output\n- Dinosaur Egg Block\n\n*Tip: Larger eggs (such as the Sniffer's) guarantee a vital bonus to the fetus's survival.*",
   
   "entry.archeology_reimagined.biocatalyzer.name": "Biocatalyzer",
   "entry.archeology_reimagined.biocatalyzer.desc": "Advanced chemistry equipment.",
   "book.archeology_reimagined.biocatalyzer.intro": "The Biocatalyzer allows you to manipulate flawed genetics and distill toxins for use in animal control.",
-  "book.archeology_reimagined.biocatalyzer.info": "**For Darts:**\n- Empty Dart + Bitter Berry Jar\n- Requires: Bio Propellant\n\n**For Syringes:**\n- Empty Syringe + Fragmented DNA\n- Requires: Advanced Organic Fuel",
+  "book.archeology_reimagined.biocatalyzer.info": "### For Darts:\n- Empty Dart + Bitter Berry Jar\n- Requires: Bio Propellant\n\n### For Syringes:\n- Empty Syringe + Fragmented DNA\n- Requires: Advanced Organic Fuel",
   
   "category.archeology_reimagined.components.name": "Machine Components",
   
