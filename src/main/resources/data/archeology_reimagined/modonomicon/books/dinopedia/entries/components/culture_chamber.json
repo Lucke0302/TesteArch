@@ -1,0 +1,25 @@
+{
+  "type": "modonomicon:content",
+  "id": "archeology_reimagined:culture_chamber",
+  "background": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+  "name": "entry.archeology_reimagined.culture_chamber.name",
+  "description": "entry.archeology_reimagined.culture_chamber.desc",
+  "icon": "archeology_reimagined:culture_chamber",
+  "category": "archeology_reimagined:components",
+  "x": 0,
+  "y": 0,
+  "pages": [
+    {
+      "type": "modonomicon:spotlight",
+      "id": "archeology_reimagined:culture_chamber/spotlight",
+      "title": "entry.archeology_reimagined.culture_chamber.name",
+      "item": "archeology_reimagined:culture_chamber",
+      "text": "book.archeology_reimagined.culture_chamber.intro"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "id": "archeology_reimagined:culture_chamber/recipe",
+      "recipe_id_1": "archeology_reimagined:culture_chamber"
+    }
+  ]
+}

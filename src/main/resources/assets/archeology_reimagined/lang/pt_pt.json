@@ -169,5 +169,19 @@
   "entry.archeology_reimagined.biocatalyzer.name": "Biocatalisador",
   "entry.archeology_reimagined.biocatalyzer.desc": "Equipamento de química avançada.",
   "book.archeology_reimagined.biocatalyzer.intro": "O Biocatalisador permite manipular a genética falha e destilar toxinas para uso no controle dos animais.",
-  "book.archeology_reimagined.biocatalyzer.info": "**Para Dardos:**\n- Dardo Vazio + Frasco de Bagas\n- Requer: Biopropelente\n\n**Para Seringas:**\n- Seringa Vazia + DNA Fragmentado\n- Requer: Combustível Avançado"
+  "book.archeology_reimagined.biocatalyzer.info": "**Para Dardos:**\n- Dardo Vazio + Frasco de Bagas\n- Requer: Biopropelente\n\n**Para Seringas:**\n- Seringa Vazia + DNA Fragmentado\n- Requer: Combustível Avançado",
+
+  "category.archeology_reimagined.components.name": "Componentes",
+  
+  "entry.archeology_reimagined.culture_chamber.name": "Câmara de Cultivo",
+  "entry.archeology_reimagined.culture_chamber.desc": "Utilizada para cultivar material genético.",
+  "book.archeology_reimagined.culture_chamber.intro": "A Câmara de Cultivo é um componente vital usado na construção de máquinas biológicas avançadas. Seu revestimento de vidro permite a observação segura dos processos internos.",
+  
+  "entry.archeology_reimagined.thermal_module.name": "Módulo Térmico",
+  "entry.archeology_reimagined.thermal_module.desc": "Regula a temperatura de operações delicadas.",
+  "book.archeology_reimagined.thermal_module.intro": "Uma peça estrutural central feita de ferro e cobre. O Módulo Térmico garante que maquinários complexos mantenham a temperatura perfeita para manipulação genética.",
+  
+  "entry.archeology_reimagined.processing_board.name": "Placa de Processamento",
+  "entry.archeology_reimagined.processing_board.desc": "O cérebro por trás das máquinas.",
+  "book.archeology_reimagined.processing_board.intro": "Cabeada com redstone e ouro, a Placa de Processamento atua como o cérebro eletrônico do seu equipamento, coordenando tarefas complexas de síntese e fusão."
 }

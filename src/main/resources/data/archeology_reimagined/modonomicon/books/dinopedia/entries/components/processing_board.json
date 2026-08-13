@@ -1,0 +1,25 @@
+{
+  "type": "modonomicon:content",
+  "id": "archeology_reimagined:processing_board",
+  "background": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+  "name": "entry.archeology_reimagined.processing_board.name",
+  "description": "entry.archeology_reimagined.processing_board.desc",
+  "icon": "archeology_reimagined:processing_board",
+  "category": "archeology_reimagined:components",
+  "x": 2,
+  "y": 0,
+  "pages": [
+    {
+      "type": "modonomicon:spotlight",
+      "id": "archeology_reimagined:processing_board/spotlight",
+      "title": "entry.archeology_reimagined.processing_board.name",
+      "item": "archeology_reimagined:processing_board",
+      "text": "book.archeology_reimagined.processing_board.intro"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "id": "archeology_reimagined:processing_board/recipe",
+      "recipe_id_1": "archeology_reimagined:processing_board"
+    }
+  ]
+}

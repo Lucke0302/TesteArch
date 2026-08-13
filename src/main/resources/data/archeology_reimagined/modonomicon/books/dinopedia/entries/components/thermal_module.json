@@ -1,0 +1,25 @@
+{
+  "type": "modonomicon:content",
+  "id": "archeology_reimagined:thermal_module",
+  "background": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+  "name": "entry.archeology_reimagined.thermal_module.name",
+  "description": "entry.archeology_reimagined.thermal_module.desc",
+  "icon": "archeology_reimagined:thermal_module",
+  "category": "archeology_reimagined:components",
+  "x": 1,
+  "y": 0,
+  "pages": [
+    {
+      "type": "modonomicon:spotlight",
+      "id": "archeology_reimagined:thermal_module/spotlight",
+      "title": "entry.archeology_reimagined.thermal_module.name",
+      "item": "archeology_reimagined:thermal_module",
+      "text": "book.archeology_reimagined.thermal_module.intro"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "id": "archeology_reimagined:thermal_module/recipe",
+      "recipe_id_1": "archeology_reimagined:thermal_module"
+    }
+  ]
+}

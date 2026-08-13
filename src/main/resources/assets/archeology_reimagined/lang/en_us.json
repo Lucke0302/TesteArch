@@ -119,5 +119,78 @@
   "block.archeology_reimagined.dimorphodon_egg_block": "Dimorphodon Egg",
   "item.archeology_reimagined.dimorphodon_egg_block": "Dimorphodon Egg",
 
-  "feeling.archeology_reimagined.stress": "Stressed"
+  "feeling.archeology_reimagined.stress": "Stressed",
+
+  "book.archeology_reimagined.dinopedia.name": "Dinopedia",
+  "book.archeology_reimagined.dinopedia.tooltip": "A complete guide to genetic engineering.",
+  
+  "category.archeology_reimagined.animals.name": "Extinct Fauna",
+  
+  "book.archeology_reimagined.stats.title": "Data Sheet",
+
+  "entry.archeology_reimagined.allosaurus.name": "Allosaurus",
+  "entry.archeology_reimagined.allosaurus.desc": "Jurassic apex predator.",
+  "book.archeology_reimagined.allosaurus.lore": "The Allosaurus has been successfully recreated. Extremely territorial, this carnivore requires rigorous containment.",
+  "book.archeology_reimagined.allosaurus.stats": "- **Diet:** Carnivore\n- **Minimum Enclosure:** 20 blocks\n- **Main Traits:** Aggressiveness, Gluttony\n\nTo clone this animal, process its DNA in the Synthesizer.",
+  
+  "entry.archeology_reimagined.spinosaurus.name": "Spinosaurus",
+  "entry.archeology_reimagined.spinosaurus.desc": "Colossal semi-aquatic predator.",
+  "book.archeology_reimagined.spinosaurus.lore": "The largest carnivore ever recreated. With its imposing dorsal sail, the Spinosaurus is a formidable predator that divides its time between dry land and deep waters.",
+  "book.archeology_reimagined.spinosaurus.stats": "- **Diet:** Carnivore (Piscivore)\n- **Minimum Enclosure:** 30 blocks\n- **Main Traits:** Aggressiveness\n\nTo clone this animal, process its DNA in the Synthesizer.",
+  
+  "entry.archeology_reimagined.pachycephalosaurus.name": "Pachycephalosaurus",
+  "entry.archeology_reimagined.pachycephalosaurus.desc": "Thick-skulled herbivore.",
+  "book.archeology_reimagined.pachycephalosaurus.lore": "Recognized by its cranial bone dome that can reach 25cm in thickness. Despite being a herbivore, it is surprisingly aggressive and territorial.",
+  "book.archeology_reimagined.pachycephalosaurus.stats": "- **Diet:** Herbivore\n- **Minimum Enclosure:** 12 blocks\n- **Main Traits:** Aggressiveness, Curiosity\n\nTo clone this animal, process its DNA in the Synthesizer.",
+  
+  "entry.archeology_reimagined.parasaurolophus.name": "Parasaurolophus",
+  "entry.archeology_reimagined.parasaurolophus.desc": "The musician of the Cretaceous.",
+  "book.archeology_reimagined.parasaurolophus.lore": "Famous for its tubular crest, used to emit complex communication sounds. It is a docile and social herbivore, preferring to flee at the slightest sign of danger.",
+  "book.archeology_reimagined.parasaurolophus.stats": "- **Diet:** Herbivore\n- **Minimum Enclosure:** 15 blocks\n- **Main Traits:** Cowardice, Curiosity\n\nTo clone this animal, process its DNA in the Synthesizer.",
+  
+  "entry.archeology_reimagined.quetzalcoatlus.name": "Quetzalcoatlus",
+  "entry.archeology_reimagined.quetzalcoatlus.desc": "Giant of the skies.",
+  "book.archeology_reimagined.quetzalcoatlus.lore": "One of the largest flying animals of all time. A true marvel of genetics, this colossal pterosaur needs enormous vertical space.",
+  "book.archeology_reimagined.quetzalcoatlus.stats": "- **Diet:** Omnivore\n- **Minimum Enclosure:** 25 blocks\n- **Flight Altitude:** 12 blocks\n\nTo clone this animal, process its DNA in the Synthesizer.",
+  
+  "entry.archeology_reimagined.dimorphodon.name": "Dimorphodon",
+  "entry.archeology_reimagined.dimorphodon.desc": "Small, agile, and toothy.",
+  "book.archeology_reimagined.dimorphodon.lore": "A small-sized pterosaur with a disproportionate skull. Extremely agile, it requires rigid and closed containment to prevent aerial escapes.",
+  "book.archeology_reimagined.dimorphodon.stats": "- **Diet:** Carnivore\n- **Minimum Enclosure:** 10 blocks\n- **Flight Altitude:** 6 blocks\n\nTo clone this animal, process its DNA in the Synthesizer.",
+  
+  "category.archeology_reimagined.machines.name": "Equipment",
+  
+  "entry.archeology_reimagined.cleansing_table.name": "Cleansing Table",
+  "entry.archeology_reimagined.cleansing_table.desc": "Purifies fossils.",
+  "book.archeology_reimagined.cleansing_table.intro": "The Cleansing Table is the first step of cloning. It uses water and heat to remove impurities from the rock and isolate the genetic material from the fossil.",
+  "book.archeology_reimagined.cleansing_table.info": "**Input:**\n- Fossils or Amber\n- Water (Bucket)\n- Fuel (Coal, Lava, etc)\n\n**Output:**\n- DNA (20% chance)\n- Fragmented DNA\n- Common materials (Bone, Gravel)",
+  
+  "entry.archeology_reimagined.synthesizer.name": "Synthesizer",
+  "entry.archeology_reimagined.synthesizer.desc": "Synthesizes embryos.",
+  "book.archeology_reimagined.synthesizer.intro": "The Synthesizer is responsible for processing purified DNA along with organic matter to create a viable embryo.",
+  "book.archeology_reimagined.synthesizer.info": "**Input:**\n- Dinosaur DNA\n- Organic Fuel\n\n**Output:**\n- Embryo of the respective species\n\n*Tip: The quality of the organic fuel (Basic, Medium, or Advanced) directly impacts the vitality of the embryo.*",
+  
+  "entry.archeology_reimagined.fuser.name": "Fuser",
+  "entry.archeology_reimagined.fuser.desc": "Fuses embryos into biological eggs.",
+  "book.archeology_reimagined.fuser.intro": "The Fuser combines a synthetic embryo with a natural host egg, creating a dinosaur egg ready to be hatched.",
+  "book.archeology_reimagined.fuser.info": "**Input:**\n- Dinosaur Embryo\n- Vanilla Egg (Chicken, Turtle, or Sniffer)\n- Organic Fuel\n\n**Output:**\n- Dinosaur Egg Block\n\n*Tip: Larger eggs (such as the Sniffer's) guarantee a vital bonus to the fetus's survival.*",
+  
+  "entry.archeology_reimagined.biocatalyzer.name": "Biocatalyzer",
+  "entry.archeology_reimagined.biocatalyzer.desc": "Advanced chemistry equipment.",
+  "book.archeology_reimagined.biocatalyzer.intro": "The Biocatalyzer allows you to manipulate flawed genetics and distill toxins for use in animal control.",
+  "book.archeology_reimagined.biocatalyzer.info": "**For Darts:**\n- Empty Dart + Bitter Berry Jar\n- Requires: Bio Propellant\n\n**For Syringes:**\n- Empty Syringe + Fragmented DNA\n- Requires: Advanced Organic Fuel",
+  
+  "category.archeology_reimagined.components.name": "Machine Components",
+  
+  "entry.archeology_reimagined.culture_chamber.name": "Culture Chamber",
+  "entry.archeology_reimagined.culture_chamber.desc": "Used to cultivate genetic material.",
+  "book.archeology_reimagined.culture_chamber.intro": "The Culture Chamber is a vital component used in the construction of advanced biological machines. Its glass casing allows for safe observation of internal processes.",
+  
+  "entry.archeology_reimagined.thermal_module.name": "Thermal Module",
+  "entry.archeology_reimagined.thermal_module.desc": "Regulates temperature for delicate operations.",
+  "book.archeology_reimagined.thermal_module.intro": "A core structural piece made from iron and copper. The Thermal Module ensures that complex machinery maintains the perfect temperature for genetic manipulation.",
+  
+  "entry.archeology_reimagined.processing_board.name": "Processing Board",
+  "entry.archeology_reimagined.processing_board.desc": "The brains behind the machines.",
+  "book.archeology_reimagined.processing_board.intro": "Wired with redstone and gold, the Processing Board acts as the electronic brain for your equipment, coordinating complex synthesis and fusing tasks."
 }
