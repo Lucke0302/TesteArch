@@ -62,8 +62,8 @@ public class ArcheologyReimagined implements ModInitializer {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayer player = handler.getPlayer();
             
-            if (player.addTag("received_arch_guide")) {
-                player.getInventory().add(createGuideBook());
+            if (player.addTag("received_dinopedia")) {
+                player.getInventory().add(new ItemStack(ModItems.ENCYCLOPEDIA));
             }
         });
 

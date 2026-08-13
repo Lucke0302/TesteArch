@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "NPN",
+    "GGG"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "N": "minecraft:iron_nugget",
+    "P": "archeology_reimagined:processing_board"
+  },
+  "result": {
+    "id": "archeology_reimagined:encyclopedia",
+    "count": 1
+  }
+}
