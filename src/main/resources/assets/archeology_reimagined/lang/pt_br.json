@@ -131,54 +131,54 @@
   "entry.archeology_reimagined.allosaurus.name": "Alossauro",
   "entry.archeology_reimagined.allosaurus.desc": "Superpredador do Jurássico.",
   "book.archeology_reimagined.allosaurus.lore": "O Alossauro foi recriado com sucesso. Extremamente territorial, este carnívoro exige contenção rigorosa.",
-  "book.archeology_reimagined.allosaurus.stats": "• **Dieta:** Carnívoro\n• **Recinto Mínimo:** 20 blocos\n• **Traits Principais:** Agressividade, Gula\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+  "book.archeology_reimagined.allosaurus.stats": "- **Dieta:** Carnívoro\n- **Recinto Mínimo:** 20 blocos\n- **Traits Principais:** Agressividade, Gula\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
   
   "entry.archeology_reimagined.spinosaurus.name": "Spinosaurus",
   "entry.archeology_reimagined.spinosaurus.desc": "Colossal predador semi-aquático.",
   "book.archeology_reimagined.spinosaurus.lore": "O maior carnívoro já recriado. Com sua imponente vela dorsal, o Spinosaurus é um predador formidável que divide seu tempo entre a terra firme e águas profundas.",
-  "book.archeology_reimagined.spinosaurus.stats": "• **Dieta:** Carnívoro (Piscívoro)\n• **Recinto Mínimo:** 30 blocos\n• **Traits Principais:** Agressividade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+  "book.archeology_reimagined.spinosaurus.stats": "- **Dieta:** Carnívoro (Piscívoro)\n- **Recinto Mínimo:** 30 blocos\n- **Traits Principais:** Agressividade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
   
   "entry.archeology_reimagined.pachycephalosaurus.name": "Pachycephalosaurus",
   "entry.archeology_reimagined.pachycephalosaurus.desc": "Herbívoro de crânio espesso.",
   "book.archeology_reimagined.pachycephalosaurus.lore": "Reconhecido pelo seu domo ósseo craniano que pode chegar a 25cm de espessura. Apesar de herbívoro, é surpreendentemente agressivo e territorial.",
-  "book.archeology_reimagined.pachycephalosaurus.stats": "• **Dieta:** Herbívoro\n• **Recinto Mínimo:** 12 blocos\n• **Traits Principais:** Agressividade, Curiosidade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+  "book.archeology_reimagined.pachycephalosaurus.stats": "- **Dieta:** Herbívoro\n- **Recinto Mínimo:** 12 blocos\n- **Traits Principais:** Agressividade, Curiosidade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
   
   "entry.archeology_reimagined.parasaurolophus.name": "Parasaurolophus",
   "entry.archeology_reimagined.parasaurolophus.desc": "O músico do Cretáceo.",
   "book.archeology_reimagined.parasaurolophus.lore": "Famoso pela sua crista tubular, usada para emitir sons complexos de comunicação. É um herbívoro dócil e social, preferindo fugir ao menor sinal de perigo.",
-  "book.archeology_reimagined.parasaurolophus.stats": "• **Dieta:** Herbívoro\n• **Recinto Mínimo:** 15 blocos\n• **Traits Principais:** Covardia, Curiosidade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+  "book.archeology_reimagined.parasaurolophus.stats": "- **Dieta:** Herbívoro\n- **Recinto Mínimo:** 15 blocos\n- **Traits Principais:** Covardia, Curiosidade\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
   
   "entry.archeology_reimagined.quetzalcoatlus.name": "Quetzalcoatlus",
   "entry.archeology_reimagined.quetzalcoatlus.desc": "Gigante dos céus.",
   "book.archeology_reimagined.quetzalcoatlus.lore": "Um dos maiores animais voadores de todos os tempos. Uma verdadeira maravilha da genética, este colossal pterossauro precisa de enorme espaço vertical.",
-  "book.archeology_reimagined.quetzalcoatlus.stats": "• **Dieta:** Onívoro\n• **Recinto Mínimo:** 25 blocos\n• **Altitude de Voo:** 12 blocos\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+  "book.archeology_reimagined.quetzalcoatlus.stats": "- **Dieta:** Onívoro\n- **Recinto Mínimo:** 25 blocos\n- **Altitude de Voo:** 12 blocos\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
   
   "entry.archeology_reimagined.dimorphodon.name": "Dimorphodon",
   "entry.archeology_reimagined.dimorphodon.desc": "Pequeno, ágil e dentuço.",
   "book.archeology_reimagined.dimorphodon.lore": "Um pterossauro de pequeno porte com um crânio desproporcional. Extremamente ágil, exige contenção rígida e fechada para evitar fugas aéreas.",
-  "book.archeology_reimagined.dimorphodon.stats": "• **Dieta:** Carnívoro\n• **Recinto Mínimo:** 10 blocos\n• **Altitude de Voo:** 6 blocos\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
+  "book.archeology_reimagined.dimorphodon.stats": "- **Dieta:** Carnívoro\n- **Recinto Mínimo:** 10 blocos\n- **Altitude de Voo:** 6 blocos\n\nPara clonar este animal, processe seu DNA no Sintetizador.",
   
   "category.archeology_reimagined.machines.name": "Equipamentos",
   
   "entry.archeology_reimagined.cleansing_table.name": "Mesa de Limpeza",
   "entry.archeology_reimagined.cleansing_table.desc": "Purifica fósseis.",
   "book.archeology_reimagined.cleansing_table.intro": "A Mesa de Limpeza é o primeiro passo da clonagem. Ela utiliza água e calor para remover impurezas da rocha e isolar o material genético do fóssil.",
-  "book.archeology_reimagined.cleansing_table.info": "**Entrada:**\n• Fósseis ou Âmbar\n• Água (Balde)\n• Combustível (Carvão, Lava, etc)\n\n**Saída:**\n• DNA (20% de chance)\n• DNA Fragmentado\n• Materiais comuns (Osso, Cascalho)",
+  "book.archeology_reimagined.cleansing_table.info": "**Entrada:**\n- Fósseis ou Âmbar\n- Água (Balde)\n- Combustível (Carvão, Lava, etc)\n\n**Saída:**\n- DNA (20%% de chance)\n- DNA Fragmentado\n- Materiais comuns (Osso, Cascalho)",
   
   "entry.archeology_reimagined.synthesizer.name": "Sintetizador",
   "entry.archeology_reimagined.synthesizer.desc": "Sintetiza embriões.",
   "book.archeology_reimagined.synthesizer.intro": "O Sintetizador é responsável por processar o DNA purificado juntamente com matéria orgânica para criar um embrião viável.",
-  "book.archeology_reimagined.synthesizer.info": "**Entrada:**\n• DNA de Dinossauro\n• Combustível Orgânico\n\n**Saída:**\n• Embrião da respectiva espécie\n\n*Dica: A qualidade do combustível orgânico (Básico, Médio ou Avançado) impacta diretamente na vitalidade do embrião.*",
+  "book.archeology_reimagined.synthesizer.info": "**Entrada:**\n- DNA de Dinossauro\n- Combustível Orgânico\n\n**Saída:**\n- Embrião da respectiva espécie\n\n*Dica: A qualidade do combustível orgânico (Básico, Médio ou Avançado) impacta diretamente na vitalidade do embrião.*",
   
   "entry.archeology_reimagined.fuser.name": "Fusor",
   "entry.archeology_reimagined.fuser.desc": "Funde embriões em ovos biológicos.",
   "book.archeology_reimagined.fuser.intro": "O Fusor combina um embrião sintético com um óvulo natural hospedeiro, criando um ovo de dinossauro pronto para ser chocado.",
-  "book.archeology_reimagined.fuser.info": "**Entrada:**\n• Embrião de Dinossauro\n• Ovo Vanilla (Galinha, Tartaruga ou Sniffer)\n• Combustível Orgânico\n\n**Saída:**\n• Ovo de Dinossauro Block\n\n*Dica: Ovos maiores (como o do Sniffer) garantem um bônus vital na sobrevivência do feto.*",
+  "book.archeology_reimagined.fuser.info": "**Entrada:**\n- Embrião de Dinossauro\n- Ovo Vanilla (Galinha, Tartaruga ou Sniffer)\n- Combustível Orgânico\n\n**Saída:**\n- Ovo de Dinossauro Block\n\n*Dica: Ovos maiores (como o do Sniffer) garantem um bônus vital na sobrevivência do feto.*",
   
   "entry.archeology_reimagined.biocatalyzer.name": "Biocatalisador",
   "entry.archeology_reimagined.biocatalyzer.desc": "Equipamento de química avançada.",
   "book.archeology_reimagined.biocatalyzer.intro": "O Biocatalisador permite manipular a genética falha e destilar toxinas para uso no controle dos animais.",
-  "book.archeology_reimagined.biocatalyzer.info": "**Para Dardos:**\n• Dardo Vazio + Frasco de Bagas\n• Requer: Biopropelente\n\n**Para Seringas:**\n• Seringa Vazia + DNA Fragmentado\n• Requer: Combustível Avançado",
+  "book.archeology_reimagined.biocatalyzer.info": "**Para Dardos:**\n- Dardo Vazio + Frasco de Bagas\n- Requer: Biopropelente\n\n**Para Seringas:**\n- Seringa Vazia + DNA Fragmentado\n- Requer: Combustível Avançado",
   
   "category.archeology_reimagined.components.name": "Componentes",
   
