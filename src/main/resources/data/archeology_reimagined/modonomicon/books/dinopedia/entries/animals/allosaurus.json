@@ -1,8 +1,7 @@
 {
   "type": "modonomicon:content",
   "id": "archeology_reimagined:allosaurus",
-  "background_u_index": 0,
-  "background_v_index": 0,
+  "background": "archeology_reimagined:textures/gui/transparent_entry.png",
   "hide_while_locked": false,
   "name": "entry.archeology_reimagined.allosaurus.name",
   "description": "entry.archeology_reimagined.allosaurus.desc",
